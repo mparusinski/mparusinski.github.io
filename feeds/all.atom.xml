@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Michal Parusinski - Personal Site</title><link href="http://mparusinski.github.io/" rel="alternate"></link><link href="http://mparusinski.github.io/feeds/all.atom.xml" rel="self"></link><id>http://mparusinski.github.io/</id><updated>2018-05-19T17:03:00+02:00</updated><entry><title>Made it to the front page of EGC 2018</title><link href="http://mparusinski.github.io/made-it-to-the-front-page-of-egc-2018.html" rel="alternate"></link><published>2018-05-19T17:03:00+02:00</published><updated>2018-05-19T17:03:00+02:00</updated><author><name>michalparusinski</name></author><id>tag:mparusinski.github.io,2018-05-19:/made-it-to-the-front-page-of-egc-2018.html</id><summary type="html">&lt;p&gt;&lt;img alt="image0" src="https://egc2018.it/files/news/images/36335495032-1491322fcf-o.th_870x446.jpg" /&gt;&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Michal Parusinski - Personal Site</title><link href="mparusinski.github.io/" rel="alternate"></link><link href="mparusinski.github.io/feeds/all.atom.xml" rel="self"></link><id>mparusinski.github.io/</id><updated>2018-05-19T17:03:00+02:00</updated><entry><title>Made it to the front page of EGC 2018</title><link href="mparusinski.github.io/made-it-to-the-front-page-of-egc-2018.html" rel="alternate"></link><published>2018-05-19T17:03:00+02:00</published><updated>2018-05-19T17:03:00+02:00</updated><author><name>michalparusinski</name></author><id>tag:None,2018-05-19:mparusinski.github.io/made-it-to-the-front-page-of-egc-2018.html</id><summary type="html">&lt;p&gt;&lt;img alt="image0" src="https://egc2018.it/files/news/images/36335495032-1491322fcf-o.th_870x446.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;Apparently I made to the front page of the European Go Congree 2018
 (Pisa) web page.&lt;/p&gt;
 &lt;p&gt;&lt;a class="reference external" href="https://egc2018.it/en/news/view/id-32.html"&gt;EGC's article&lt;/a&gt;&lt;/p&gt;
@@ -7,7 +7,7 @@
 &lt;p&gt;Apparently I made to the front page of the European Go Congree 2018
 (Pisa) web page.&lt;/p&gt;
 &lt;p&gt;&lt;a class="reference external" href="https://egc2018.it/en/news/view/id-32.html"&gt;EGC's article&lt;/a&gt;&lt;/p&gt;
-</content></entry><entry><title>What to learn from the Cambridge Analytica story</title><link href="http://mparusinski.github.io/what-to-learn-from-the-cambridge-analytica-story.html" rel="alternate"></link><published>2018-03-30T12:14:00+02:00</published><updated>2018-03-30T12:14:00+02:00</updated><author><name>michalparusinski</name></author><id>tag:mparusinski.github.io,2018-03-30:/what-to-learn-from-the-cambridge-analytica-story.html</id><summary type="html">&lt;p&gt;If you are using Facebook and intend to keep using it the Cambridge
+</content></entry><entry><title>What to learn from the Cambridge Analytica story</title><link href="mparusinski.github.io/what-to-learn-from-the-cambridge-analytica-story.html" rel="alternate"></link><published>2018-03-30T12:14:00+02:00</published><updated>2018-03-30T12:14:00+02:00</updated><author><name>michalparusinski</name></author><id>tag:None,2018-03-30:mparusinski.github.io/what-to-learn-from-the-cambridge-analytica-story.html</id><summary type="html">&lt;p&gt;If you are using Facebook and intend to keep using it the Cambridge
 Analytica
 &lt;a class="reference external" href="https://arstechnica.com/tech-policy/2018/03/facebooks-cambridge-analytica-scandal-explained/"&gt;story&lt;/a&gt;
 can teach a few good practices to protect your privacy. Now of course
@@ -63,7 +63,7 @@ computer). To summarise it is far harder to restrict access to your
 content on your Facebook than you might think, so it might be wise to
 treat it as public discourse.&lt;/li&gt;
 &lt;/ol&gt;
-</content></entry><entry><title>New blog | Nouveau blog</title><link href="http://mparusinski.github.io/bonjour-tout-le-monde.html" rel="alternate"></link><published>2018-01-06T18:37:00+01:00</published><updated>2018-01-06T18:37:00+01:00</updated><author><name>michalparusinski</name></author><id>tag:mparusinski.github.io,2018-01-06:/bonjour-tout-le-monde.html</id><summary type="html">&lt;p&gt;Hello, for 2018 I am restarting my blog from scratch. In part because in
+</content></entry><entry><title>New blog | Nouveau blog</title><link href="mparusinski.github.io/bonjour-tout-le-monde.html" rel="alternate"></link><published>2018-01-06T18:37:00+01:00</published><updated>2018-01-06T18:37:00+01:00</updated><author><name>michalparusinski</name></author><id>tag:None,2018-01-06:mparusinski.github.io/bonjour-tout-le-monde.html</id><summary type="html">&lt;p&gt;Hello, for 2018 I am restarting my blog from scratch. In part because in
 the transition from Wordpress to Pelican and because of my own silly
 mistakes I lost a lot of content.&lt;/p&gt;
 &lt;p&gt;Bonjour, pour 2018 je recommence mon blog à partir de zéro. En partie
