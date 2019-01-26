@@ -1,0 +1,293 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="http://127.0.0.1:8080/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="http://127.0.0.1:8080/theme/pygments/github.min.css">
+  <link rel="stylesheet" type="text/css" href="http://127.0.0.1:8080/theme/font-awesome/css/font-awesome.min.css">
+
+
+
+    <link href="http://127.0.0.1:8080/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Michal Parusinski - Personal Site RSS">
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-132336188-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+<meta name="author" content="michalparusinski" />
+<meta name="description" content="On the Linux desktop there is a push for a universal packaging format. There appears to be three main containders: Snap packages, supported by Canonical and Ubuntu; FlatPak, promoted by the Gnome Foundation although not a Gnome project or Gnome specific; and AppImage, a community project. There are many technical …" />
+<meta name="keywords" content="">
+
+<meta property="og:site_name" content="Michal Parusinski - Personal Site"/>
+<meta property="og:title" content="Are Snap way ahead of FlatPaks or AppImages?"/>
+<meta property="og:description" content="On the Linux desktop there is a push for a universal packaging format. There appears to be three main containders: Snap packages, supported by Canonical and Ubuntu; FlatPak, promoted by the Gnome Foundation although not a Gnome project or Gnome specific; and AppImage, a community project. There are many technical …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="http://127.0.0.1:8080/drafts/snap-packages-more-popular-than-flatpak-or-appimages.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2019-01-13 13:28:00+01:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="http://127.0.0.1:8080/author/michalparusinski.html">
+<meta property="article:section" content="Linux"/>
+<meta property="og:image" content="/images/profile.jpg">
+
+  <title>Michal Parusinski - Personal Site &ndash; Are Snap way ahead of FlatPaks or AppImages?</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="http://127.0.0.1:8080">
+        <img src="/images/profile.jpg" alt="" title="">
+      </a>
+      <h1><a href="http://127.0.0.1:8080"></a></h1>
+
+
+      <nav>
+        <ul class="list">
+          <li><a href="http://127.0.0.1:8080/pages/a-propos-de-moi.html#a-propos-de-moi">A propos de moi</a></li>
+          <li><a href="http://127.0.0.1:8080/pages/about-me.html#about-me">About Me</a></li>
+          <li><a href="http://127.0.0.1:8080/pages/publications.html#publications">Publications</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+        <li><a class="sc-linkedin" href="https://www.linkedin.com/in/michal-parusinski-b7b18458/" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+        <li><a class="sc-github" href="https://github.com/mparusinski" target="_blank"><i class="fa fa-github"></i></a></li>
+      </ul>
+    </div>
+
+
+  </aside>
+  <main>
+
+
+<article class="single">
+  <header>
+      
+    <h1 id="snap-packages-more-popular-than-flatpak-or-appimages">Are Snap way ahead of FlatPaks or AppImages?</h1>
+    <p>
+          Posted on Sun 13 January 2019 in <a href="http://127.0.0.1:8080/category/linux.html">Linux</a>
+
+
+    </p>
+  </header>
+
+
+  <div>
+    <p>On the Linux desktop there is a push for a <em>universal packaging format</em>.
+There appears to be three main containders: Snap packages,
+supported by Canonical and Ubuntu; FlatPak, promoted by the Gnome Foundation although
+not a Gnome project or Gnome specific; and AppImage, a community project. There are
+many technical differences between the three formats but they share some goals:</p>
+<ul class="simple">
+<li><strong>Distribution agnostic packaging</strong>: The packages are meant to run on any Linux
+distro be it Ubuntu, Fedora, OpenSUSE or even ArchLinux, ... . For developers this
+means package once run anywhere. To achieve this these package formats tend to bundle
+all the dependencies into the package although Snap and FlatPak allow the packages to
+rely on some shared runtimes.</li>
+<li><strong>Upstream packaging</strong>: Ideally all packages are made by the developers of the project
+as opposed to having maintainers (usually per distribution) ensuring the distribution
+of the software. The idea is that users use exactly what the developers made. In principle
+this entails the software users get is the latest version supported by the developers.</li>
+</ul>
+<p>I will not comment on whether UPs are a good thing or not. However many places on the internet
+state <strong>Snap</strong> is way ahead of <strong>Flatpak</strong> or <strong>AppImage</strong>. Canonical states there are <a class="reference external" href="https://blog.ubuntu.com/2018/10/18/infographic-snaps-in-numbers">4100</a>
+snap packages currently available.
+Whereas according to <a class="reference external" href="https://flathub.org/apps/category/All">FlatHub there are 480 FlatPaks</a>.
+Finally according to <a class="reference external" href="https://appimage.github.io/apps/">AppImageHug there are 634 AppImages</a>.
+Many websites on the internet cite these statitics (albeit slightly now out of date). For
+instance <a class="reference external" href="https://verummeum.com/portable-package-formats/">see Verummeum</a>.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="31%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Snap packages</th>
+<th class="head">FlatPaks</th>
+<th class="head">AppImages</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>&lt; 4100 snaps</td>
+<td>480 flatpaks</td>
+<td>634 appimages</td>
+</tr>
+</tbody>
+</table>
+<p>Is this true? Yes probably, however it is misleading.</p>
+<div class="section" id="those-numbers-are-misleading">
+<h2>Those numbers are misleading</h2>
+<p>Relying on those numbers to claim <em>Snaps</em> are taking over is misleading. It is misleading
+for two reasons. One we aren't comparing apple to oranges. And two it tells us little about
+what kind of software is being distributed as <em>Snaps</em>, <em>FlatPaks</em> or <em>AppImages</em>.</p>
+<div class="section" id="snaps-flatpaks-and-appimages-are-the-same-thing">
+<h3>Snaps, FlatPaks and AppImages are the same thing</h3>
+<p>The first big different between these formats are not distributed in the same way. <em>Snaps</em>
+have only one store, whereas <em>FlatHub</em> isn't the only store for <em>FlatPaks</em> and <em>AppImageHub</em>
+is a recent effort to list all existing software distributed as <em>AppImages</em>. It goes without
+saying the number of <em>FlatPaks</em> and <em>AppImages</em> could be underestimated.</p>
+<p>Bear in mind the differences do not stop there. <em>AppImages</em> are intented as a packaging format
+for end-user applications of the Desktop or the Server, but not for system level components.
+<em>FlatPaks</em> are desktop focused. Meanwhile <em>Snaps</em> have a more broader scope, being intented
+for Server and the Desktop and for both system and end-user software. Naturally having a
+broader scope means one should expect more software being packaged for <em>Snap</em> than for <em>FlatPak</em>
+or <em>AppImage</em>.</p>
+<p>However neither of these reasons are the true reason why the comparaison shown in the table
+above is misleading. The bigger problem is what is being currently packaged as <em>AppImage</em>, <em>Flatpak</em>
+and <em>Snap</em>. Many applications made available on those platforms aren't relevant.</p>
+</div>
+<div class="section" id="problems-in-the-software-selection">
+<h3>Problems in the software selection</h3>
+<p>By searching those <em>hubs</em> and <em>stores</em> I found many issues in what is being made available.</p>
+<div class="section" id="snap-store">
+<h4>Snap store</h4>
+<p>Unfortunately the official website for the <a class="reference external" href="https://snapcraft.io/store">Snap store</a> limits how
+one can explore the software selection. Thankfully the alternative <a class="reference external" href="https://uappexplorer.com/snaps">uAppExplorer</a>
+exists. Although it is hard to tell how well the two match (because <em>uAppExplorer</em> claims 2000 applications
+while <em>Canonical</em> claim 4100 applications). Anyway here are a couple of problems I found with the
+software selection on the <em>Snap store</em>:</p>
+<ul class="simple">
+<li>A huge number of applications for non <em>Intel/AMD</em> architecture. For instance for <em>ARM</em> architure there 1176 packages
+out of 2007, in other words 58.6 percent. Also for instance we have 244 out of 2007 for IBM's System Z,
+about 12.2 percent; and 273 out of 2007 for PowerPC, about 13.6 percent. (In total 84.3%). Not exactly the typical architectures
+used by a typical Linux desktop user. In practice the typical Linux desktop user has about 781 snaps available on his/her
+platform, a number far closer to the number of available <em>AppImages</em></li>
+<li>A huge number of <em>Playground</em> applications, who serve no end-user purpose, the only point of those applications is
+that developers learn on to use and package <em>Snaps</em>. For instance if one searches on <a class="reference external" href="https://snapcraft.io/store">Snap store</a>
+the keyword <em>Hello</em> one finds nearly <strong>300</strong> <em>Hello</em> applications. There are other examples, if one searches for <em>Test</em> one finds
+at least <strong>100</strong> <em>Test</em> applications. Of course one could image other similar key words give many results. However this means
+that by a conversative estimate about <strong>10%</strong> of <em>Snaps</em> aren't real end user applications.</li>
+<li>If one adds up the software made available on the <a class="reference external" href="https://snapcraft.io/store">Snap store</a> in the different suggested sections
+(namely <em>Dev</em>, <em>Games</em>, <em>Social</em>, <em>Crypto</em>, <em>Video</em>, <em>Music</em>, <em>Productivity</em>, <em>Utilities</em>, <em>Graphics</em> and <em>Server</em>), I found there are about <strong>400</strong> currently applications, putting <strong>Snap</strong> behind both
+<strong>FlatPak</strong> and <strong>AppImage</strong>. Now of course many applications probably fit neither of offered categories but it highlights that the number of software made for end user must be far less than <strong>4100</strong>.</li>
+<li>Duplicates applications are present in the store. For instance <em>Stellarium</em>, <em>Brackets</em>, <em>rsync</em>
+and <em>tmux</em> are duplicated. Unfortunately I have no easy way of counting the number of duplicates present.</li>
+</ul>
+<p>I simply don't think we should take the claim <strong>4100 Snaps available</strong> seriously. Yes there
+might be <strong>4100</strong> but in practice the number of software one might install is far smaller.</p>
+</div>
+<div class="section" id="flathub">
+<h4>FlatHub</h4>
+<p>I have fewer quicks with <em>FlatHub</em>. I did not find any <em>Hello</em> application and only 4 <em>Test</em> applications. When summing up the number of software available in each category I found at the time
+<strong>527</strong>, which is slightly higher than the claimed at the time number of applications <strong>479</strong> (meaning
+some software is in multiple categories).</p>
+<p>FlatHub does not provide information about the architecture. However to my understanding every application
+specify the supported architectures in a json file, this should mean an application available for multiple platforms is onyl counted once.</p>
+<p>I did find one duplicate application namely <em>Meteo</em>.</p>
+<p>Overall I trust the number provided by <em>FlatHub</em>.</p>
+</div>
+<div class="section" id="appimagehub">
+<h4>AppImageHub</h4>
+<p>Again like <em>FlatHub</em> I found no <em>Hello</em> and I found no <em>Test</em> applications. Because all
+application are <a class="reference external" href="https://appimage.github.io/apps/">explictly listed</a> there are no hidden application increasing the count. I have no information about architecture but there are no duplicates.</p>
+<p>The number is indeed trustworthy, however it does not tell us exactly how many application
+are distributed as <em>AppImage</em>. Many projects could be distributing today <em>AppImages</em> and not
+be on the list.</p>
+</div>
+</div>
+</div>
+<div class="section" id="measuring-success-with-existing-popular-applications">
+<h2>Measuring success with existing popular applications?</h2>
+<p>Instead of focusing on how many packages there are out there, let's ask how many popular software projects have adopted either formats. Answering this question won't give us the full picture
+but it will give us an idea of whether we should expect using more of <em>Snaps</em>, <em>FlatPaks</em> or <em>AppImages</em> in
+the future.</p>
+<p><strong>Disclaimer</strong>: Now I must be honest, answering this question is difficult and easily subjective. I tried being impartial and accurate but you should take everything I state with a grain of salt. Try researching on your own.</p>
+<p>Because counting on my own whether each piece of software on Linux is or not available as a <em>Snap</em>, as a
+<em>FlatPak</em> or as an <em>AppImage</em> is time consuming, I decided to take a subset of populat Linux applications. To avoid putting bias in the list I choose the set of software listed on <a class="reference external" href="https://www.fossmint.com/most-used-linux-applications/">FossMint</a>. I excluded  <em>Google Drive</em> and <em>Evernote</em> as they are not official packaged for Linux.</p>
+<p>Using this list I searched for the following:</p>
+<ul class="simple">
+<li>Are the projects officially using <em>AppImage</em>, <em>FlatPak</em> or <em>Snap</em> as a mean of distribution? In
+each case I checked the project's official website.</li>
+<li>Are the software distributed either as <em>AppImage</em>, <em>FlatPak</em> or <em>Snap</em>? Regardless whether the project
+official supports either format.</li>
+<li>When distributed as an <em>AppImage</em>, <em>FlatPak</em> or <em>Snap</em> is it the latest version?</li>
+</ul>
+<p>I found for the software in the list the following statistics:</p>
+<ul class="simple">
+<li>About <strong>14%</strong> of projects official distribute their software either as as <em>AppImage</em>, <em>FlatPak</em> or <em>Snap</em>. Meaning that adoption is slow as each packaging format is already at least four years old. Of the <strong>14% ~ 10</strong> of applications which adopted one of the formats, <strong>40% ~ 4</strong> have adopted <em>FlatPak</em>, <strong>40% ~ 4</strong> have adopted <em>AppImage</em> and <strong>20% ~ 2</strong> have adopted <em>Snap</em>. However because the sample of official distributed <em>AppImages</em>, <em>FlatPaks</em> and <em>Snaps</em> is so small, one should not conclude yet that <em>FlatPak</em> or <em>AppImage</em> is preferred by software projects.</li>
+<li>Concerning software being available as either formats (but not necessarly distributed by the project). Whilst <em>AppImage</em> appears to be last with about <strong>37%</strong>, neither <em>Snap</em> nor <em>FlatPak</em> are clearly ahead with respectively about <strong>46%</strong> and <strong>47%</strong> adoption. This discrepancy can be explained by the <em>AppImage</em> project's insistence on <a class="reference external" href="https://docs.appimage.org/packaging-guide/upstream.html">upstream packaging</a>.`.</li>
+<li>Concerning whether we have the latest version packaged as either format we see a big lead for <em>Snap</em>.
+About <strong>60%</strong> of <em>Snaps</em> provided ship the latest version, <strong>53%</strong> of <em>FlatPaks</em> provided ship the
+latest version and only <strong>37.5%</strong> of <em>AppImages</em> ship the latest version. <em>AppImage</em> has such a low
+number because most <em>AppImages</em> have been created by <em>probonopd</em> one of the main developers behind
+the <em>AppImage</em> project, and he has not been updating them for more than a year probably because of
+the insistence on <a class="reference external" href="https://docs.appimage.org/packaging-guide/upstream.html">upstream packaging</a>.
+The numbers are healthier for <em>Snap</em> and <em>FlatPak</em> but it is still far from <strong>100%</strong>. The reason for
+this is that most <em>Snaps</em> and <em>FlatPak</em> are shipped by volunteer maintainers, and some of them are no
+longer updating them.</li>
+</ul>
+<p>Based on this list I don't think one can claim <em>Snap</em> is way ahead, if anything it appears to be strongly in competition with <em>FlatPak</em>. One should not conclude <em>AppImage</em> is losing steam either, <em>AppImage</em> is doing well with <strong>634</strong> applications distributed as <em>AppImage</em> according to <em>AppImageHub</em> and many developers choosing <em>AppImage</em> as the official format for Linux.</p>
+<p>I decided to dig a bit further and see where each format is doing well:</p>
+<ul class="simple">
+<li>Based on the list I used, I found <em>FlatPak</em> does well with <strong>GNOME</strong> applications, which should not be surprising because <em>GNOME</em> is promoting <em>FlatPak</em> for instance by making <em>FlatPak</em> one of the targets supported by <em>GNOME Builder</em>. Looking at <em>FlatHub</em> I was surprised to see a huge success of the format with <strong>games</strong> with about <strong>132</strong> games on <em>FlatHub</em> against <strong>60</strong> on <em>Snapcraft.io</em>, meanwhile <em>AppImage</em> has <strong>40</strong>.</li>
+<li>Based on <em>AppImageHub</em> and the list I used, <em>AppImage</em> does well with <strong>Electron</strong> and <strong>QT/KDE</strong> applications, in part because the default target for Linux with Electron Builder is <em>AppImage</em> and the packaging tooling for <em>AppImage</em> for <strong>QT</strong> is very mature.</li>
+<li><em>Snap</em> is more over the place. However unlike the other formats <em>Snap</em> is showing success with <strong>big vendors</strong> such as <em>Microsoft</em>, <em>Mozilla</em> or <em>JetBrains</em>. I think <em>Canonical's</em> marketing is doing well.</li>
+</ul>
+</div>
+<div class="section" id="what-holding-back-either-snap-flatpak-or-appimage">
+<h2>What holding back either <em>Snap</em>, <em>FlatPak</em> or <em>AppImage</em>?</h2>
+<p>Because the adoption rate is still small, a useful question is to understand why developers may choose to avoid any of those formats. I searched various forums and GitHub for clues as why developers are not choosing these formats. Here are some of the main reasons:</p>
+<ul class="simple">
+<li><strong>Lack of time, ressource or motiviation:</strong> This is one of the main reasons for not seeing a package format being adopted. See for instance the following links <a class="reference external" href="https://github.com/albertlauncher/albert/issues/407">1</a>, <a class="reference external" href="https://sourceforge.net/p/freecol/improvement-requests/218/">2</a>, <a class="reference external" href="https://github.com/freeorion/freeorion/issues/1236">3</a>, <a class="reference external" href="https://github.com/f4exb/sdrangel/issues/113">4</a>, ... . This should not be surprising because most software are developed by hobbyists and they don't necessarly have the time to learn/developed for a new packaging format.</li>
+<li><strong>Not even packaged:</strong> I was surprised to see lots of software projects not even packaging on Linux to begin with (for instance <em>rsync</em> and <em>tmux</em>). For those projects distributions are supposed to have maintainers who package the software.</li>
+<li><strong>Software no longer developed</strong>: Lots of software are no longer being developed. For instance <em>Frozen Bubble</em> was last updated in <strong>2010</strong> whilst <em>Banshee</em> was last updated in <strong>2014</strong>. It is hard to expect projects with no developers to magically creat a <em>Snap</em>, <em>FlatPak</em> or <em>AppImage</em>.</li>
+<li><strong>Lack of agreement over which format to use</strong>: This is not frequent but fairly telling. If <em>Snap</em>, <em>FlatPak</em> or <em>AppImage</em> are supposed to be the <strong>Universal Package Format</strong> how come we have <strong>3</strong> of them. <em>RStudio</em> <a class="reference external" href="https://github.com/rstudio/rstudio/issues/3079">could not agree</a> over which format to use.</li>
+</ul>
+<p>Lots of people in the Linux community criticizes <em>Snap</em>, <em>FlatPak</em> and <em>AppImage</em> on technical ground and disgree with the philosophy. But ironically this didn't show up much as a reason not to support <em>Snap</em>, <em>FlatPak</em> or <em>AppImage</em>. I think the people complaining about universal packaging are usually not the same as the software developers, I think criticism comes more from system administrators, Linux distribution developers/maintainers and users who choose Linux for its security.</p>
+</div>
+
+  </div>
+  <div class="tag-cloud">
+    <p>
+    </p>
+  </div>
+
+
+
+
+
+</article>
+
+    <footer>
+<p>&copy;  </p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Michal Parusinski - Personal Site ",
+  "url" : "http://127.0.0.1:8080",
+  "image": "/images/profile.jpg",
+  "description": ""
+}
+</script>
+
+</body>
+</html>
