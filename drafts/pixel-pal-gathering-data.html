@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/pygments/github.min.css">
+  <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/font-awesome/css/font-awesome.min.css">
+
+
+
+    <link href="https://michal.parusinski.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Michal Parusinski - Personal Site RSS">
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-132336188-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+<meta name="author" content="Michal Parusinski" />
+<meta name="description" content="Pixel Pal is a project I have started whose purpose is to bring new life to old icon themes. Many old icon themes are in raster format and are not available for HiDPI screens (their resolution are too small). Currently the only way to handle old icon themes is to …" />
+<meta name="keywords" content="">
+
+<meta property="og:site_name" content="Michal Parusinski - Personal Site"/>
+<meta property="og:title" content="Pixel Pal (PART 2) : Gathering data for Pixel Pal"/>
+<meta property="og:description" content="Pixel Pal is a project I have started whose purpose is to bring new life to old icon themes. Many old icon themes are in raster format and are not available for HiDPI screens (their resolution are too small). Currently the only way to handle old icon themes is to …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://michal.parusinski.me/drafts/pixel-pal-gathering-data.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2020-02-15 10:24:00+01:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://michal.parusinski.me/author/michal-parusinski.html">
+<meta property="article:section" content="Linux, HiDPI, PixelPal"/>
+<meta property="og:image" content="/images/profile.jpg">
+
+  <title>Michal Parusinski - Personal Site &ndash; Pixel Pal (PART 2) : Gathering data for Pixel Pal</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://michal.parusinski.me">
+        <img src="/images/profile.jpg" alt="" title="">
+      </a>
+      <h1><a href="https://michal.parusinski.me"></a></h1>
+
+
+      <nav>
+        <ul class="list">
+          <li><a href="https://michal.parusinski.me/pages/a-propos-de-moi.html#a-propos-de-moi">A propos de moi</a></li>
+          <li><a href="https://michal.parusinski.me/pages/about-me.html#about-me">About Me</a></li>
+          <li><a href="https://michal.parusinski.me/pages/publications.html#publications">Publications</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+        <li><a class="sc-linkedin" href="https://www.linkedin.com/in/michal-parusinski-b7b18458/" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+        <li><a class="sc-github" href="https://github.com/mparusinski" target="_blank"><i class="fa fa-github"></i></a></li>
+      </ul>
+    </div>
+
+
+  </aside>
+  <main>
+
+
+<article class="single">
+  <header>
+      
+    <h1 id="pixel-pal-gathering-data">Pixel Pal (PART 2) : Gathering data for Pixel Pal</h1>
+    <p>
+          Posted on Sat 15 February 2020 in <a href="https://michal.parusinski.me/category/linux-hidpi-pixelpal.html">Linux, HiDPI, PixelPal</a>
+
+
+    </p>
+  </header>
+
+
+  <div>
+    <p>Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to resample them by the desired factor,
+but the icons look pixelated.</p>
+<p>To solve this I will use artificial intelligence and more precisely deep
+learning. The idea is to teach a neural network how to upsample icons in a
+manner that takes into account the shape of the underlying icon. In other
+words the idea is to do better than increasing the number of pixels. However
+to teach a neural network you need lots of data. In our case the data is a
+collection of icons for which we have both low resolution and HiDPI resolution
+versions.</p>
+<p>Thankfully due to open source a lot of icons themes are available for which we
+have both. There are some requirements:</p>
+<ol class="arabic simple">
+<li>The icon theme's licence needs to allow use theme to make a derivative
+product. To be safe I will stick to open source licences.</li>
+<li>There needs to be enough data to teach a network. However I will
+intentionally not get too much data to explore data augmentation techniques.</li>
+<li>We need to anticipate the split between testing and training data. Testing
+data is only used once we fully trained and optimised the best neural
+network architecture. It tells us how well the model is performing. In order
+to have a good metric, I believe I should have at least two icon themes for
+testing.</li>
+<li>A good split between testing and training data is 20 percent testing data,
+and 80 percent training data. If I have two icon themes for testing, I
+should eight icon themes for training.</li>
+</ol>
+<p>I have downloaded 10 different icons themes all containing
+svg formatted icons. Eight of the icon themes will be used
+for training and the remaining two will be used for
+evaluating the real world performance of the model (testing
+data set).</p>
+<p>Finally I have chosen two really old icon themes for which
+no svg formats are available. The idea here is to judge
+whether the project has been a success. Because no svg
+files are available an official metric can't be calculated,
+which is why we need a testing data set with svg icons.
+Using old icons with no svg file format will showcase
+whether using deep learning is actually useful for reviving
+old icon sets. The old icon themes are the official
+<a class="reference external" href="https://en.wikipedia.org/wiki/Common_Desktop_Environment">CDE</a>
+icon theme and the icon theme from <a class="reference external" href="https://en.wikipedia.org/wiki/OS/2">OS/2</a>.</p>
+
+  </div>
+  <div class="tag-cloud">
+    <p>
+    </p>
+  </div>
+
+
+
+
+
+</article>
+
+    <footer>
+<p>&copy;  </p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Michal Parusinski - Personal Site ",
+  "url" : "https://michal.parusinski.me",
+  "image": "/images/profile.jpg",
+  "description": ""
+}
+</script>
+
+</body>
+</html>
