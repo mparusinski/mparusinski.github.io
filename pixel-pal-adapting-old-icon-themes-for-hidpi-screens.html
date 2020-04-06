@@ -32,18 +32,23 @@
 </script>
 <!-- End Google Analytics -->
 
-    <meta name="author" content="Michal Parusinski" />
-    <meta name="description" content="" />
+<meta name="author" content="Michal Parusinski" />
+<meta name="description" content="I am starting a new open source project. The goal of this project is to solve a recurring issue with HiDPI support. The issues is that many old software rely on icon themes in raster format which are not suitable for HiDPI screens. To be more specific various software projects …" />
+<meta name="keywords" content="">
+
 <meta property="og:site_name" content="Michal Parusinski - Personal Site"/>
-<meta property="og:type" content="blog"/>
-<meta property="og:title" content="Michal Parusinski - Personal Site"/>
-<meta property="og:description" content=""/>
+<meta property="og:title" content="Pixel Pal (PART 1) : Adapting old icon themes for HiDPI screens"/>
+<meta property="og:description" content="I am starting a new open source project. The goal of this project is to solve a recurring issue with HiDPI support. The issues is that many old software rely on icon themes in raster format which are not suitable for HiDPI screens. To be more specific various software projects …"/>
 <meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://michal.parusinski.me"/>
+<meta property="og:url" content="https://michal.parusinski.me/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2020-01-27 18:46:00+01:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://michal.parusinski.me/author/michal-parusinski.html">
+<meta property="article:section" content="Linux, HiDPI, PixelPal"/>
 <meta property="og:image" content="/images/profile.jpg">
 
-  <title>Michal Parusinski - Personal Site &ndash;     Authors
-</title>
+  <title>Michal Parusinski - Personal Site &ndash; Pixel Pal (PART 1) : Adapting old icon themes for HiDPI screens</title>
 
 </head>
 <body>
@@ -77,15 +82,46 @@
 
 <article class="single">
   <header>
-    <h1>    Authors
-</h1>
+      
+    <h1 id="pixel-pal-adapting-old-icon-themes-for-hidpi-screens">Pixel Pal (PART 1) : Adapting old icon themes for HiDPI screens</h1>
+    <p>
+          Posted on Mon 27 January 2020 in <a href="https://michal.parusinski.me/category/linux-hidpi-pixelpal.html">Linux, HiDPI, PixelPal</a>
+
+
+    </p>
   </header>
+
+
   <div>
-    <ul class="list">
-      <li><a href="https://michal.parusinski.me/author/michal-parusinski.html">Michal Parusinski</a> (2)</li>
-      <li><a href="https://michal.parusinski.me/author/michalparusinski.html">michalparusinski</a> (4)</li>
-    </ul>
+    <p>I am starting a new open source project. The goal of this project
+is to solve a recurring issue with HiDPI support. The issues is that
+many old software rely on icon themes in raster format which are not suitable for HiDPI
+screens. To be more specific various software projects rely on icons which are
+only in raster formats (e.g. JPG, PNG, ...) but not in vector format (e.g. SVG)
+and are only available in low resolutions formats (e.g. 32x32) which is fine
+for non HiDPI screens but there is no equivalent for high resolution formats
+required by HiDPI (e.g. 64x64). The naive solution is to simply is to do
+pixel doubling, but this results in an ugly pixelated look. My new project
+will use some tools from artificial intelligence to do better.</p>
+<p>The way to solve this issue using artificial intelligence is to use super
+resolution deep learning <a class="reference external" href="https://arxiv.org/pdf/1808.03344.pdf">models</a>.
+These deep learning neural networks rely on images not being random but
+representations of real things where there are subtle statistical relations
+between the pixels of an image in practice. A simple example of how pixels
+can be related to one another is that often there are lines and curves in
+images.</p>
+<p>A series of blog posts will detail the progress of the project.</p>
+
   </div>
+  <div class="tag-cloud">
+    <p>
+    </p>
+  </div>
+
+
+
+
+
 </article>
 
     <footer>
