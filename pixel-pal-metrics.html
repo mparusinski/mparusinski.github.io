@@ -37,7 +37,7 @@
 <meta name="keywords" content="">
 
 <meta property="og:site_name" content="Michal Parusinski - Personal Site"/>
-<meta property="og:title" content="Pixel Pal (PART 3) : Measuring performance"/>
+<meta property="og:title" content="Pixel Pal (PART 3) : Measuring model quality"/>
 <meta property="og:description" content="Pixel Pal is a project I have started whose purpose is to bring new life to old icon themes. Many old icon themes are in raster format and are not available for HiDPI screens (their resolution are too small). Currently the only way to handle old icon themes is to …"/>
 <meta property="og:locale" content="en_US"/>
 <meta property="og:url" content="https://michal.parusinski.me/pixel-pal-metrics.html"/>
@@ -48,7 +48,7 @@
 <meta property="article:section" content="Linux, HiDPI, PixelPal"/>
 <meta property="og:image" content="/images/profile.jpg">
 
-  <title>Michal Parusinski - Personal Site &ndash; Pixel Pal (PART 3) : Measuring performance</title>
+  <title>Michal Parusinski - Personal Site &ndash; Pixel Pal (PART 3) : Measuring model quality</title>
 
 </head>
 <body>
@@ -83,7 +83,7 @@
 <article class="single">
   <header>
       
-    <h1 id="pixel-pal-metrics">Pixel Pal (PART 3) : Measuring performance</h1>
+    <h1 id="pixel-pal-metrics">Pixel Pal (PART 3) : Measuring model quality</h1>
     <p>
           Posted on Sat 11 April 2020 in <a href="https://michal.parusinski.me/category/linux-hidpi-pixelpal.html">Linux, HiDPI, PixelPal</a>
 
@@ -103,7 +103,7 @@ but the icons look pixelated.</p>
 <li><a class="reference external" href="https://michal.parusinski.me/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html">Part #1 Explaining the project</a>.</li>
 <li><a class="reference external" href="https://michal.parusinski.me/pixel-pal-gathering-data.html">Part #2 Building the dataset</a></li>
 </ol>
-<p>In this part I will be talking about metrics. Before going on about training
+<p>In this part I will be talking about losses, metrics and targets. Before going on about training
 deep learning networks to up sample intelligently icon images, we need
 ways to measure if our models are doing a good job. Especially we need
 to know if a model does better than simply pixel doubling.</p>
@@ -145,7 +145,25 @@ The metrics in question are the following :</p>
 <li>Peak Signal to Noise Ratio: 16.913143157958984</li>
 <li>Structural Similarity     : 0.8310688138008118</li>
 </ol>
-<p>So we should to better than that.</p>
+<p>Measuring how similar two images are is already a good element. It provides us an idea of how well
+our models are working. However there are some limits to metrics:</p>
+<p>1. Metrics are not always differentiable. However training neural networks require a way to measure
+the distance between the wanted output and the output the network is producing. This is where <em>losses</em>
+come into play.
+2. You need to have some good baselines. In other words the metric in itself is not useful, you need
+to have an objectif. Something like do better than simple pixel doubling or bicubic interpolation.
+3. Metrics will be sensitive to the data you use. You may land on images that are easy to upsample
+and the metric may be deceptively good. This is why you should compute the metrics on the entire
+dataset and do some statistics on it.
+4. Metrics are not perfect. In the end we want something to be visually pleasing not something that
+maximise a mathematical function. This is why you should also visually look at the result of the
+neural networks.</p>
+<p>To train the network will use a loss function. Loss function are ways to measure the distance
+between the ideal output and the current output. In our case we will use mean squared error as
+it is simple and fits our purpose. In general always make sure you are using an appropriate
+loss function.</p>
+<p>In terms of baselines my objectif will be to perform better thant straight upsampling via
+nearest and bilinear interpolation.</p>
 
   </div>
   <div class="tag-cloud">
