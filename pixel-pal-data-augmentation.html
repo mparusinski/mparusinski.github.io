@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/pygments/github.min.css">
+  <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/font-awesome/css/font-awesome.min.css">
+
+
+
+    <link href="https://michal.parusinski.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Michal Parusinski - Personal Site RSS">
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-132336188-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+<meta name="author" content="Michal Parusinski" />
+<meta name="description" content="Pixel Pal is a project I have started whose purpose is to bring new life to old icon themes. Many old icon themes are in raster format and are not available for HiDPI screens (their resolution are too small). Currently the only way to handle old icon themes is to …" />
+<meta name="keywords" content="">
+
+<meta property="og:site_name" content="Michal Parusinski - Personal Site"/>
+<meta property="og:title" content="Pixel Pal (PART 5) : Data augmentation"/>
+<meta property="og:description" content="Pixel Pal is a project I have started whose purpose is to bring new life to old icon themes. Many old icon themes are in raster format and are not available for HiDPI screens (their resolution are too small). Currently the only way to handle old icon themes is to …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://michal.parusinski.me/pixel-pal-data-augmentation.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2020-04-25 14:18:00+02:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://michal.parusinski.me/author/michal-parusinski.html">
+<meta property="article:section" content="Linux, HiDPI, PixelPal"/>
+<meta property="og:image" content="/images/profile.jpg">
+
+  <title>Michal Parusinski - Personal Site &ndash; Pixel Pal (PART 5) : Data augmentation</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://michal.parusinski.me">
+        <img src="/images/profile.jpg" alt="" title="">
+      </a>
+      <h1><a href="https://michal.parusinski.me"></a></h1>
+
+
+      <nav>
+        <ul class="list">
+          <li><a href="https://michal.parusinski.me/pages/a-propos-de-moi.html#a-propos-de-moi">A propos de moi</a></li>
+          <li><a href="https://michal.parusinski.me/pages/about-me.html#about-me">About Me</a></li>
+          <li><a href="https://michal.parusinski.me/pages/publications.html#publications">Publications</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+        <li><a class="sc-linkedin" href="https://www.linkedin.com/in/michal-parusinski-b7b18458/" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+        <li><a class="sc-github" href="https://github.com/mparusinski" target="_blank"><i class="fa fa-github"></i></a></li>
+      </ul>
+    </div>
+
+
+  </aside>
+  <main>
+
+
+<article class="single">
+  <header>
+      
+    <h1 id="pixel-pal-data-augmentation">Pixel Pal (PART 5) : Data augmentation</h1>
+    <p>
+          Posted on Sat 25 April 2020 in <a href="https://michal.parusinski.me/category/linux-hidpi-pixelpal.html">Linux, HiDPI, PixelPal</a>
+
+
+    </p>
+  </header>
+
+
+  <div>
+    <p>Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to resample them by the desired factor,
+but the icons look pixelated. The goal of this project is to use deep learning
+to upsample small icons into icons for HiDPI screens.</p>
+<p>This is the fifth article about this project. Here are the other four:</p>
+<ol class="arabic simple">
+<li><a class="reference external" href="https://michal.parusinski.me/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html">Part #1 Explaining the project</a>.</li>
+<li><a class="reference external" href="https://michal.parusinski.me/pixel-pal-gathering-data.html">Part #2 Building the dataset</a></li>
+<li><a class="reference external" href="https://michal.parusinski.me/pixel-pal-metrics.html">Part #3 Measuring model quality</a></li>
+<li><a class="reference external" href="https://michal.parusinski.me/pixel-pal-training.html">Part #4 Training models</a></li>
+</ol>
+<p>One of the big challenges in deep learning is getting enough data. Neural networks can easily
+have millions of parameters and it requires large quantity of data to fine tune these
+parameters. Getting enough data is a challenge but what makes it worse that data itself
+is not sufficient, you need labelled data, and if possible quality labelled data.</p>
+<p>When you don't have enough data you have a problem. There are many ways to tackle this issues:</p>
+<ol class="arabic simple">
+<li>Reducing the number of parameters to learn. One such way is to resuse the weights (parameters) from an already learned task and then only retrain parts of the model. This is a form of transfer learning. For instance VGG-16 is taught to do image classification for general public purpose. You can take this model and only retrain parts of it, assuming the other parts are good enough to generalise to your task.</li>
+<li>Training parts of the model on the input data alone using autoencoders. This is fairly technical. The idea is that you build a model which compresses the input data and then decompress the data back with no loss of quality. Such a model is easier to train as you usually have lots of input data (but not necessarily output data). Then you use the trained autoencoder and you split in two : the compression network and the decompression network. You can then work with the compressed features coming out of the compression network as a replacement of the original input data. The benefit here is that the compressed features are smaller and as a result the network you need to train mapping the compressed features to the output data is smaller and thus simpler to teach.</li>
+<li>Use data augmentation. This method consists of building new data from the currently existing one. This method is especially good as a way to produce neural network that generalise well. Through data augmentation you can tell what a neural network should not rely on. For instance one way to augment image data is to flip the image horizontally and vertically, this way you can easily quadruple the amount of data available and tell the network it should be not rely on the image on being a certain way like having shadows at the bottom.</li>
+</ol>
+<p>For the purpose of this project I will rely on data augmentation. My training data set is around 9 000 images, which
+is fairly good for networks having 10 of thousands of parameters. But through data augmentation my neural network
+can be better and by simply flipping horizontally and vertically I can easily get around 36 000 images. Thus allowing
+me to investigate deeper neural networks.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="40%" />
+<col width="49%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">modification</th>
+<th class="head">no horizontal flip</th>
+<th class="head">horizontal flip</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>no vertical flip</td>
+<td><div class="first last figure">
+<img alt="original image" src="https://michal.parusinski.me/images/pixel-augmentation-original.png" />
+</div>
+</td>
+<td><div class="first last figure">
+<img alt="horizontal flip" src="https://michal.parusinski.me/images/pixel-augmentation-horizontal-flip.png" />
+</div>
+</td>
+</tr>
+<tr><td>vertical flip</td>
+<td><div class="first last figure">
+<img alt="vertical flip" src="https://michal.parusinski.me/images/pixel-augmentation-vertical-flip.png" />
+</div>
+</td>
+<td><div class="first last figure">
+<img alt="horizontal and vertical flip" src="https://michal.parusinski.me/images/pixel-augmentation-horizontal-and-vertical-flip.png" />
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+
+  </div>
+  <div class="tag-cloud">
+    <p>
+    </p>
+  </div>
+
+
+
+
+
+</article>
+
+    <footer>
+<p>&copy;  </p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Michal Parusinski - Personal Site ",
+  "url" : "https://michal.parusinski.me",
+  "image": "/images/profile.jpg",
+  "description": ""
+}
+</script>
+
+</body>
+</html>
