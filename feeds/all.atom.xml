@@ -1,13 +1,517 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Michal Parusinski - Personal Site</title><link href="https://mparusinski.github.io/" rel="alternate"></link><link href="https://mparusinski.github.io/feeds/all.atom.xml" rel="self"></link><id>https://mparusinski.github.io/</id><updated>2018-05-19T17:03:00+02:00</updated><entry><title>Made it to the front page of EGC 2018</title><link href="https://mparusinski.github.io/made-it-to-the-front-page-of-egc-2018.html" rel="alternate"></link><published>2018-05-19T17:03:00+02:00</published><updated>2018-05-19T17:03:00+02:00</updated><author><name>michalparusinski</name></author><id>tag:mparusinski.github.io,2018-05-19:/made-it-to-the-front-page-of-egc-2018.html</id><summary type="html">&lt;p&gt;&lt;img alt="image0" src="https://egc2018.it/files/news/images/36335495032-1491322fcf-o.th_870x446.jpg" /&gt;&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Michal Parusinski - Personal Site</title><link href="https://michal.parusinski.me/" rel="alternate"></link><link href="https://michal.parusinski.me/feeds/all.atom.xml" rel="self"></link><id>https://michal.parusinski.me/</id><updated>2021-05-07T23:59:00+02:00</updated><entry><title>Pixel Pal (PART 6) : Early progress reports</title><link href="https://michal.parusinski.me/pixel-pal-progress.html" rel="alternate"></link><published>2021-05-07T23:59:00+02:00</published><updated>2021-05-07T23:59:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2021-05-07:/pixel-pal-progress.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to resample them by the desired factor,
+but the icons look pixelated.&lt;/p&gt;
+&lt;p&gt;Here is a link to a &lt;a class="reference external" href="https://michal.parusinski.me/pdfs/report_progress_20200507.pdf"&gt;PDF&lt;/a&gt; showing progress in the project.
+The PDF showcases various models performing data augmentation. The results are still blurry&lt;/p&gt;
+&lt;table border="1" class="docutils"&gt;
+&lt;colgroup&gt;
+&lt;col width="33%" /&gt;
+&lt;col width="35%" /&gt;
+&lt;col width="32%" /&gt;
+&lt;/colgroup&gt;
+&lt;thead valign="bottom"&gt;
+&lt;tr&gt;&lt;th class="head"&gt;32 x 32 pixel version of the icon&lt;/th&gt;
+&lt;th class="head"&gt;32x32 augmented with one of the models&lt;/th&gt;
+&lt;th class="head"&gt;64x64 pixels version of the icon&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td&gt;&lt;div class="first last figure"&gt;
+&lt;img alt="32 by 32 pixels version of the icon" src="https://michal.parusinski.me/images/pixelpal-example1-icon-32x32.png" /&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;td&gt;&lt;div class="first last figure"&gt;
+&lt;img alt="32 by 32 pixel augmented with neural network" src="https://michal.parusinski.me/images/pixelpal-example1-icon-augmented.png" /&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;td&gt;&lt;div class="first last figure"&gt;
+&lt;img alt="64 by 64 pixels version of the icon" src="https://michal.parusinski.me/images/pixelpal-example1-icon-64x64.png" /&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 5) : Data augmentation</title><link href="https://michal.parusinski.me/pixel-pal-data-augmentation.html" rel="alternate"></link><published>2020-04-25T14:18:00+02:00</published><updated>2020-04-25T14:18:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-04-25:/pixel-pal-data-augmentation.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to resample them by the desired factor,
+but the icons look pixelated. The goal of this project is to use deep learning
+to upsample small icons into icons for HiDPI screens.&lt;/p&gt;
+&lt;p&gt;This is the fifth article about this project. Here are the other four:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://michal.parusinski.me/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html"&gt;Part #1 Explaining the project&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://michal.parusinski.me/pixel-pal-gathering-data.html"&gt;Part #2 Building the dataset&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://michal.parusinski.me/pixel-pal-metrics.html"&gt;Part #3 Measuring model quality&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://michal.parusinski.me/pixel-pal-training.html"&gt;Part #4 Training models&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;One of the big challenges in deep learning is getting enough data. Neural networks can easily
+have millions of parameters and it requires large quantity of data to fine tune these
+parameters. Getting enough data is a challenge but what makes it worse that data itself
+is not sufficient, you need labelled data, and if possible quality labelled data.&lt;/p&gt;
+&lt;p&gt;When you don't have enough data you have a problem. There are many ways to tackle this issues:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Reducing the number of parameters to learn. One such way is to resuse the weights (parameters) from an already learned task and then only retrain parts of the model. This is a form of transfer learning. For instance VGG-16 is taught to do image classification for general public purpose. You can take this model and only retrain parts of it, assuming the other parts are good enough to generalise to your task.&lt;/li&gt;
+&lt;li&gt;Training parts of the model on the input data alone using autoencoders. This is fairly technical. The idea is that you build a model which compresses the input data and then decompress the data back with no loss of quality. Such a model is easier to train as you usually have lots of input data (but not necessarily output data). Then you use the trained autoencoder and you split in two : the compression network and the decompression network. You can then work with the compressed features coming out of the compression network as a replacement of the original input data. The benefit here is that the compressed features are smaller and as a result the network you need to train mapping the compressed features to the output data is smaller and thus simpler to teach.&lt;/li&gt;
+&lt;li&gt;Use data augmentation. This method consists of building new data from the currently existing one. This method is especially good as a way to produce neural network that generalise well. Through data augmentation you can tell what a neural network should not rely on. For instance one way to augment image data is to flip the image horizontally and vertically, this way you can easily quadruple the amount of data available and tell the network it should be not rely on the image on being a certain way like having shadows at the bottom.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;For the purpose of this project I will rely on data augmentation. My training data set is around 9 000 images, which
+is fairly good for networks having 10 of thousands of parameters. But through data augmentation my neural network
+can be better and by simply flipping horizontally and vertically I can easily get around 36 000 images. Thus allowing
+me to investigate deeper neural networks.&lt;/p&gt;
+&lt;table border="1" class="docutils"&gt;
+&lt;colgroup&gt;
+&lt;col width="11%" /&gt;
+&lt;col width="40%" /&gt;
+&lt;col width="49%" /&gt;
+&lt;/colgroup&gt;
+&lt;thead valign="bottom"&gt;
+&lt;tr&gt;&lt;th class="head"&gt;modification&lt;/th&gt;
+&lt;th class="head"&gt;no horizontal flip&lt;/th&gt;
+&lt;th class="head"&gt;horizontal flip&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td&gt;no vertical flip&lt;/td&gt;
+&lt;td&gt;&lt;div class="first last figure"&gt;
+&lt;img alt="original image" src="https://michal.parusinski.me/images/pixel-augmentation-original.png" /&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;td&gt;&lt;div class="first last figure"&gt;
+&lt;img alt="horizontal flip" src="https://michal.parusinski.me/images/pixel-augmentation-horizontal-flip.png" /&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;vertical flip&lt;/td&gt;
+&lt;td&gt;&lt;div class="first last figure"&gt;
+&lt;img alt="vertical flip" src="https://michal.parusinski.me/images/pixel-augmentation-vertical-flip.png" /&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;td&gt;&lt;div class="first last figure"&gt;
+&lt;img alt="horizontal and vertical flip" src="https://michal.parusinski.me/images/pixel-augmentation-horizontal-and-vertical-flip.png" /&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 4) : Training a model</title><link href="https://michal.parusinski.me/pixel-pal-training.html" rel="alternate"></link><published>2020-04-19T14:41:00+02:00</published><updated>2020-04-19T14:41:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-04-19:/pixel-pal-training.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to resample them by the desired factor,
+but the icons look pixelated. The goal of this project is to use deep learning
+to upsample small icons into icons for HiDPI screens.&lt;/p&gt;
+&lt;p&gt;This is the fourth article about this project. Here are the other three:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://michal.parusinski.me/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html"&gt;Part #1 Explaining the project&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://michal.parusinski.me/pixel-pal-gathering-data.html"&gt;Part #2 Building the dataset&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://michal.parusinski.me/pixel-pal-metrics.html"&gt;Part #3 Measuring model quality&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;In this part I will be training models. To build and train models I will use _Tensorflow: &lt;a class="reference external" href="https://www.tensorflow.org/"&gt;https://www.tensorflow.org/&lt;/a&gt; and _Keras: &lt;a class="reference external" href="https://keras.io/"&gt;https://keras.io/&lt;/a&gt;.
+Tensorflow and keras are at this point the industry standard for neural networks in Python. I won't explain how to train networks in
+Keras there is already a lot of documentation on how to do this. In this section I want to talk about a couple of important things to
+do when training to avoid wasting time (training well is time consuming):&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Output metrics during learning not just the loss to visualise the learning live.&lt;/li&gt;
+&lt;li&gt;Use a validation dataset to measure the progress of learning on a dataset which is different from the training dataset. The point is to  see the real progress of the learning and spot early issues like overfitting (or learning too fast).&lt;/li&gt;
+&lt;li&gt;Use a early stopping callback : This will check the progress of the validation metrics and stop the learning if the training algorithm is no longer learning. This helps avoid of leaving the training algorithm going on for nothing.&lt;/li&gt;
+&lt;li&gt;Use checkpoints : This will save the model regularly and if your training crashes you can restart from where you left.&lt;/li&gt;
+&lt;li&gt;Regularly save the output (as an image) of the neural network on fixed image inputs. This helps you visualise the progress of the learning.&lt;/li&gt;
+&lt;/ol&gt;
+</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 3) : Measuring model quality</title><link href="https://michal.parusinski.me/pixel-pal-metrics.html" rel="alternate"></link><published>2020-04-11T15:29:00+02:00</published><updated>2020-04-11T15:29:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-04-11:/pixel-pal-metrics.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to resample them by the desired factor,
+but the icons look pixelated.&lt;/p&gt;
+&lt;p&gt;This is the third article about this project. Here are the other two:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://michal.parusinski.me/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html"&gt;Part #1 Explaining the project&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://michal.parusinski.me/pixel-pal-gathering-data.html"&gt;Part #2 Building the dataset&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;In this part I will be talking about losses, metrics and targets. Before going on about training
+deep learning networks to up sample intelligently icon images, we need
+ways to measure if our models are doing a good job. Especially we need
+to know if a model does better than simply pixel doubling.&lt;/p&gt;
+&lt;table border="1" class="docutils"&gt;
+&lt;colgroup&gt;
+&lt;col width="50%" /&gt;
+&lt;col width="50%" /&gt;
+&lt;/colgroup&gt;
+&lt;thead valign="bottom"&gt;
+&lt;tr&gt;&lt;th class="head"&gt;32x32 pixels version of the icon up sampled (pixel doubling)&lt;/th&gt;
+&lt;th class="head"&gt;64x64 pixels version of the icon&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td&gt;&lt;div class="first last figure"&gt;
+&lt;img alt="32 by 32 pixels version of the icon" src="https://michal.parusinski.me/images/pixelpal-example1-icon-32x32.png" /&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;td&gt;&lt;div class="first last figure"&gt;
+&lt;img alt="64 by 64 pixels version of the icon" src="https://michal.parusinski.me/images/pixelpal-example1-icon-64x64.png" /&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The images above show side by side the same vector icon but the left icon was rasterized as a 32 by 32 pixels image and
+the right icon was rasterized as a 64 by 64 pixels. Furthermore the 32 by 32 pixels was up sampled (simple pixel doubling)&lt;/p&gt;
+&lt;p&gt;As you can see the two images are similar but not identical. We need some way to measure how similar the two are.
+Simple counting the number of identical pixels is problematic. Because two pixels aren't identical does not mean they are
+not similar. Counting the number of identical pixels as a metric will probably be too critical. So for this project
+I will rely on two metrics suggested in the following article : &lt;a class="reference external" href="https://medium.com/beyondminds/an-introduction-to-super-resolution-using-deep-learning-f60aff9a499d"&gt;An Introduction to Super Resolution using Deep Learning&lt;/a&gt;.
+The metrics in question are the following :&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio"&gt;Peak Signal to Noise Ratio (PSNR)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://en.wikipedia.org/wiki/Structural_similarity"&gt;Structural Similarity (SSIM)&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;For information the metrics for the pair of images above are :&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Peak Signal to Noise Ratio: 16.913143157958984&lt;/li&gt;
+&lt;li&gt;Structural Similarity     : 0.8310688138008118&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Measuring how similar two images are is already a good element. It provides us an idea of how well
+our models are working. However there are some limits to metrics:&lt;/p&gt;
+&lt;p&gt;1. Metrics are not always differentiable. However training neural networks require a way to measure
+the distance between the wanted output and the output the network is producing. This is where &lt;em&gt;losses&lt;/em&gt;
+come into play.
+2. You need to have some good baselines. In other words the metric in itself is not useful, you need
+to have an objectif. Something like do better than simple pixel doubling or bicubic interpolation.
+3. Metrics will be sensitive to the data you use. You may land on images that are easy to upsample
+and the metric may be deceptively good. This is why you should compute the metrics on the entire
+dataset and do some statistics on it.
+4. Metrics are not perfect. In the end we want something to be visually pleasing not something that
+maximise a mathematical function. This is why you should also visually look at the result of the
+neural networks.&lt;/p&gt;
+&lt;p&gt;To train the network will use a loss function. Loss function are ways to measure the distance
+between the ideal output and the current output. In our case we will use mean squared error as
+it is simple and fits our purpose. In general always make sure you are using an appropriate
+loss function.&lt;/p&gt;
+&lt;p&gt;In terms of baselines my objectif will be to perform better thant straight upsampling via
+nearest and bilinear interpolation.&lt;/p&gt;
+</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 2) : Gathering data for Pixel Pal</title><link href="https://michal.parusinski.me/pixel-pal-gathering-data.html" rel="alternate"></link><published>2020-02-15T10:24:00+01:00</published><updated>2020-02-15T10:24:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-02-15:/pixel-pal-gathering-data.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to resample them by the desired factor,
+but the icons look pixelated. The goal of this project is to use deep learning
+to upsample small icons into icons for HiDPI screens.&lt;/p&gt;
+&lt;p&gt;To solve this I will use artificial intelligence and more precisely deep
+learning. The idea is to teach a neural network how to upsample icons in a
+manner that takes into account the shape of the underlying icon. In other
+words the idea is to do better than increasing the number of pixels. However
+to teach a neural network you need lots of data. In our case the data is a
+collection of icons for which we have both low resolution and HiDPI resolution
+versions.&lt;/p&gt;
+&lt;p&gt;Thankfully due to open source a lot of icons themes are available for which we
+have both. There are some requirements:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;The icon theme's licence needs to allow use theme to make a derivative product. To be safe I will stick to open source licences.&lt;/li&gt;
+&lt;li&gt;There needs to be enough data to teach a network. However I will intentionally not get too much data to explore data augmentation techniques.&lt;/li&gt;
+&lt;li&gt;Ability to split data well in various sets: training, validation, test and real world data&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Let me explain the splitting of the data a little more by using an analogy.
+Training a network is a bit like taking a course at university. You get
+a lot of material through the course and at the end of the course there is
+a final exam. You are not allowed to see the final exam.&lt;/p&gt;
+&lt;p&gt;The course material is your real training data, and the final exam is test data.
+The point of test data is to evaluate the real performance of the network. But
+the test data is part of the course. I have another data set, a real world data
+which is there for me to use the network a first time on a real task; in other
+words none course material. The real world data will correspond to some old
+icon sets (OS2, CDE).&lt;/p&gt;
+&lt;p&gt;Furthermore real training data will be split. To use our analogy to learn the
+course and pass the final exam with a good grade you do practice tests. This
+is done by splitting our real training data into a smaller training data set
+and a validation data set.&lt;/p&gt;
+&lt;p&gt;So to recap we have :&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Training data : Use for training the network&lt;/li&gt;
+&lt;li&gt;Validation data : Use for evaluating the training&lt;/li&gt;
+&lt;li&gt;Test data : Use for evaluating the performance of the network&lt;/li&gt;
+&lt;li&gt;Real world data : To test the use of the software on an actual use case.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Let me explain a bit more about the use of real world data.
+I have chosen two really old icon themes for which
+no svg formats are available. I can't learn to upscale those images
+but I would be very much interested in doing so. This data set allows me
+to judge whether the project has been a success in a qualitative way.&lt;/p&gt;
+&lt;p&gt;Because no svg
+files are available an official metric can't be calculated,
+which is why we need a testing data set with svg icons.
+Using old icons with no svg file format will showcase
+whether using deep learning is actually useful for reviving
+old icon sets. The old icon themes are the official
+&lt;a class="reference external" href="https://en.wikipedia.org/wiki/Common_Desktop_Environment"&gt;CDE&lt;/a&gt;
+icon theme and the icon theme from &lt;a class="reference external" href="https://en.wikipedia.org/wiki/OS/2"&gt;OS/2&lt;/a&gt;.&lt;/p&gt;
+</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 1) : Adapting old icon themes for HiDPI screens</title><link href="https://michal.parusinski.me/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html" rel="alternate"></link><published>2020-01-27T18:46:00+01:00</published><updated>2020-01-27T18:46:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-01-27:/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html</id><summary type="html">&lt;p&gt;I am starting a new open source project. The goal of this project
+is to solve a recurring issue with HiDPI support. The issues is that
+many old software rely on icon themes in raster format which are not suitable for HiDPI
+screens. To be more specific various software projects …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I am starting a new open source project. The goal of this project
+is to solve a recurring issue with HiDPI support. The issues is that
+many old software rely on icon themes in raster format which are not suitable for HiDPI
+screens. To be more specific various software projects rely on icons which are
+only in raster formats (e.g. JPG, PNG, ...) but not in vector format (e.g. SVG)
+and are only available in low resolutions formats (e.g. 32x32) which is fine
+for non HiDPI screens but there is no equivalent for high resolution formats
+required by HiDPI (e.g. 64x64). The naive solution is to simply is to do
+pixel doubling, but this results in an ugly pixelated look. My new project
+will use some tools from artificial intelligence to do better.&lt;/p&gt;
+&lt;p&gt;The way to solve this issue using artificial intelligence is to use super
+resolution deep learning &lt;a class="reference external" href="https://arxiv.org/pdf/1808.03344.pdf"&gt;models&lt;/a&gt;.
+These deep learning neural networks rely on images not being random but
+representations of real things where there are subtle statistical relations
+between the pixels of an image in practice. A simple example of how pixels
+can be related to one another is that often there are lines and curves in
+images.&lt;/p&gt;
+&lt;p&gt;A series of blog posts will detail the progress of the project.&lt;/p&gt;
+</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Snaps, Flatpaks, AppImage which one is ahead?</title><link href="https://michal.parusinski.me/snaps-flatpaks-appimages-which-one-is-ahead.html" rel="alternate"></link><published>2019-01-13T13:28:00+01:00</published><updated>2019-01-13T13:28:00+01:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2019-01-13:/snaps-flatpaks-appimages-which-one-is-ahead.html</id><summary type="html">&lt;p&gt;On the Linux desktop there is a push for a universal packaging format.
+Currently there are three main contenders: Snaps packages,
+promoted by Canonical and Ubuntu; Flatpak, promoted by the Gnome Foundation although
+not a Gnome project; and AppImage, a community-led project. Even though the three
+packaging formats differ technically …&lt;/p&gt;</summary><content type="html">&lt;p&gt;On the Linux desktop there is a push for a universal packaging format.
+Currently there are three main contenders: Snaps packages,
+promoted by Canonical and Ubuntu; Flatpak, promoted by the Gnome Foundation although
+not a Gnome project; and AppImage, a community-led project. Even though the three
+packaging formats differ technically they share some goals:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;Distribution agnostic packaging&lt;/strong&gt;: The packages are meant to run on any Linux
+distribution (Ubuntu, Debian, Fedora, OpenSUSE, ArchLinux, ...). For developers this means
+they can package once and run the software anywhere. This is usually achieved by bundling
+most (sometimes all) software dependencies into a single package. Snap and FlatPaks do, however
+support some shared runtimes.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Upstream packaging&lt;/strong&gt;: The packages are meant to come directly from the developers of the
+project instead of having a maintainers for each software for each distribution. With upstream
+packaging it is possible to get the latest version of the software as the developers intended.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I will not comment on whether universal packaging is good or not. I am interested in knowing
+which packaging format is &amp;quot;winning&amp;quot;. According to many blogs and social media posts on the internet
+Snaps is way ahead of Flatpaks or AppImages. Frequently people will claim there are thousands of Snaps
+but Flatpaks and AppImages are merely in the hundreds.&lt;/p&gt;
+&lt;p&gt;To be more precise, Canonical states there are &lt;a class="reference external" href="https://blog.ubuntu.com/2018/10/18/infographic-snaps-in-numbers"&gt;4100&lt;/a&gt;
+snap packages currently available. Whereas according to &lt;a class="reference external" href="https://flathub.org/apps/category/All"&gt;FlatHub there are 480 FlatPaks&lt;/a&gt;.
+Finally, according to &lt;a class="reference external" href="https://appimage.github.io/apps/"&gt;AppImageHug there are 634 AppImages&lt;/a&gt;.
+Many websites on the internet cite these statistics (albeit slightly now out of date). For
+instance, &lt;a class="reference external" href="https://verummeum.com/portable-package-formats/"&gt;see Verummeum&lt;/a&gt;.&lt;/p&gt;
+&lt;table border="1" class="docutils"&gt;
+&lt;colgroup&gt;
+&lt;col width="36%" /&gt;
+&lt;col width="31%" /&gt;
+&lt;col width="33%" /&gt;
+&lt;/colgroup&gt;
+&lt;thead valign="bottom"&gt;
+&lt;tr&gt;&lt;th class="head"&gt;Snap packages&lt;/th&gt;
+&lt;th class="head"&gt;FlatPaks&lt;/th&gt;
+&lt;th class="head"&gt;AppImages&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td&gt;&amp;lt; 4100 snaps&lt;/td&gt;
+&lt;td&gt;480 flatpaks&lt;/td&gt;
+&lt;td&gt;634 appimages&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Is this true? Is the Snap package format ahead of Flatpak and AppImage? The numbers may be correct but the conclusion
+that Snaps are ahead is not. Relying on those numbers to claim Snaps are taking over is misleading. We aren't comparing
+apple to apples. The number of packages for each format is counted differently.&lt;/p&gt;
+&lt;p&gt;Furthermore having more packages doesn't necessarily mean having the best software selection
+available. The numbers alone tell us nothing about the kind of software distributed as Snaps,
+FlatPaks or AppImages.&lt;/p&gt;
+&lt;p&gt;So how popular is each? Well, to answer this question let's dive in an analysis of each format and the software
+selection available.&lt;/p&gt;
+&lt;div class="section" id="comparing-snap-flatpak-and-appimage"&gt;
+&lt;h2&gt;Comparing Snap, Flatpak and AppImage&lt;/h2&gt;
+&lt;p&gt;Snaps are not distributed in the same way Flatpaks are, and AppImage's distribution method differs even more
+so. Snaps are only available to the general public in one store. Meanwhile Flatpaks are distributed
+in many different stores, FlatHub being one of those stores but the soul one. AppImage
+are not even distributed in a store. AppImageHub is merely an attempt to list all applications
+currently available as AppImages. It goes without saying the number of AppImage and Flatpaks could
+easily be significantly underestimated.&lt;/p&gt;
+&lt;p&gt;Bear in mind there is another difference which should be taken into account before comparing the numbers
+given above. AppImages are intended as a packaging format
+for end-user applications on the Desktop and the Server, but not for system level components like
+the Gnome Desktop or systemd. Meanwhile Flatpaks are intended mainly for the Desktop and
+can offer some system level runtimes like the Gnome Desktop, however, Flatpaks are not used to distribute
+server applications.
+Finally Snaps have the broader scope, being intended
+for Server and the Desktop; and for both system and end-user software. Naturally one should expect
+a higher number of Snaps packages.&lt;/p&gt;
+&lt;p&gt;However most end-user Linux applications should be distributable as Snaps, Flatpaks or AppImages.
+By comparing the type of software being distributed as each, we will get a better picture of how successful
+each of these formats are.&lt;/p&gt;
+&lt;div class="section" id="differences-in-software-selection"&gt;
+&lt;h3&gt;Differences in software selection&lt;/h3&gt;
+&lt;p&gt;By searching the stores and hubs, one can reveal a lot about each format and their success.&lt;/p&gt;
+&lt;div class="section" id="snap-store"&gt;
+&lt;h4&gt;Snap store&lt;/h4&gt;
+&lt;p&gt;First I search the &lt;a class="reference external" href="https://snapcraft.io/store"&gt;Snap store&lt;/a&gt;. But because the search engine is a bit limited
+I also relied on the alternative &lt;a class="reference external" href="https://uappexplorer.com/snaps"&gt;uAppExplorer&lt;/a&gt;. However it is hard to tell
+how well the two match because uAppExplorer claims there are 2007 applications
+while Canonical claim there are 4100 applications as snaps. Regardless here is what I found:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;A huge number of Snaps are distributed for non-Intel/AMD architecture. For instance, for
+ARM there are 1176 out of 2007 packages (58.6%). Similarly we have 244 out of 2007
+for IBM's System Z aka s390x (12.2%); and 273 out of 2007 for PowerPC (13.6%). In total this gives us
+&lt;strong&gt;84.3%&lt;/strong&gt; that are not distributed on Intel/AMD architecture. Not exactly the typical architectures
+used by a typical Linux desktop user. This has implications when considering the success of Snap.
+On one hand Snap is cross platform and widely available, which is a plus compared to Flatpak and
+AppImage. On the other hand this put the number 4100 (or 2007 according to uAppExplorer) into
+perspective because FlatHub and AppImageHub do not differentiate between architectures. When comparing Intel/AMD applications,
+we get about 600 Snaps against 480 Flatpaks and 634 AppImages (which put AppImage in the lead).&lt;/li&gt;
+&lt;li&gt;There is a huge number of &lt;em&gt;Playground&lt;/em&gt; applications on &lt;strong&gt;Snapcraft.io&lt;/strong&gt;, who serve no end-user purpose.
+Those applications are a result of developers learning about Snaps. Let me give some examples.
+If one searches on &lt;a class="reference external" href="https://snapcraft.io/store"&gt;Snap store&lt;/a&gt; the keyword &lt;em&gt;Hello&lt;/em&gt; one finds nearly &lt;strong&gt;300&lt;/strong&gt;
+&amp;quot;Hello&amp;quot; applications. Alternatively, if one searches for &lt;em&gt;Test&lt;/em&gt; one finds
+at least &lt;strong&gt;100&lt;/strong&gt; &amp;quot;Test&amp;quot; applications. There might be more applications on that kind. However this means
+that by a conservative estimate about &lt;strong&gt;10%&lt;/strong&gt; of Snaps aren't real end user applications. This means
+that Snaps are popular with developers as they are trying them out (Flatpak or AppImage could easily
+be just as popular we just don't know) but the number of proper Snaps packages is closer to &lt;strong&gt;550&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;If one adds up the software made available on the &lt;a class="reference external" href="https://snapcraft.io/store"&gt;Snap store&lt;/a&gt; in the different suggested sections
+(namely &lt;em&gt;Dev&lt;/em&gt;, &lt;em&gt;Games&lt;/em&gt;, &lt;em&gt;Social&lt;/em&gt;, &lt;em&gt;Crypto&lt;/em&gt;, &lt;em&gt;Video&lt;/em&gt;, &lt;em&gt;Music&lt;/em&gt;, &lt;em&gt;Productivity&lt;/em&gt;, &lt;em&gt;Utilities&lt;/em&gt;, &lt;em&gt;Graphics&lt;/em&gt; and &lt;em&gt;Server&lt;/em&gt;),
+I found there are about &lt;strong&gt;400&lt;/strong&gt; end-user applications, putting Snap behind both
+FlatPak and AppImage. However probably many applications fit in none of the offered categories which would
+mean 400 underestimates the number of end-user applications packaged as snaps.&lt;/li&gt;
+&lt;li&gt;Duplicates applications are present in the store. For instance, &lt;em&gt;Stellarium&lt;/em&gt;, &lt;em&gt;Brackets&lt;/em&gt;, &lt;em&gt;rsync&lt;/em&gt;
+and &lt;em&gt;tmux&lt;/em&gt; are duplicated. Unfortunately I have no easy way to count the number of duplicates present, but
+they do not appear to be frequent.&lt;/li&gt;
+&lt;li&gt;Snaps are used to distribute system level components. The runtimes for Gnome, KDE Plasma are distributed as
+Snaps, so are Docker, the Linux kernel, MySQL, and many more. This is quite unique for Snaps although
+some runtimes are distributed through Flatpak. Whether this is a gauge of success or not of Snaps as a packaging
+format is a matter of opinion. But at least it provides flexibility for developers and hence in principle
+fewer barriers preventing adoption of the Snap packaging format.&lt;/li&gt;
+&lt;li&gt;Snaps are quite successful with big corporations like Microsoft or Jetbrains officially adopting Snaps as
+their preferred distribution method.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Depending on how one counts an application there could be as high as 4100 snap packages or as low as 400. I think
+when compared with Flatpak or AppImage we should count around 600 snaps.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="flathub"&gt;
+&lt;h4&gt;FlatHub&lt;/h4&gt;
+&lt;p&gt;There is less to say about FlatHub:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;FlatHub does not provide information about the architecture. However each application is counted once even if it supports
+multiple architectures. There are numerous ARM and Intel/AMD applications but I did not find any PowerPC applications or
+System Z applications using FlatHub's GitHub page. I do not have a good way to count the number of ARM and Intel/AMD Flatpaks, but
+it is sound to assume there are more Intel/AMD applications than ARM applications. Flatpak isn't as successful as Snap when
+it comes to cross-platform support, but it shouldn't be a surprise as Flatpak is more desktop oriented and PowerPC and System Z
+aren't exactly typical Linux desktop architectures.&lt;/li&gt;
+&lt;li&gt;I did not find any &amp;quot;Hello&amp;quot; application and only found 4 &amp;quot;Test&amp;quot; applications. Overall FlatHub appears to be curated meaning
+all or nearly all software on FlatHub is legitimate end-user applications.&lt;/li&gt;
+&lt;li&gt;When, summing up, the number of software available in each category I found at the time 527, which is slightly higher
+than the claimed at the time number of applications 479 (meaning some software is in multiple categories). It is worthy to note
+there are &lt;strong&gt;132&lt;/strong&gt; games against 60 on Snapcraft and 40 on AppImageHub. Flatpak appears to be quite successful with games.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="appimagehub"&gt;
+&lt;h4&gt;AppImageHub&lt;/h4&gt;
+&lt;p&gt;Similarly there is less to say about AppImageHub&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Concerning architecture support AppImages are known to work on Intel/AMD and ARM. In some cases one needs to compile the
+AppImage tooling. One example of an application available on 32-bit Intel, 64-bit AMD and ARM is MuseScore. I found no
+cases of AppImage running on PowerPC or System Z.&lt;/li&gt;
+&lt;li&gt;Again like with FlatHub I found no &amp;quot;Hello&amp;quot; and no &amp;quot;Test&amp;quot; on AppImageHub.&lt;/li&gt;
+&lt;li&gt;The software catalog on AppImageHub is very different from Snapcraft or FlatHub. It
+appears that AppImage is quite successful with QT/KDE application and Electron applications.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The problem with AppImageHub is that it is an effort to list the AppImages in the wild. It goes
+without saying that there many applications which are not on the list (for instance OpenRA and everDO).
+The number of AppImage could be way bigger, meaning AppImage being way ahead of
+Snaps and FlatPak.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="measuring-success-with-existing-popular-applications"&gt;
+&lt;h2&gt;Measuring success with existing popular applications&lt;/h2&gt;
+&lt;p&gt;Instead of comparing the number of applications distributed as Snaps, FlatPaks or AppImage as a
+measure of success, let's see how many existing Linux software has moved to Snap, FlatPak or AppImage.
+It should give us an idea of how successful these new packaging formats are with old open source projects.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Disclaimer&lt;/strong&gt;: Now I must be honest, answering this question is difficult and easily subjective.
+I tried being impartial and accurate but you should take everything I state with a grain of salt.
+Try researching on your own.&lt;/p&gt;
+&lt;p&gt;Because counting on my own whether each piece of software on Linux is or not available as a Snaps, as a
+FlatPak or as an AppImage is time consuming, I decided to take a subset of populare Linux applications.
+To avoid putting personal bias in the list I choose the set of software listed on &lt;a class="reference external" href="https://www.fossmint.com/most-used-linux-applications/"&gt;FossMint&lt;/a&gt;.
+I excluded &lt;em&gt;Google Drive&lt;/em&gt; and &lt;em&gt;Evernote&lt;/em&gt; as they are not official packaged for Linux. This should give
+us a rough idea of the percentage of applications moving to universal packaging.&lt;/p&gt;
+&lt;p&gt;Using this list, I searched for the following:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Are the projects officially adopting AppImage, FlatPak or Snaps as a means of distribution? In
+each case I checked the project's official website.&lt;/li&gt;
+&lt;li&gt;Is the software distributed either as AppImage, FlatPak or Snaps? Regardless whether the project
+official supports any of the format.&lt;/li&gt;
+&lt;li&gt;When distributed as an AppImage, FlatPak or Snaps, is the latest version being shipped?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Using the list, I obtained the following statistics:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;About &lt;strong&gt;14%&lt;/strong&gt; of projects official distribute their software either as AppImage, FlatPak or Snaps.
+Meaning that adoption is slow (the youngest of the three is 4 years old). Of the &lt;strong&gt;14% ~ 10&lt;/strong&gt; of applications which moved to universal packaging,
+&lt;strong&gt;40% ~ 4&lt;/strong&gt; have adopted FlatPak, &lt;strong&gt;40% ~ 4&lt;/strong&gt; have adopted AppImage and &lt;strong&gt;20% ~ 2&lt;/strong&gt; have adopted Snaps.
+However because the sample of applications officially distributed AppImages, FlatPaks and Snaps are so small,
+one should not conclude yet that FlatPak or AppImage is being more successful.&lt;/li&gt;
+&lt;li&gt;Concerning whether software is being made available as Snaps, Flatpaks or AppImage,
+AppImage appears to be last with about &lt;strong&gt;37%&lt;/strong&gt;. Snaps and FlatPak are ahead with respectively about &lt;strong&gt;46%&lt;/strong&gt; and &lt;strong&gt;47%&lt;/strong&gt; adoption rate.
+This discrepancy can be explained by the AppImage project's insistence on &lt;a class="reference external" href="https://docs.appimage.org/packaging-guide/upstream.html"&gt;upstream packaging&lt;/a&gt;.`.
+Overall this means Snaps and FlatPaks are being more successful but only because volunteers (not
+officially associated with open source software projects)
+package popular Linux software as Snaps and FlatPaks.&lt;/li&gt;
+&lt;li&gt;Concerning whether we have the latest version packaged as either format we see a big lead for Snaps.
+About &lt;strong&gt;60%&lt;/strong&gt; of Snaps provided ship the latest version, &lt;strong&gt;53%&lt;/strong&gt; of FlatPaks provided ship the
+latest version and only &lt;strong&gt;37.5%&lt;/strong&gt; of AppImages ship the latest version. AppImage has such a low
+number because most AppImages have been created by &lt;em&gt;probonopd&lt;/em&gt; one of the main developers behind
+the AppImage project, and he has not been updating them for more than a year.
+The numbers are healthier for Snaps and FlatPak but it is still far from &lt;strong&gt;100%&lt;/strong&gt;. Many volunteers
+who originally packaged software as Snaps, Flatpaks or AppImages have stopped updating the software
+meaning a lot of the software is out of date.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Based on this list I don't think one can claim Snaps is way ahead if anything it appears to be strongly
+in competition with FlatPak. One should not conclude AppImage is losing steam either, AppImage is
+doing well with &lt;strong&gt;634&lt;/strong&gt; applications distributed as AppImage according to AppImageHub
+and many developers choosing AppImage as the official format for Linux. It is striking that a lot of
+software is distributed today as Snaps, as Flatpaks and as AppImage by enthusiasts,
+and not because projects are officially adopting either formats.
+This means will still need to rely on &lt;strong&gt;maintainers&lt;/strong&gt; to distribute and maintain software as Snaps,
+Flatpak or AppImage.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="what-holding-back-either-snaps-flatpak-or-appimage"&gt;
+&lt;h2&gt;What holding back either Snaps, FlatPak or AppImage?&lt;/h2&gt;
+&lt;p&gt;What stops developers from using Snaps, FlatPaks or AppImages?
+I searched various forums and GitHub for answers. Here are some of the main reasons:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;Lack of time, resources or motivition:&lt;/strong&gt; This is one of the main reasons for not seeing a package format being adopted. See for instance the following links &lt;a class="reference external" href="https://github.com/albertlauncher/albert/issues/407"&gt;1&lt;/a&gt;, &lt;a class="reference external" href="https://sourceforge.net/p/freecol/improvement-requests/218/"&gt;2&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/freeorion/freeorion/issues/1236"&gt;3&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/f4exb/sdrangel/issues/113"&gt;4&lt;/a&gt;, ... . This should not be surprising because most software is developed by hobbyists and they don't necessarily have the time to learn/build for a new packaging format.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Not even packaged:&lt;/strong&gt; I was surprised to see lots of software projects not even packaging on Linux to begin with (for instance &lt;em&gt;rsync&lt;/em&gt; and &lt;em&gt;tmux&lt;/em&gt;). These projects just assume &lt;strong&gt;maintainers&lt;/strong&gt; will package&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Software no longer developed&lt;/strong&gt;: Lots of software are no longer being developed. For instance, &lt;em&gt;Frozen Bubble&lt;/em&gt; was last updated in &lt;strong&gt;2010&lt;/strong&gt; whilst &lt;em&gt;Banshee&lt;/em&gt; was last updated in &lt;strong&gt;2014&lt;/strong&gt;. It is hard to expect projects with no developers to magically create a Snaps, FlatPaks or AppImages.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Lack of agreement over which format to use&lt;/strong&gt;: This is not frequent but fairly telling. If Snaps, FlatPak or AppImage are supposed to be the &lt;strong&gt;Universal Package Format&lt;/strong&gt; how come we have &lt;strong&gt;3&lt;/strong&gt; of them. &lt;em&gt;RStudio&lt;/em&gt; &lt;a class="reference external" href="https://github.com/rstudio/rstudio/issues/3079"&gt;could not agree&lt;/a&gt; over which format to use.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Lots of people in the Linux community criticise Snaps, FlatPak and AppImage on technical ground and disagree with the philosophy of universal packaging, but ironically this didn't show up much as a reason not to support Snaps, FlatPak or AppImage. I think the people complaining about universal packaging are usually not the software developers, I think criticism comes more from system administrators, Linux distribution developers/maintainers and users who choose Linux for its security.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="conclusion"&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;At first it seems Snaps are the clear winner but the number 4100 is generous. It counts many
+applications people won't install and it seems to count Snaps for different architecture
+separately. A fairer comparison would put all three on par. Overall traditional Linux software appears
+reluctant to adopt Snap/Flatpak/AppImage.&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="Linux"></category></entry><entry><title>Made it to the front page of EGC 2018</title><link href="https://michal.parusinski.me/made-it-to-the-front-page-of-egc-2018.html" rel="alternate"></link><published>2018-05-19T17:03:00+02:00</published><updated>2018-05-19T17:03:00+02:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2018-05-19:/made-it-to-the-front-page-of-egc-2018.html</id><content type="html">&lt;p&gt;&lt;img alt="image0" src="https://egc2018.it/files/news/images/36335495032-1491322fcf-o.th_870x446.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;Apparently I made to the front page of the European Go Congree 2018
 (Pisa) web page.&lt;/p&gt;
 &lt;p&gt;&lt;a class="reference external" href="https://egc2018.it/en/news/view/id-32.html"&gt;EGC's article&lt;/a&gt;&lt;/p&gt;
-</summary><content type="html">&lt;p&gt;&lt;img alt="image0" src="https://egc2018.it/files/news/images/36335495032-1491322fcf-o.th_870x446.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;Apparently I made to the front page of the European Go Congree 2018
-(Pisa) web page.&lt;/p&gt;
-&lt;p&gt;&lt;a class="reference external" href="https://egc2018.it/en/news/view/id-32.html"&gt;EGC's article&lt;/a&gt;&lt;/p&gt;
-</content></entry><entry><title>What to learn from the Cambridge Analytica story</title><link href="https://mparusinski.github.io/what-to-learn-from-the-cambridge-analytica-story.html" rel="alternate"></link><published>2018-03-30T12:14:00+02:00</published><updated>2018-03-30T12:14:00+02:00</updated><author><name>michalparusinski</name></author><id>tag:mparusinski.github.io,2018-03-30:/what-to-learn-from-the-cambridge-analytica-story.html</id><summary type="html">&lt;p&gt;If you are using Facebook and intend to keep using it the Cambridge
+</content><category term="Non classé"></category></entry><entry><title>What to learn from the Cambridge Analytica story</title><link href="https://michal.parusinski.me/what-to-learn-from-the-cambridge-analytica-story.html" rel="alternate"></link><published>2018-03-30T12:14:00+02:00</published><updated>2018-03-30T12:14:00+02:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2018-03-30:/what-to-learn-from-the-cambridge-analytica-story.html</id><summary type="html">&lt;p&gt;If you are using Facebook and intend to keep using it the Cambridge
 Analytica
 &lt;a class="reference external" href="https://arstechnica.com/tech-policy/2018/03/facebooks-cambridge-analytica-scandal-explained/"&gt;story&lt;/a&gt;
 can teach a few good practices to protect your privacy. Now of course
@@ -63,7 +567,7 @@ computer). To summarise it is far harder to restrict access to your
 content on your Facebook than you might think, so it might be wise to
 treat it as public discourse.&lt;/li&gt;
 &lt;/ol&gt;
-</content></entry><entry><title>New blog | Nouveau blog</title><link href="https://mparusinski.github.io/bonjour-tout-le-monde.html" rel="alternate"></link><published>2018-01-06T18:37:00+01:00</published><updated>2018-01-06T18:37:00+01:00</updated><author><name>michalparusinski</name></author><id>tag:mparusinski.github.io,2018-01-06:/bonjour-tout-le-monde.html</id><summary type="html">&lt;p&gt;Hello, for 2018 I am restarting my blog from scratch. In part because in
+</content><category term="Non classé"></category></entry><entry><title>New blog | Nouveau blog</title><link href="https://michal.parusinski.me/bonjour-tout-le-monde.html" rel="alternate"></link><published>2018-01-06T18:37:00+01:00</published><updated>2018-01-06T18:37:00+01:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2018-01-06:/bonjour-tout-le-monde.html</id><summary type="html">&lt;p&gt;Hello, for 2018 I am restarting my blog from scratch. In part because in
 the transition from Wordpress to Pelican and because of my own silly
 mistakes I lost a lot of content.&lt;/p&gt;
 &lt;p&gt;Bonjour, pour 2018 je recommence mon blog à partir de zéro. En partie
@@ -73,4 +577,4 @@ mistakes I lost a lot of content.&lt;/p&gt;
 &lt;p&gt;Bonjour, pour 2018 je recommence mon blog à partir de zéro. En partie
 parce que durant la transition de Wordpress à Pelican et à cause de mes
 propres stupides erreures j'ai perdu du contenu.&lt;/p&gt;
-</content></entry></feed>
+</content><category term="Non classé"></category></entry></feed>

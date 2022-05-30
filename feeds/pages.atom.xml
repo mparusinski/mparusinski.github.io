@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Michal Parusinski - Personal Site - pages</title><link href="https://mparusinski.github.io/" rel="alternate"></link><link href="https://mparusinski.github.io/feeds/pages.atom.xml" rel="self"></link><id>https://mparusinski.github.io/</id><updated>2018-01-10T16:59:00+01:00</updated><entry><title>Publications</title><link href="https://mparusinski.github.io/publications.html" rel="alternate"></link><published>2018-01-10T16:59:00+01:00</published><updated>2018-01-10T16:59:00+01:00</updated><author><name>michalparusinski</name></author><id>tag:mparusinski.github.io,2018-01-10:/publications.html</id><content type="html">&lt;div class="section" id="scientific-publications"&gt;
+&lt;h2&gt;Scientific publications&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://perso.uclouvain.be/fstandae/PUBLIS/134.pdf"&gt;Strong PUFs and their (Physical) Unpredictability - A Case Study
+with Power PUFs
+-&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="patents"&gt;
+&lt;h2&gt;Patents&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="http://patft.uspto.gov/netacgi/nph-Parser?Sect2=PTO1&amp;amp;Sect2=HITOFF&amp;amp;p=1&amp;amp;u=/netahtml/PTO/search-bool.html&amp;amp;r=1&amp;amp;f=G&amp;amp;l=50&amp;amp;d=PALL&amp;amp;RefSrch=yes&amp;amp;Query=PN/9582263"&gt;Computer update scheduling based on
+biometrics&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</content><category term="pages"></category></entry><entry><title>A propos de moi</title><link href="https://mparusinski.github.io/a-propos-de-moi.html" rel="alternate"></link><published>2018-01-07T10:40:00+01:00</published><updated>2018-01-07T10:40:00+01:00</updated><author><name>michalparusinski</name></author><id>tag:mparusinski.github.io,2018-01-07:/a-propos-de-moi.html</id><summary type="html">&lt;p&gt;Michal Parusinski est un ingénieur logiciel, mathématicien et un leadeur
+technique. Après avoir fini ses études à Imperial College London, il a
+fait de la recherche au Crypto groupe de l'Université Catholique de
+Louvain, il a travaillé sur des logiciels de Business Analytics à IBM et
+comme leadeur technique à …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Michal Parusinski est un ingénieur logiciel, mathématicien et un leadeur
+technique. Après avoir fini ses études à Imperial College London, il a
+fait de la recherche au Crypto groupe de l'Université Catholique de
+Louvain, il a travaillé sur des logiciels de Business Analytics à IBM et
+comme leadeur technique à Amadeus à Sophia Antipolis. Actuellement il
+travaille comme ingénieur de recherche au SERTIT ICube à l'Université de
+Strasbourg. Il aime aussi jouer au go, pratiquer des arts martiaux et
+apprendre des langues.&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference external" href="https://mparusinski.github.io/pdfs/cv_2021_fr.pdf"&gt;Cirriculum Vitae
+[FRANCAIS]&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference external" href="https://keys.openpgp.org/search?q=michal%40parusinski.me"&gt;Clé PGP 88C10C6C&lt;/a&gt;&lt;/p&gt;
+</content><category term="pages"></category></entry><entry><title>About Me</title><link href="https://mparusinski.github.io/about-me.html" rel="alternate"></link><published>2018-01-07T10:09:00+01:00</published><updated>2018-01-07T10:09:00+01:00</updated><author><name>michalparusinski</name></author><id>tag:mparusinski.github.io,2018-01-07:/about-me.html</id><summary type="html">&lt;p&gt;Michal Parusinski is a software developer, mathematician and technical
+leader. After finishing his studies at Imperial College London, he did
+research work at Université Catholique de Louvain's Crypto group, worked
+at IBM on Business Analytics software and as technical leader at Amadeus
+in Sophia Antipolis. He is currently working as …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Michal Parusinski is a software developer, mathematician and technical
+leader. After finishing his studies at Imperial College London, he did
+research work at Université Catholique de Louvain's Crypto group, worked
+at IBM on Business Analytics software and as technical leader at Amadeus
+in Sophia Antipolis. He is currently working as a research engineer for
+SERTIT ICube which is part of the University of Strasbourg. He also
+enjoys playing go, practising martial arts and studying languages.&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference external" href="https://mparusinski.github.io/pdfs/cv_2021_en.pdf"&gt;Cirriculum Vitae
+[ENGLISH]&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference external" href="https://keys.openpgp.org/search?q=michal%40parusinski.me"&gt;PGP key 88C10C6C&lt;/a&gt;&lt;/p&gt;
+</content><category term="pages"></category></entry></feed>
