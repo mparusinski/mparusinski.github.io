@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Michal Parusinski - Personal Site - Linux, HiDPI, PixelPal</title><link href="https://michal.parusinski.me/" rel="alternate"></link><link href="https://michal.parusinski.me/feeds/linux-hidpi-pixelpal.atom.xml" rel="self"></link><id>https://michal.parusinski.me/</id><updated>2021-05-07T23:59:00+02:00</updated><entry><title>Pixel Pal (PART 6) : Early progress reports</title><link href="https://michal.parusinski.me/pixel-pal-progress.html" rel="alternate"></link><published>2021-05-07T23:59:00+02:00</published><updated>2021-05-07T23:59:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2021-05-07:/pixel-pal-progress.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to resample them by the desired factor,
+but the icons look pixelated.&lt;/p&gt;
+&lt;p&gt;Here is a link to a &lt;a class="reference external" href="https://michal.parusinski.me/pdfs/report_progress_20200507.pdf"&gt;PDF&lt;/a&gt; showing progress in the project.
+The PDF showcases various models performing data augmentation. The results are still blurry&lt;/p&gt;
+&lt;table border="1" class="docutils"&gt;
+&lt;colgroup&gt;
+&lt;col width="33%" /&gt;
+&lt;col width="35%" /&gt;
+&lt;col width="32%" /&gt;
+&lt;/colgroup&gt;
+&lt;thead valign="bottom"&gt;
+&lt;tr&gt;&lt;th class="head"&gt;32 x 32 pixel version of the icon&lt;/th&gt;
+&lt;th class="head"&gt;32x32 augmented with one of the models&lt;/th&gt;
+&lt;th class="head"&gt;64x64 pixels version of the icon&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td&gt;&lt;div class="first last figure"&gt;
+&lt;img alt="32 by 32 pixels version of the icon" src="https://michal.parusinski.me/images/pixelpal-example1-icon-32x32.png" /&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;td&gt;&lt;div class="first last figure"&gt;
+&lt;img alt="32 by 32 pixel augmented with neural network" src="https://michal.parusinski.me/images/pixelpal-example1-icon-augmented.png" /&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;td&gt;&lt;div class="first last figure"&gt;
+&lt;img alt="64 by 64 pixels version of the icon" src="https://michal.parusinski.me/images/pixelpal-example1-icon-64x64.png" /&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 5) : Data augmentation</title><link href="https://michal.parusinski.me/pixel-pal-data-augmentation.html" rel="alternate"></link><published>2020-04-25T14:18:00+02:00</published><updated>2020-04-25T14:18:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-04-25:/pixel-pal-data-augmentation.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to resample them by the desired factor,
+but the icons look pixelated. The goal of this project is to use deep learning
+to upsample small icons into icons for HiDPI screens.&lt;/p&gt;
+&lt;p&gt;This is the fifth article about this project. Here are the other four:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://michal.parusinski.me/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html"&gt;Part #1 Explaining the project&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://michal.parusinski.me/pixel-pal-gathering-data.html"&gt;Part #2 Building the dataset&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://michal.parusinski.me/pixel-pal-metrics.html"&gt;Part #3 Measuring model quality&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://michal.parusinski.me/pixel-pal-training.html"&gt;Part #4 Training models&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;One of the big challenges in deep learning is getting enough data. Neural networks can easily
+have millions of parameters and it requires large quantity of data to fine tune these
+parameters. Getting enough data is a challenge but what makes it worse that data itself
+is not sufficient, you need labelled data, and if possible quality labelled data.&lt;/p&gt;
+&lt;p&gt;When you don't have enough data you have a problem. There are many ways to tackle this issues:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Reducing the number of parameters to learn. One such way is to resuse the weights (parameters) from an already learned task and then only retrain parts of the model. This is a form of transfer learning. For instance VGG-16 is taught to do image classification for general public purpose. You can take this model and only retrain parts of it, assuming the other parts are good enough to generalise to your task.&lt;/li&gt;
+&lt;li&gt;Training parts of the model on the input data alone using autoencoders. This is fairly technical. The idea is that you build a model which compresses the input data and then decompress the data back with no loss of quality. Such a model is easier to train as you usually have lots of input data (but not necessarily output data). Then you use the trained autoencoder and you split in two : the compression network and the decompression network. You can then work with the compressed features coming out of the compression network as a replacement of the original input data. The benefit here is that the compressed features are smaller and as a result the network you need to train mapping the compressed features to the output data is smaller and thus simpler to teach.&lt;/li&gt;
+&lt;li&gt;Use data augmentation. This method consists of building new data from the currently existing one. This method is especially good as a way to produce neural network that generalise well. Through data augmentation you can tell what a neural network should not rely on. For instance one way to augment image data is to flip the image horizontally and vertically, this way you can easily quadruple the amount of data available and tell the network it should be not rely on the image on being a certain way like having shadows at the bottom.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;For the purpose of this project I will rely on data augmentation. My training data set is around 9 000 images, which
+is fairly good for networks having 10 of thousands of parameters. But through data augmentation my neural network
+can be better and by simply flipping horizontally and vertically I can easily get around 36 000 images. Thus allowing
+me to investigate deeper neural networks.&lt;/p&gt;
+&lt;table border="1" class="docutils"&gt;
+&lt;colgroup&gt;
+&lt;col width="11%" /&gt;
+&lt;col width="40%" /&gt;
+&lt;col width="49%" /&gt;
+&lt;/colgroup&gt;
+&lt;thead valign="bottom"&gt;
+&lt;tr&gt;&lt;th class="head"&gt;modification&lt;/th&gt;
+&lt;th class="head"&gt;no horizontal flip&lt;/th&gt;
+&lt;th class="head"&gt;horizontal flip&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td&gt;no vertical flip&lt;/td&gt;
+&lt;td&gt;&lt;div class="first last figure"&gt;
+&lt;img alt="original image" src="https://michal.parusinski.me/images/pixel-augmentation-original.png" /&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;td&gt;&lt;div class="first last figure"&gt;
+&lt;img alt="horizontal flip" src="https://michal.parusinski.me/images/pixel-augmentation-horizontal-flip.png" /&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;vertical flip&lt;/td&gt;
+&lt;td&gt;&lt;div class="first last figure"&gt;
+&lt;img alt="vertical flip" src="https://michal.parusinski.me/images/pixel-augmentation-vertical-flip.png" /&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;td&gt;&lt;div class="first last figure"&gt;
+&lt;img alt="horizontal and vertical flip" src="https://michal.parusinski.me/images/pixel-augmentation-horizontal-and-vertical-flip.png" /&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 4) : Training a model</title><link href="https://michal.parusinski.me/pixel-pal-training.html" rel="alternate"></link><published>2020-04-19T14:41:00+02:00</published><updated>2020-04-19T14:41:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-04-19:/pixel-pal-training.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to resample them by the desired factor,
+but the icons look pixelated. The goal of this project is to use deep learning
+to upsample small icons into icons for HiDPI screens.&lt;/p&gt;
+&lt;p&gt;This is the fourth article about this project. Here are the other three:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://michal.parusinski.me/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html"&gt;Part #1 Explaining the project&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://michal.parusinski.me/pixel-pal-gathering-data.html"&gt;Part #2 Building the dataset&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://michal.parusinski.me/pixel-pal-metrics.html"&gt;Part #3 Measuring model quality&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;In this part I will be training models. To build and train models I will use _Tensorflow: &lt;a class="reference external" href="https://www.tensorflow.org/"&gt;https://www.tensorflow.org/&lt;/a&gt; and _Keras: &lt;a class="reference external" href="https://keras.io/"&gt;https://keras.io/&lt;/a&gt;.
+Tensorflow and keras are at this point the industry standard for neural networks in Python. I won't explain how to train networks in
+Keras there is already a lot of documentation on how to do this. In this section I want to talk about a couple of important things to
+do when training to avoid wasting time (training well is time consuming):&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Output metrics during learning not just the loss to visualise the learning live.&lt;/li&gt;
+&lt;li&gt;Use a validation dataset to measure the progress of learning on a dataset which is different from the training dataset. The point is to  see the real progress of the learning and spot early issues like overfitting (or learning too fast).&lt;/li&gt;
+&lt;li&gt;Use a early stopping callback : This will check the progress of the validation metrics and stop the learning if the training algorithm is no longer learning. This helps avoid of leaving the training algorithm going on for nothing.&lt;/li&gt;
+&lt;li&gt;Use checkpoints : This will save the model regularly and if your training crashes you can restart from where you left.&lt;/li&gt;
+&lt;li&gt;Regularly save the output (as an image) of the neural network on fixed image inputs. This helps you visualise the progress of the learning.&lt;/li&gt;
+&lt;/ol&gt;
+</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 3) : Measuring model quality</title><link href="https://michal.parusinski.me/pixel-pal-metrics.html" rel="alternate"></link><published>2020-04-11T15:29:00+02:00</published><updated>2020-04-11T15:29:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-04-11:/pixel-pal-metrics.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to resample them by the desired factor,
+but the icons look pixelated.&lt;/p&gt;
+&lt;p&gt;This is the third article about this project. Here are the other two:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://michal.parusinski.me/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html"&gt;Part #1 Explaining the project&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://michal.parusinski.me/pixel-pal-gathering-data.html"&gt;Part #2 Building the dataset&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;In this part I will be talking about losses, metrics and targets. Before going on about training
+deep learning networks to up sample intelligently icon images, we need
+ways to measure if our models are doing a good job. Especially we need
+to know if a model does better than simply pixel doubling.&lt;/p&gt;
+&lt;table border="1" class="docutils"&gt;
+&lt;colgroup&gt;
+&lt;col width="50%" /&gt;
+&lt;col width="50%" /&gt;
+&lt;/colgroup&gt;
+&lt;thead valign="bottom"&gt;
+&lt;tr&gt;&lt;th class="head"&gt;32x32 pixels version of the icon up sampled (pixel doubling)&lt;/th&gt;
+&lt;th class="head"&gt;64x64 pixels version of the icon&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td&gt;&lt;div class="first last figure"&gt;
+&lt;img alt="32 by 32 pixels version of the icon" src="https://michal.parusinski.me/images/pixelpal-example1-icon-32x32.png" /&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;td&gt;&lt;div class="first last figure"&gt;
+&lt;img alt="64 by 64 pixels version of the icon" src="https://michal.parusinski.me/images/pixelpal-example1-icon-64x64.png" /&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The images above show side by side the same vector icon but the left icon was rasterized as a 32 by 32 pixels image and
+the right icon was rasterized as a 64 by 64 pixels. Furthermore the 32 by 32 pixels was up sampled (simple pixel doubling)&lt;/p&gt;
+&lt;p&gt;As you can see the two images are similar but not identical. We need some way to measure how similar the two are.
+Simple counting the number of identical pixels is problematic. Because two pixels aren't identical does not mean they are
+not similar. Counting the number of identical pixels as a metric will probably be too critical. So for this project
+I will rely on two metrics suggested in the following article : &lt;a class="reference external" href="https://medium.com/beyondminds/an-introduction-to-super-resolution-using-deep-learning-f60aff9a499d"&gt;An Introduction to Super Resolution using Deep Learning&lt;/a&gt;.
+The metrics in question are the following :&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio"&gt;Peak Signal to Noise Ratio (PSNR)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://en.wikipedia.org/wiki/Structural_similarity"&gt;Structural Similarity (SSIM)&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;For information the metrics for the pair of images above are :&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Peak Signal to Noise Ratio: 16.913143157958984&lt;/li&gt;
+&lt;li&gt;Structural Similarity     : 0.8310688138008118&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Measuring how similar two images are is already a good element. It provides us an idea of how well
+our models are working. However there are some limits to metrics:&lt;/p&gt;
+&lt;p&gt;1. Metrics are not always differentiable. However training neural networks require a way to measure
+the distance between the wanted output and the output the network is producing. This is where &lt;em&gt;losses&lt;/em&gt;
+come into play.
+2. You need to have some good baselines. In other words the metric in itself is not useful, you need
+to have an objectif. Something like do better than simple pixel doubling or bicubic interpolation.
+3. Metrics will be sensitive to the data you use. You may land on images that are easy to upsample
+and the metric may be deceptively good. This is why you should compute the metrics on the entire
+dataset and do some statistics on it.
+4. Metrics are not perfect. In the end we want something to be visually pleasing not something that
+maximise a mathematical function. This is why you should also visually look at the result of the
+neural networks.&lt;/p&gt;
+&lt;p&gt;To train the network will use a loss function. Loss function are ways to measure the distance
+between the ideal output and the current output. In our case we will use mean squared error as
+it is simple and fits our purpose. In general always make sure you are using an appropriate
+loss function.&lt;/p&gt;
+&lt;p&gt;In terms of baselines my objectif will be to perform better thant straight upsampling via
+nearest and bilinear interpolation.&lt;/p&gt;
+</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 2) : Gathering data for Pixel Pal</title><link href="https://michal.parusinski.me/pixel-pal-gathering-data.html" rel="alternate"></link><published>2020-02-15T10:24:00+01:00</published><updated>2020-02-15T10:24:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-02-15:/pixel-pal-gathering-data.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+old icon themes. Many old icon themes are in raster format and are not
+available for HiDPI screens (their resolution are too small). Currently the
+only way to handle old icon themes is to resample them by the desired factor,
+but the icons look pixelated. The goal of this project is to use deep learning
+to upsample small icons into icons for HiDPI screens.&lt;/p&gt;
+&lt;p&gt;To solve this I will use artificial intelligence and more precisely deep
+learning. The idea is to teach a neural network how to upsample icons in a
+manner that takes into account the shape of the underlying icon. In other
+words the idea is to do better than increasing the number of pixels. However
+to teach a neural network you need lots of data. In our case the data is a
+collection of icons for which we have both low resolution and HiDPI resolution
+versions.&lt;/p&gt;
+&lt;p&gt;Thankfully due to open source a lot of icons themes are available for which we
+have both. There are some requirements:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;The icon theme's licence needs to allow use theme to make a derivative product. To be safe I will stick to open source licences.&lt;/li&gt;
+&lt;li&gt;There needs to be enough data to teach a network. However I will intentionally not get too much data to explore data augmentation techniques.&lt;/li&gt;
+&lt;li&gt;Ability to split data well in various sets: training, validation, test and real world data&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Let me explain the splitting of the data a little more by using an analogy.
+Training a network is a bit like taking a course at university. You get
+a lot of material through the course and at the end of the course there is
+a final exam. You are not allowed to see the final exam.&lt;/p&gt;
+&lt;p&gt;The course material is your real training data, and the final exam is test data.
+The point of test data is to evaluate the real performance of the network. But
+the test data is part of the course. I have another data set, a real world data
+which is there for me to use the network a first time on a real task; in other
+words none course material. The real world data will correspond to some old
+icon sets (OS2, CDE).&lt;/p&gt;
+&lt;p&gt;Furthermore real training data will be split. To use our analogy to learn the
+course and pass the final exam with a good grade you do practice tests. This
+is done by splitting our real training data into a smaller training data set
+and a validation data set.&lt;/p&gt;
+&lt;p&gt;So to recap we have :&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Training data : Use for training the network&lt;/li&gt;
+&lt;li&gt;Validation data : Use for evaluating the training&lt;/li&gt;
+&lt;li&gt;Test data : Use for evaluating the performance of the network&lt;/li&gt;
+&lt;li&gt;Real world data : To test the use of the software on an actual use case.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Let me explain a bit more about the use of real world data.
+I have chosen two really old icon themes for which
+no svg formats are available. I can't learn to upscale those images
+but I would be very much interested in doing so. This data set allows me
+to judge whether the project has been a success in a qualitative way.&lt;/p&gt;
+&lt;p&gt;Because no svg
+files are available an official metric can't be calculated,
+which is why we need a testing data set with svg icons.
+Using old icons with no svg file format will showcase
+whether using deep learning is actually useful for reviving
+old icon sets. The old icon themes are the official
+&lt;a class="reference external" href="https://en.wikipedia.org/wiki/Common_Desktop_Environment"&gt;CDE&lt;/a&gt;
+icon theme and the icon theme from &lt;a class="reference external" href="https://en.wikipedia.org/wiki/OS/2"&gt;OS/2&lt;/a&gt;.&lt;/p&gt;
+</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 1) : Adapting old icon themes for HiDPI screens</title><link href="https://michal.parusinski.me/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html" rel="alternate"></link><published>2020-01-27T18:46:00+01:00</published><updated>2020-01-27T18:46:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-01-27:/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html</id><summary type="html">&lt;p&gt;I am starting a new open source project. The goal of this project
+is to solve a recurring issue with HiDPI support. The issues is that
+many old software rely on icon themes in raster format which are not suitable for HiDPI
+screens. To be more specific various software projects …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I am starting a new open source project. The goal of this project
+is to solve a recurring issue with HiDPI support. The issues is that
+many old software rely on icon themes in raster format which are not suitable for HiDPI
+screens. To be more specific various software projects rely on icons which are
+only in raster formats (e.g. JPG, PNG, ...) but not in vector format (e.g. SVG)
+and are only available in low resolutions formats (e.g. 32x32) which is fine
+for non HiDPI screens but there is no equivalent for high resolution formats
+required by HiDPI (e.g. 64x64). The naive solution is to simply is to do
+pixel doubling, but this results in an ugly pixelated look. My new project
+will use some tools from artificial intelligence to do better.&lt;/p&gt;
+&lt;p&gt;The way to solve this issue using artificial intelligence is to use super
+resolution deep learning &lt;a class="reference external" href="https://arxiv.org/pdf/1808.03344.pdf"&gt;models&lt;/a&gt;.
+These deep learning neural networks rely on images not being random but
+representations of real things where there are subtle statistical relations
+between the pixels of an image in practice. A simple example of how pixels
+can be related to one another is that often there are lines and curves in
+images.&lt;/p&gt;
+&lt;p&gt;A series of blog posts will detail the progress of the project.&lt;/p&gt;
+</content><category term="Linux, HiDPI, PixelPal"></category></entry></feed>
