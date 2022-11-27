@@ -1,0 +1,218 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://michal.parusinski.me/theme/pygments/github.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/font-awesome/css/solid.css">
+
+
+
+
+
+  <link href="https://michal.parusinski.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Michal Parusinski - Personal Site RSS">
+
+
+ 
+
+<meta name="author" content="Michal Parusinski" />
+<meta name="description" content="In Linux, software is conventionally distributed through packages, usually compressed folders including executables, installations scripts and various configuration files. These packaging formats come in various flavors like deb packages, RPMs, and many others. While very useful, these packaging formats have a downside: they are distribution specific. Even if two distributions …" />
+<meta name="keywords" content="">
+
+
+  <meta property="og:site_name" content="Michal Parusinski - Personal Site"/>
+  <meta property="og:title" content="Converting docker containers into AppImages"/>
+  <meta property="og:description" content="In Linux, software is conventionally distributed through packages, usually compressed folders including executables, installations scripts and various configuration files. These packaging formats come in various flavors like deb packages, RPMs, and many others. While very useful, these packaging formats have a downside: they are distribution specific. Even if two distributions …"/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://michal.parusinski.me/converting-docker-containers-into-appimages.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2022-09-03 16:00:00+02:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="https://michal.parusinski.me/author/michal-parusinski.html">
+  <meta property="article:section" content="Linux, packaging, AppImage, Docker"/>
+  <meta property="og:image" content="/images/profile.jpg">
+
+  <title>Michal Parusinski - Personal Site &ndash; Converting docker containers into AppImages</title>
+
+
+</head>
+<body class="light-theme">
+
+<aside>
+  <div>
+    <a href="https://michal.parusinski.me/">
+      <img src="/images/profile.jpg" alt="" title="">
+    </a>
+
+    <h1>
+      <a href="https://michal.parusinski.me/"></a>
+    </h1>
+
+
+
+    <nav>
+      <ul class="list">
+
+
+            <li>
+              <a target="_self"
+                 href="https://michal.parusinski.me/pages/a-propos-de-moi.html#a-propos-de-moi">
+                A propos de moi
+              </a>
+            </li>
+            <li>
+              <a target="_self"
+                 href="https://michal.parusinski.me/pages/about-me.html#about-me">
+                About Me
+              </a>
+            </li>
+            <li>
+              <a target="_self"
+                 href="https://michal.parusinski.me/pages/publications.html#publications">
+                Publications
+              </a>
+            </li>
+
+      </ul>
+    </nav>
+
+    <ul class="social">
+      <li>
+        <a class="sc-linkedin"
+           href="https://www.linkedin.com/in/michal-parusinski-b7b18458/"
+           target="_blank">
+          <i class="fa-brands fa-linkedin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/mparusinski"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+
+<article class="single">
+  <header>
+      
+    <h1 id="converting-docker-containers-into-appimages">Converting docker containers into AppImages</h1>
+    <p>
+      Posted on Sat 03 September 2022 in <a href="https://michal.parusinski.me/category/linux-packaging-appimage-docker.html">Linux, packaging, AppImage, Docker</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <p>In Linux, software is conventionally distributed through packages, usually compressed folders including
+executables, installations scripts and various configuration files. These packaging formats come in various
+flavors like deb packages, RPMs, and many others. While very useful, these packaging formats have a downside:
+they are distribution specific. Even if two distributions use the same packaging format, like say Ubuntu
+and Debian, they are not compatible. Meaning that a deb package built for debian is not expected to work on
+Ubuntu and vice-versa. In goes even further, packages may not be compatible between two different releases
+of the same Linux distribution, for instance Debian stable and Debian unstable. The main consequence
+of this limitation is that software needs to be built for every combintations of Linux distribution / releases
+out there.</p>
+<p>For simple open source software this isn't usually a big issue, as volunteers can usually take the code
+and release it for the distribution of their choice making small adjustments to the code (at least in
+principle). For more complicated software and proprietary software this is trickier. However
+there is a solution to this problem: recently new
+universal, meaning distribution agnostic, packaging formats have been created. The main ones are Flatpak, Snaps
+and AppImage. But there are many others, technically Docker is also a means to distributed software (usually
+server-side software) on many Linux distributions (as well as Windows). Steam distributables can also be counted, if you
+think about it. And even Nix packages are in some way distribution agnostic as you can install Nix
+on many Linux distributions.</p>
+<p>I personally think AppImage lacks a little bit of love. It does not offer as many features as Flatpak or Snaps, which
+handle sandboxing, software distribution, and sharing frameworks, but it is very simple and easy to grasp.
+AppImages is already fairly popular amongst QT applications, electron applications, and some games like OpenRA.
+By the way that is no coincidence, among the tools to build appimages, some are specifically tailored
+for QT applications and electron applications. This, in my view, creates a disparity, so I wondered
+if I can make a difference. So I decided to create another tool to create AppImages, but from Docker
+containers, a tool I am familiar with. Furthermore the creation of Docker images and containers is very
+well documented and the collection of publically available Docker images is very large.
+The tool's name <cite>docker2appimage</cite> available on Github at <a class="reference external" href="https://github.com/mparusinski/docker2appimage">https://github.com/mparusinski/docker2appimage</a>.</p>
+<p>If you have a container called <cite>relaxed_beaver</cite>, to create an AppImage which triggers the container default
+command, you run.</p>
+<div class="highlight"><pre><span></span>docker2appimage relaxed_beaver
+</pre></div>
+<p>You can perform more complex tasks like request <cite>docker2appimage</cite> to create a container from the
+alpine Docker image and create a container that calls <cite>ls</cite> and give the AppImage the name <cite>alpine-ls</cite></p>
+<div class="highlight"><pre><span></span>docker2appimage -x ls --name alpine-ls -i alpine
+</pre></div>
+<p>In order to work the tool requires the <cite>appimagetool</cite> AppImage to be accessible on the path as well
+<cite>imagemagick</cite> to be installed on the system. The entire tool is a simple shell script for it is designed
+to be portable.</p>
+<p>Here is an even more complex example where we create an universal binary for ripgrep a popular alternative for
+grep</p>
+<div class="highlight"><pre><span></span>docker run -it --name<span class="o">=</span>ripgrep ubuntu <span class="c1"># Creates a container called neofetch</span>
+apt-get update <span class="o">&amp;&amp;</span> apt-get install -y ripgrep <span class="c1"># Command within the container</span>
+<span class="nb">exit</span> <span class="c1"># Leave the container</span>
+docker2appimage -x rg ripgrep
+</pre></div>
+<p>The last commmand creates an AppImage called neofetch from container neofetch which launches neofetch</p>
+<p>Most Docker images are server side software (e.g. nginx), OS containers (e.g. alpine) and programming
+frameworks. Naturally <cite>docker2appimage</cite> will fit well to create CLI only AppImage. This is not what
+AppImage are usually intended, they are usually intended for Desktop applications. It is still possible
+to create GUI applications, and there is a case for CLI AppImages as a replacement for statically compiled
+binaries. In other words this offers an approach for portable CLI applications.</p>
+<p>There are some limitations of course. Many Docker images default commands are shells like bash, sh, ...
+one might even include Python as a type of shell. AppImage works by doing tricks with environment variables
+and Fuse to create a pseudo virtual environment where a command is launched from within the AppImage.
+This makes handling shell commands trickier, so it is not supported, instead it is better to use
+the <cite>-x</cite> flag that allows the user to specify the command to launch.</p>
+<p>The project is still ongoing development to support many applications and Linux distributions.
+If you have some time and are curious do not hesitate to test the tool and report any bugs you see.</p>
+
+  </div>
+  <div class="tag-cloud">
+    <p>
+    </p>
+  </div>
+
+
+
+
+
+
+</article>
+
+<footer>
+<p>&copy;  </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Michal Parusinski - Personal Site ",
+  "url" : "https://michal.parusinski.me",
+  "image": "/images/profile.jpg",
+  "description": ""
+}
+</script>
+</body>
+</html>
