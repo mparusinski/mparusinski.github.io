@@ -155,21 +155,21 @@ well documented and the collection of publically available Docker images is very
 The tool's name <cite>docker2appimage</cite> available on Github at <a class="reference external" href="https://github.com/mparusinski/docker2appimage">https://github.com/mparusinski/docker2appimage</a>.</p>
 <p>If you have a container called <cite>relaxed_beaver</cite>, to create an AppImage which triggers the container default
 command, you run.</p>
-<div class="highlight"><pre><span></span>docker2appimage relaxed_beaver
+<div class="highlight"><pre><span></span>docker2appimage<span class="w"> </span>relaxed_beaver
 </pre></div>
 <p>You can perform more complex tasks like request <cite>docker2appimage</cite> to create a container from the
 alpine Docker image and create a container that calls <cite>ls</cite> and give the AppImage the name <cite>alpine-ls</cite></p>
-<div class="highlight"><pre><span></span>docker2appimage -x ls --name alpine-ls -i alpine
+<div class="highlight"><pre><span></span>docker2appimage<span class="w"> </span>-x<span class="w"> </span>ls<span class="w"> </span>--name<span class="w"> </span>alpine-ls<span class="w"> </span>-i<span class="w"> </span>alpine
 </pre></div>
 <p>In order to work the tool requires the <cite>appimagetool</cite> AppImage to be accessible on the path as well
 <cite>imagemagick</cite> to be installed on the system. The entire tool is a simple shell script for it is designed
 to be portable.</p>
 <p>Here is an even more complex example where we create an universal binary for ripgrep a popular alternative for
 grep</p>
-<div class="highlight"><pre><span></span>docker run -it --name<span class="o">=</span>ripgrep ubuntu <span class="c1"># Creates a container called neofetch</span>
-apt-get update <span class="o">&amp;&amp;</span> apt-get install -y ripgrep <span class="c1"># Command within the container</span>
-<span class="nb">exit</span> <span class="c1"># Leave the container</span>
-docker2appimage -x rg ripgrep
+<div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>--name<span class="o">=</span>ripgrep<span class="w"> </span>ubuntu<span class="w"> </span><span class="c1"># Creates a container called neofetch</span>
+apt-get<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>ripgrep<span class="w"> </span><span class="c1"># Command within the container</span>
+<span class="nb">exit</span><span class="w"> </span><span class="c1"># Leave the container</span>
+docker2appimage<span class="w"> </span>-x<span class="w"> </span>rg<span class="w"> </span>ripgrep
 </pre></div>
 <p>The last commmand creates an AppImage called neofetch from container neofetch which launches neofetch</p>
 <p>Most Docker images are server side software (e.g. nginx), OS containers (e.g. alpine) and programming
