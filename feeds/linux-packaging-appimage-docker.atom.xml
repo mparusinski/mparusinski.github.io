@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Michal Parusinski - Personal Site - Linux, packaging, AppImage, Docker</title><link href="https://michal.parusinski.me/" rel="alternate"></link><link href="https://michal.parusinski.me/feeds/linux-packaging-appimage-docker.atom.xml" rel="self"></link><id>https://michal.parusinski.me/</id><updated>2022-09-03T16:00:00+02:00</updated><entry><title>Converting docker containers into AppImages</title><link href="https://michal.parusinski.me/converting-docker-containers-into-appimages.html" rel="alternate"></link><published>2022-09-03T16:00:00+02:00</published><updated>2022-09-03T16:00:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2022-09-03:/converting-docker-containers-into-appimages.html</id><summary type="html">&lt;p&gt;In Linux, software is conventionally distributed through packages, usually compressed folders including
+executables, installations scripts and various configuration files. These packaging formats come in various
+flavors like deb packages, RPMs, and many others. While very useful, these packaging formats have a downside:
+they are distribution specific. Even if two distributions …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In Linux, software is conventionally distributed through packages, usually compressed folders including
+executables, installations scripts and various configuration files. These packaging formats come in various
+flavors like deb packages, RPMs, and many others. While very useful, these packaging formats have a downside:
+they are distribution specific. Even if two distributions use the same packaging format, like say Ubuntu
+and Debian, they are not compatible. Meaning that a deb package built for debian is not expected to work on
+Ubuntu and vice-versa. In goes even further, packages may not be compatible between two different releases
+of the same Linux distribution, for instance Debian stable and Debian unstable. The main consequence
+of this limitation is that software needs to be built for every combintations of Linux distribution / releases
+out there.&lt;/p&gt;
+&lt;p&gt;For simple open source software this isn't usually a big issue, as volunteers can usually take the code
+and release it for the distribution of their choice making small adjustments to the code (at least in
+principle). For more complicated software and proprietary software this is trickier. However
+there is a solution to this problem: recently new
+universal, meaning distribution agnostic, packaging formats have been created. The main ones are Flatpak, Snaps
+and AppImage. But there are many others, technically Docker is also a means to distributed software (usually
+server-side software) on many Linux distributions (as well as Windows). Steam distributables can also be counted, if you
+think about it. And even Nix packages are in some way distribution agnostic as you can install Nix
+on many Linux distributions.&lt;/p&gt;
+&lt;p&gt;I personally think AppImage lacks a little bit of love. It does not offer as many features as Flatpak or Snaps, which
+handle sandboxing, software distribution, and sharing frameworks, but it is very simple and easy to grasp.
+AppImages is already fairly popular amongst QT applications, electron applications, and some games like OpenRA.
+By the way that is no coincidence, among the tools to build appimages, some are specifically tailored
+for QT applications and electron applications. This, in my view, creates a disparity, so I wondered
+if I can make a difference. So I decided to create another tool to create AppImages, but from Docker
+containers, a tool I am familiar with. Furthermore the creation of Docker images and containers is very
+well documented and the collection of publically available Docker images is very large.
+The tool's name &lt;cite&gt;docker2appimage&lt;/cite&gt; available on Github at &lt;a class="reference external" href="https://github.com/mparusinski/docker2appimage"&gt;https://github.com/mparusinski/docker2appimage&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If you have a container called &lt;cite&gt;relaxed_beaver&lt;/cite&gt;, to create an AppImage which triggers the container default
+command, you run.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker2appimage&lt;span class="w"&gt; &lt;/span&gt;relaxed_beaver
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;You can perform more complex tasks like request &lt;cite&gt;docker2appimage&lt;/cite&gt; to create a container from the
+alpine Docker image and create a container that calls &lt;cite&gt;ls&lt;/cite&gt; and give the AppImage the name &lt;cite&gt;alpine-ls&lt;/cite&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker2appimage&lt;span class="w"&gt; &lt;/span&gt;-x&lt;span class="w"&gt; &lt;/span&gt;ls&lt;span class="w"&gt; &lt;/span&gt;--name&lt;span class="w"&gt; &lt;/span&gt;alpine-ls&lt;span class="w"&gt; &lt;/span&gt;-i&lt;span class="w"&gt; &lt;/span&gt;alpine
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;In order to work the tool requires the &lt;cite&gt;appimagetool&lt;/cite&gt; AppImage to be accessible on the path as well
+&lt;cite&gt;imagemagick&lt;/cite&gt; to be installed on the system. The entire tool is a simple shell script for it is designed
+to be portable.&lt;/p&gt;
+&lt;p&gt;Here is an even more complex example where we create an universal binary for ripgrep a popular alternative for
+grep&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker&lt;span class="w"&gt; &lt;/span&gt;run&lt;span class="w"&gt; &lt;/span&gt;-it&lt;span class="w"&gt; &lt;/span&gt;--name&lt;span class="o"&gt;=&lt;/span&gt;ripgrep&lt;span class="w"&gt; &lt;/span&gt;ubuntu&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# Creates a container called neofetch&lt;/span&gt;
+apt-get&lt;span class="w"&gt; &lt;/span&gt;update&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;-y&lt;span class="w"&gt; &lt;/span&gt;ripgrep&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# Command within the container&lt;/span&gt;
+&lt;span class="nb"&gt;exit&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;# Leave the container&lt;/span&gt;
+docker2appimage&lt;span class="w"&gt; &lt;/span&gt;-x&lt;span class="w"&gt; &lt;/span&gt;rg&lt;span class="w"&gt; &lt;/span&gt;ripgrep
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The last commmand creates an AppImage called neofetch from container neofetch which launches neofetch&lt;/p&gt;
+&lt;p&gt;Most Docker images are server side software (e.g. nginx), OS containers (e.g. alpine) and programming
+frameworks. Naturally &lt;cite&gt;docker2appimage&lt;/cite&gt; will fit well to create CLI only AppImage. This is not what
+AppImage are usually intended, they are usually intended for Desktop applications. It is still possible
+to create GUI applications, and there is a case for CLI AppImages as a replacement for statically compiled
+binaries. In other words this offers an approach for portable CLI applications.&lt;/p&gt;
+&lt;p&gt;There are some limitations of course. Many Docker images default commands are shells like bash, sh, ...
+one might even include Python as a type of shell. AppImage works by doing tricks with environment variables
+and Fuse to create a pseudo virtual environment where a command is launched from within the AppImage.
+This makes handling shell commands trickier, so it is not supported, instead it is better to use
+the &lt;cite&gt;-x&lt;/cite&gt; flag that allows the user to specify the command to launch.&lt;/p&gt;
+&lt;p&gt;The project is still ongoing development to support many applications and Linux distributions.
+If you have some time and are curious do not hesitate to test the tool and report any bugs you see.&lt;/p&gt;
+</content><category term="Linux, packaging, AppImage, Docker"></category></entry></feed>

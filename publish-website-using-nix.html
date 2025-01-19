@@ -1,0 +1,458 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://michal.parusinski.me/theme/pygments/github.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/font-awesome/css/solid.css">
+
+
+
+
+  <link href="https://michal.parusinski.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Michal Parusinski - Personal Site Atom">
+
+  <link href="https://michal.parusinski.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Michal Parusinski - Personal Site RSS">
+
+
+
+
+
+
+
+ 
+
+<meta name="author" content="Michal Parusinski" />
+<meta name="description" content="How to publish a static website using Nix flakes" />
+<meta name="keywords" content="pelican, nix">
+
+
+  <meta property="og:site_name" content="Michal Parusinski - Personal Site"/>
+  <meta property="og:title" content="Publishing a pelican website using nix"/>
+  <meta property="og:description" content="How to publish a static website using Nix flakes"/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://michal.parusinski.me/publish-website-using-nix.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2025-01-19 12:00:00+01:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="https://michal.parusinski.me/author/michal-parusinski.html">
+  <meta property="article:section" content="nix"/>
+  <meta property="article:tag" content="pelican"/>
+  <meta property="article:tag" content="nix"/>
+  <meta property="og:image" content="/images/profile.jpg">
+
+  <title>Michal Parusinski - Personal Site &ndash; Publishing a pelican website using nix</title>
+
+
+</head>
+<body class="light-theme">
+
+<aside>
+  <div>
+    <a href="https://michal.parusinski.me/">
+      <img src="/images/profile.jpg" alt="" title="">
+    </a>
+
+    <h1>
+      <a href="https://michal.parusinski.me/"></a>
+    </h1>
+
+
+
+    <nav>
+      <ul class="list">
+
+
+            <li>
+              <a target="_self"
+                 href="https://michal.parusinski.me/pages/a-propos-de-moi.html#a-propos-de-moi">
+                A propos de moi
+              </a>
+            </li>
+            <li>
+              <a target="_self"
+                 href="https://michal.parusinski.me/pages/about-me.html#about-me">
+                About Me
+              </a>
+            </li>
+            <li>
+              <a target="_self"
+                 href="https://michal.parusinski.me/pages/publications.html#publications">
+                Publications
+              </a>
+            </li>
+
+      </ul>
+    </nav>
+
+    <ul class="social">
+      <li>
+        <a class="sc-linkedin"
+           href="https://www.linkedin.com/in/michal-parusinski-b7b18458/"
+           target="_blank">
+          <i class="fa-brands fa-linkedin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/mparusinski"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+
+<article class="single">
+  <header>
+      
+    <h1 id="publish-website-using-nix">Publishing a pelican website using nix</h1>
+    <p>
+      Posted on Sun 19 January 2025 in <a href="https://michal.parusinski.me/category/nix.html">nix</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <p>This website is statically generated using <a href="https://getpelican.com/">pelican</a> and development on the 
+website is done via <a href="https://nixos.wiki/wiki/Flakes">nix flakes</a>. 
+Here is how :</p>
+<h1 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h1>
+<p>I use pelican to publish this website. Pelican is a 
+python based command line tool to generate a static 
+website. Pelican requires writing the articles in
+reStructuredText or Markdown and placing these files
+in a folder which I call <code>content</code>. To generate
+the website I simply run a command</p>
+<div class="highlight"><pre><span></span><code>pelican<span class="w"> </span>-r<span class="w"> </span>content<span class="w"> </span>-o<span class="w"> </span>output<span class="w"> </span>-s<span class="w"> </span>pelicanconf.py
+</code></pre></div>
+
+<p>I will not cover the details on how to install Pelican. In the 
+above command I specify the source folder <code>content</code>,
+the <code>output</code> destination folder and finally a 
+configuration file called <code>pelicanconf.py</code> that 
+contain various website information like the
+name of website, the locale or the theming.</p>
+<p>While pelican is simple, it still requires a 
+lot of small steps every time you want to
+publish an article. Which is why I use nix
+to automate as much as possible to leave
+as little friction.</p>
+<p>I will explain how I use Nix flakes to manage
+dependencies, build the website and run it locally.
+I will leave publishing for possible future article.</p>
+<h1 id="creating-a-development-environment-nix-shell">Creating a development environment (nix-shell)<a class="headerlink" href="#creating-a-development-environment-nix-shell" title="Permanent link">&para;</a></h1>
+<p>The purpose of a nix shell is to have a shell 
+environment where all the tooling is installed
+and one can develop various helper scripts (e.g. 
+script to run the website locally).</p>
+<p>First I create the <code>flake.nix</code> file:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+    <span class="ss">description</span> <span class="o">=</span> <span class="s2">&quot;Simple blog project&quot;</span><span class="p">;</span>
+    <span class="ss">inputs</span> <span class="o">=</span> <span class="p">{</span>
+        nixpkgs<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">&quot;github:NixOS/nixpkgs/nixos-24.11&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="ss">outputs</span> <span class="o">=</span> <span class="p">{</span> self<span class="p">,</span> nixpkgs <span class="p">}:</span> <span class="k">let</span>
+        <span class="ss">system</span> <span class="o">=</span> <span class="s2">&quot;x86_64-linux&quot;</span><span class="p">;</span>
+        <span class="ss">pkgs</span> <span class="o">=</span> <span class="nb">import</span> nixpkgs <span class="p">{</span> <span class="k">inherit</span> system<span class="p">;</span> <span class="p">}</span>
+        <span class="ss">deps</span> <span class="o">=</span> <span class="k">with</span> pkgs<span class="p">;</span> <span class="p">[</span>
+            <span class="p">(</span>python3<span class="o">.</span>withPackages <span class="p">(</span>ps<span class="p">:</span> <span class="p">[</span> ps<span class="o">.</span>pelican ps<span class="o">.</span>markdown <span class="p">]))</span>
+        <span class="p">];</span>
+    <span class="k">in</span> <span class="p">{</span>
+        devShells<span class="o">.</span><span class="si">${</span>system<span class="si">}</span> <span class="o">=</span> pkgs<span class="o">.</span>mkShell <span class="p">{</span>
+            <span class="ss">buildInputs</span> <span class="o">=</span> deps<span class="p">;</span>
+        <span class="p">};</span>
+    <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Basically this tells how to make a shell environment
+with pelican installed and markdown support. It can
+be invoked like this:</p>
+<div class="highlight"><pre><span></span><code>nix<span class="w"> </span>develop
+pelican<span class="w"> </span>-r<span class="w"> </span>./content<span class="w"> </span>-o<span class="w"> </span>./dev-output<span class="w"> </span>-s<span class="w"> </span>pelicanconf.py
+</code></pre></div>
+
+<p>However, this may not work for everyone
+because I use an external theme.</p>
+<p>When it is not a flake project (i.e the project root does not
+have a <code>flake.nix</code>) we turn the external dependency into a
+derivation <em>from scratch</em>. This can be done
+using <code>fetchFromGitHub</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+    <span class="ss">description</span> <span class="o">=</span> <span class="s2">&quot;Simple blog project&quot;</span><span class="p">;</span>
+    <span class="ss">inputs</span> <span class="o">=</span> <span class="p">{</span>
+        nixpkgs<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">&quot;github:NixOS/nixpkgs/nixos-24.11&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="ss">outputs</span> <span class="o">=</span> <span class="p">{</span> self<span class="p">,</span> nixpkgs <span class="p">}:</span> <span class="k">let</span>
+        <span class="ss">system</span> <span class="o">=</span> <span class="s2">&quot;x86_64-linux&quot;</span><span class="p">;</span>
+        <span class="ss">pkgs</span> <span class="o">=</span> <span class="nb">import</span> nixpkgs <span class="p">{</span> <span class="k">inherit</span> system<span class="p">;</span> <span class="p">}</span>
+        <span class="ss">pelican-flex-theme</span> <span class="o">=</span> pkgs<span class="o">.</span>fetchFromGitHub <span class="p">{</span>
+            <span class="ss">owner</span> <span class="o">=</span> <span class="s2">&quot;alexandrevicenzi&quot;</span><span class="p">;</span>
+            <span class="ss">repo</span> <span class="o">=</span> <span class="s2">&quot;Flex&quot;</span><span class="p">;</span>
+            <span class="ss">rev</span> <span class="o">=</span> <span class="s2">&quot;master&quot;</span><span class="p">;</span>
+            <span class="ss">sha256</span> <span class="o">=</span> <span class="s2">&quot;sha256-I/WEqFMZbnJvX4NMeqB+o9LzD4im1BwOwgaqqDqbL2s=&quot;</span><span class="p">;</span>
+        <span class="p">};</span>
+        <span class="ss">deps</span> <span class="o">=</span> <span class="k">with</span> pkgs<span class="p">;</span> <span class="p">[</span>
+            pelican-flex-theme
+            <span class="p">(</span>python3<span class="o">.</span>withPackages <span class="p">(</span>ps<span class="p">:</span> <span class="p">[</span> ps<span class="o">.</span>pelican ps<span class="o">.</span>markdown <span class="p">]))</span>
+        <span class="p">];</span>
+    <span class="k">in</span> <span class="p">{</span>
+        devShells<span class="o">.</span><span class="si">${</span>system<span class="si">}</span> <span class="o">=</span> pkgs<span class="o">.</span>mkShell <span class="p">{</span>
+            <span class="ss">buildInputs</span> <span class="o">=</span> deps<span class="p">;</span>
+            <span class="ss">shellHook</span> <span class="o">=</span> <span class="s s-Multiline">&#39;&#39;</span>
+<span class="s s-Multiline">              export PELICAN_THEME=</span><span class="si">${</span>pelican-flex-theme<span class="si">}</span>
+<span class="s s-Multiline">            &#39;&#39;</span><span class="p">;</span>
+        <span class="p">};</span>
+    <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Now after running <code>nix develop</code> I can access the 
+path to the theme via the environment
+variable <strong>PELICAN_THEME</strong> (which happens to be
+what I use in <code>pelicanconf.py</code>).</p>
+<h1 id="building-the-website">Building the website<a class="headerlink" href="#building-the-website" title="Permanent link">&para;</a></h1>
+<p>Next step is to implement the build step. This
+is done by specifying the <code>packages.${system}.default</code>
+output derivation. Now<br />
+by building the website, I mean generating
+the static files, not running a local instance. 
+Running the website locally will be explained later.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+    <span class="ss">description</span> <span class="o">=</span> <span class="s2">&quot;Simple blog project&quot;</span><span class="p">;</span>
+    <span class="ss">inputs</span> <span class="o">=</span> <span class="p">{</span>
+        nixpkgs<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">&quot;github:NixOS/nixpkgs/nixos-24.11&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="ss">outputs</span> <span class="o">=</span> <span class="p">{</span> self<span class="p">,</span> nixpkgs <span class="p">}:</span> <span class="k">let</span>
+        <span class="ss">system</span> <span class="o">=</span> <span class="s2">&quot;x86_64-linux&quot;</span><span class="p">;</span>
+        <span class="ss">pkgs</span> <span class="o">=</span> <span class="nb">import</span> nixpkgs <span class="p">{</span> <span class="k">inherit</span> system<span class="p">;</span> <span class="p">}</span>
+        <span class="ss">pelican-flex-theme</span> <span class="o">=</span> pkgs<span class="o">.</span>fetchFromGitHub <span class="p">{</span>
+            <span class="ss">owner</span> <span class="o">=</span> <span class="s2">&quot;alexandrevicenzi&quot;</span><span class="p">;</span>
+            <span class="ss">repo</span> <span class="o">=</span> <span class="s2">&quot;Flex&quot;</span><span class="p">;</span>
+            <span class="ss">rev</span> <span class="o">=</span> <span class="s2">&quot;master&quot;</span><span class="p">;</span>
+            <span class="ss">sha256</span> <span class="o">=</span> <span class="s2">&quot;sha256-I/WEqFMZbnJvX4NMeqB+o9LzD4im1BwOwgaqqDqbL2s=&quot;</span><span class="p">;</span>
+        <span class="p">};</span>
+        <span class="ss">deps</span> <span class="o">=</span> <span class="k">with</span> pkgs<span class="p">;</span> <span class="p">[</span>
+            pelican-flex-theme
+            <span class="p">(</span>python3<span class="o">.</span>withPackages <span class="p">(</span>ps<span class="p">:</span> <span class="p">[</span> ps<span class="o">.</span>pelican ps<span class="o">.</span>markdown <span class="p">]))</span>
+        <span class="p">];</span>
+    <span class="k">in</span> <span class="p">{</span>
+        devShells<span class="o">.</span><span class="si">${</span>system<span class="si">}</span> <span class="o">=</span> pkgs<span class="o">.</span>mkShell <span class="p">{</span>
+            <span class="ss">buildInputs</span> <span class="o">=</span> deps<span class="p">;</span>
+            <span class="ss">shellHook</span> <span class="o">=</span> <span class="s s-Multiline">&#39;&#39;</span>
+<span class="s s-Multiline">              export PELICAN_THEME=</span><span class="si">${</span>pelican-flex-theme<span class="si">}</span>
+<span class="s s-Multiline">            &#39;&#39;</span><span class="p">;</span>
+        <span class="p">};</span>
+        packages<span class="o">.</span><span class="si">${</span>system<span class="si">}</span><span class="o">.</span><span class="ss">default</span> <span class="o">=</span> pkgs<span class="o">.</span>stdenv<span class="o">.</span>mkDerivation <span class="p">{</span>
+            <span class="ss">name</span> <span class="o">=</span> <span class="s2">&quot;my-website&quot;</span><span class="p">;</span>
+            <span class="ss">src</span> <span class="o">=</span> <span class="l">./.</span><span class="p">;</span>
+            <span class="ss">nativeBuildInputs</span> <span class="o">=</span> deps<span class="p">;</span>
+            <span class="ss">buildPhase</span> <span class="o">=</span> <span class="s s-Multiline">&#39;&#39;</span>
+<span class="s s-Multiline">                export PELICAN_THEME=</span><span class="si">${</span>pelican-flex-theme<span class="si">}</span>
+<span class="s s-Multiline">                pelican content -o output -s pelicanconf.py</span>
+<span class="s s-Multiline">            &#39;&#39;</span><span class="p">;</span>
+            <span class="ss">installPhase</span> <span class="o">=</span> <span class="s s-Multiline">&#39;&#39;</span>
+<span class="s s-Multiline">                mkdir -p $out</span>
+<span class="s s-Multiline">                cp -r output/* $out</span>
+<span class="s s-Multiline">            &#39;&#39;</span><span class="p">;</span>
+        <span class="p">};</span>
+    <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Just like a Makefile we specify how to <em>build</em> 
+the project using the <code>buildPhase</code> and
+how to install using the <code>installPhase</code>; all
+of this within <code>stdenv.mkDerivation</code>. </p>
+<p>There is however one problem with this derivation.
+It fetches all the files instead of only the 
+files it needs. To fix this I use
+<a href="https://github.com/hercules-ci/gitignore.nix">gitignore.nix</a>
+which filters the source folder using the .gitignore file.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+    <span class="ss">description</span> <span class="o">=</span> <span class="s2">&quot;Simple blog project&quot;</span><span class="p">;</span>
+    <span class="ss">inputs</span> <span class="o">=</span> <span class="p">{</span>
+        nixpkgs<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">&quot;github:NixOS/nixpkgs/nixos-24.11&quot;</span><span class="p">;</span>
+        <span class="ss">gitignore</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="ss">url</span> <span class="o">=</span> <span class="s2">&quot;github:hercules-ci/gitignore.nix&quot;</span><span class="p">;</span>
+            inputs<span class="o">.</span>nixpkgs<span class="o">.</span><span class="ss">follows</span> <span class="o">=</span> <span class="s2">&quot;nixpkgs&quot;</span><span class="p">;</span>
+        <span class="p">};</span>
+    <span class="p">}</span>
+    <span class="ss">outputs</span> <span class="o">=</span> <span class="p">{</span> self<span class="p">,</span> nixpkgs<span class="p">,</span> gitignore <span class="p">}:</span> <span class="k">let</span>
+        <span class="c1"># ... previous code omitted ...</span>
+        <span class="ss">deps</span> <span class="o">=</span> <span class="k">with</span> pkgs<span class="p">;</span> <span class="p">[</span>
+            pelican-flex-theme
+            <span class="p">(</span>python3<span class="o">.</span>withPackages <span class="p">(</span>ps<span class="p">:</span> <span class="p">[</span> ps<span class="o">.</span>pelican ps<span class="o">.</span>markdown <span class="p">]))</span>
+        <span class="p">];</span>
+        <span class="k">inherit</span> <span class="p">(</span>gitignore<span class="o">.</span>lib<span class="p">)</span> gitignoreSource<span class="p">;</span>
+    <span class="k">in</span> <span class="p">{</span>
+        <span class="c1"># ... previous code omitted ...</span>
+        packages<span class="o">.</span><span class="si">${</span>system<span class="si">}</span><span class="o">.</span><span class="ss">default</span> <span class="o">=</span> pkgs<span class="o">.</span>stdenv<span class="o">.</span>mkDerivation <span class="p">{</span>
+            <span class="ss">name</span> <span class="o">=</span> <span class="s2">&quot;my-website&quot;</span><span class="p">;</span>
+            <span class="ss">src</span> <span class="o">=</span> gitignoreSource <span class="l">./.</span><span class="p">;</span>
+            <span class="ss">nativeBuildInputs</span> <span class="o">=</span> deps<span class="p">;</span>
+            <span class="ss">buildPhase</span> <span class="o">=</span> <span class="s s-Multiline">&#39;&#39;</span>
+<span class="s s-Multiline">                export PELICAN_THEME=</span><span class="si">${</span>pelican-flex-theme<span class="si">}</span>
+<span class="s s-Multiline">                pelican content -o output -s pelicanconf.py</span>
+<span class="s s-Multiline">            &#39;&#39;</span><span class="p">;</span>
+            <span class="ss">installPhase</span> <span class="o">=</span> <span class="s s-Multiline">&#39;&#39;</span>
+<span class="s s-Multiline">                mkdir -p $out</span>
+<span class="s s-Multiline">                cp -r output/* $out</span>
+<span class="s s-Multiline">            &#39;&#39;</span><span class="p">;</span>
+        <span class="p">};</span>
+    <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Now you can build the website by running the command</p>
+<div class="highlight"><pre><span></span><code>nix<span class="w"> </span>build
+</code></pre></div>
+
+<p>You can access the website in the <code>result</code> folder (which
+is a link to the created derivation in the nix store).</p>
+<h1 id="launching-the-website-locally">Launching the website locally<a class="headerlink" href="#launching-the-website-locally" title="Permanent link">&para;</a></h1>
+<p>To run the locally we define an application in 
+the Nix flake file. To run the website locally will be done in three
+steps :
+1. Create a shell script to run the website (using
+nix of course)
+2. Define an application in <code>flake.nix</code>
+3. Make the shell script and the package a
+dependency of the application</p>
+<p>Here is how it is done:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+    <span class="c1"># ... inputs ...</span>
+    <span class="ss">outputs</span> <span class="o">=</span> <span class="p">{</span> self<span class="p">,</span> nixpkgs<span class="p">,</span> gitignore <span class="p">}:</span> <span class="k">let</span>
+        <span class="c1"># ... previous code omitted ...</span>
+        <span class="ss">deps</span> <span class="o">=</span> <span class="k">with</span> pkgs<span class="p">;</span> <span class="p">[</span>
+            pelican-flex-theme
+            <span class="p">(</span>python3<span class="o">.</span>withPackages <span class="p">(</span>ps<span class="p">:</span> <span class="p">[</span> ps<span class="o">.</span>pelican ps<span class="o">.</span>markdown <span class="p">]))</span>
+        <span class="p">];</span>
+        <span class="k">inherit</span> <span class="p">(</span>gitignore<span class="o">.</span>lib<span class="p">)</span> gitignoreSource<span class="p">;</span>
+        <span class="ss">static-website</span> <span class="o">=</span> pkgs<span class="o">.</span>stdenv<span class="o">.</span>mkDerivation <span class="p">{</span>
+            <span class="ss">name</span> <span class="o">=</span> <span class="s2">&quot;my-website&quot;</span><span class="p">;</span>
+            <span class="ss">src</span> <span class="o">=</span> gitignoreSource <span class="l">./.</span><span class="p">;</span>
+            <span class="ss">nativeBuildInputs</span> <span class="o">=</span> deps<span class="p">;</span>
+            <span class="ss">buildPhase</span> <span class="o">=</span> <span class="s s-Multiline">&#39;&#39;</span>
+<span class="s s-Multiline">                export PELICAN_THEME=</span><span class="si">${</span>pelican-flex-theme<span class="si">}</span>
+<span class="s s-Multiline">                pelican content -o output -s pelicanconf.py</span>
+<span class="s s-Multiline">            &#39;&#39;</span><span class="p">;</span>
+            <span class="ss">installPhase</span> <span class="o">=</span> <span class="s s-Multiline">&#39;&#39;</span>
+<span class="s s-Multiline">                mkdir -p $out</span>
+<span class="s s-Multiline">                cp -r output/* $out</span>
+<span class="s s-Multiline">            &#39;&#39;</span><span class="p">;</span>
+        <span class="p">};</span>
+    <span class="k">in</span> <span class="p">{</span>
+        <span class="c1"># ... previous code omitted ...</span>
+        packages<span class="o">.</span><span class="si">${</span>system<span class="si">}</span><span class="o">.</span><span class="ss">default</span> <span class="o">=</span> static-website<span class="p">;</span>
+        apps<span class="o">.</span><span class="si">${</span>system<span class="si">}</span><span class="o">.</span><span class="ss">default</span> <span class="o">=</span> <span class="k">let</span>
+            <span class="ss">serv</span> <span class="o">=</span> pkgs<span class="o">.</span>writeShellApplication <span class="p">{</span>
+                <span class="ss">name</span> <span class="o">=</span> <span class="s2">&quot;serve&quot;</span><span class="p">;</span>
+                <span class="ss">runtimeInputs</span> <span class="o">=</span> <span class="p">[</span> static-website <span class="p">]</span> <span class="o">++</span> deps<span class="p">;</span>
+                <span class="ss">text</span> <span class="o">=</span> <span class="s s-Multiline">&#39;&#39;</span>
+<span class="s s-Multiline">                    pelican --relative-urls -p 8080 -l </span><span class="si">${</span>static-website<span class="si">}</span>
+<span class="s s-Multiline">                &#39;&#39;</span><span class="p">;</span>
+            <span class="p">};</span>
+        <span class="k">in</span> <span class="p">{</span>
+            <span class="ss">type</span> <span class="o">=</span> <span class="s2">&quot;app&quot;</span><span class="p">;</span>
+            <span class="ss">program</span> <span class="o">=</span><span class="s2">&quot; </span><span class="si">${</span>serv<span class="si">}</span><span class="s2">/bin/serve&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>In the above code we refactor the code by moving the package
+definition into the <code>static-website</code> variable in the 
+<code>let ... in ...</code> clause. We also create a subcomponent as
+a shell application derivation called <code>serv</code> which 
+simply run the pelican local server.</p>
+<p>To run the website locally simply do</p>
+<div class="highlight"><pre><span></span><code>nix<span class="w"> </span>run
+</code></pre></div>
+
+<p><img alt="resulting_image" src="images/pelican-flake-static-website.png" /></p>
+<h2 id="updating-the-website">Updating the website<a class="headerlink" href="#updating-the-website" title="Permanent link">&para;</a></h2>
+<p>Now if you make changes to your website (e.g. add a new
+article markdown file) you may not see the changes
+after running <code>nix run</code> or <code>nix build</code>, the most
+likely reason for this is that flakes track the
+latest state of the git repository; meaning
+you may need to <code>git add</code> files for changes to 
+be reflected.</p>
+<h1 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h1>
+<p>In this article I show how to use Nix flakes
+to manage the development life-cycle of a 
+statically generated website using pelican.</p>
+<p>Nix flakes are used to manage the development 
+environment (like virtual environments in Python),
+build the website (like in <code>make build</code>) and run the
+website locally (like a <code>docker run</code>).</p>
+<p>For more articles about Nix and NixOS the following 
+RSS feed is available over <a href="/feeds/nix.rss.xml">here</a>.</p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://michal.parusinski.me/tag/pelican.html">pelican</a>
+      <a href="https://michal.parusinski.me/tag/nix.html">nix</a>
+    </p>
+  </div>
+
+
+
+
+
+
+</article>
+
+<footer>
+<p>&copy;  </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Michal Parusinski - Personal Site ",
+  "url" : "https://michal.parusinski.me",
+  "image": "/images/profile.jpg",
+  "description": ""
+}
+</script><script type="text/javascript">
+  var _paq = window._paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://stats.parusinski.me/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', 1]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="https://stats.parusinski.me/matomo.php?idsite=1&rec=1" style="border:0" alt="" /></p></noscript>
+
+</body>
+</html>

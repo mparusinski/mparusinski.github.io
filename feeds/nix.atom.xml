@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Michal Parusinski - Personal Site - nix</title><link href="https://michal.parusinski.me/" rel="alternate"></link><link href="https://michal.parusinski.me/feeds/nix.atom.xml" rel="self"></link><id>https://michal.parusinski.me/</id><updated>2025-01-19T12:00:00+01:00</updated><entry><title>Publishing a pelican website using nix</title><link href="https://michal.parusinski.me/publish-website-using-nix.html" rel="alternate"></link><published>2025-01-19T12:00:00+01:00</published><updated>2025-01-19T12:00:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2025-01-19:/publish-website-using-nix.html</id><summary type="html">&lt;p&gt;How to publish a static website using Nix flakes&lt;/p&gt;</summary><content type="html">&lt;p&gt;This website is statically generated using &lt;a href="https://getpelican.com/"&gt;pelican&lt;/a&gt; and development on the 
+website is done via &lt;a href="https://nixos.wiki/wiki/Flakes"&gt;nix flakes&lt;/a&gt;. 
+Here is how :&lt;/p&gt;
+&lt;h1 id="overview"&gt;Overview&lt;a class="headerlink" href="#overview" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;I use pelican to publish this website. Pelican is a 
+python based command line tool to generate a static 
+website. Pelican requires writing the articles in
+reStructuredText or Markdown and placing these files
+in a folder which I call &lt;code&gt;content&lt;/code&gt;. To generate
+the website I simply run a command&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pelican&lt;span class="w"&gt; &lt;/span&gt;-r&lt;span class="w"&gt; &lt;/span&gt;content&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;output&lt;span class="w"&gt; &lt;/span&gt;-s&lt;span class="w"&gt; &lt;/span&gt;pelicanconf.py
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;I will not cover the details on how to install Pelican. In the 
+above command I specify the source folder &lt;code&gt;content&lt;/code&gt;,
+the &lt;code&gt;output&lt;/code&gt; destination folder and finally a 
+configuration file called &lt;code&gt;pelicanconf.py&lt;/code&gt; that 
+contain various website information like the
+name of website, the locale or the theming.&lt;/p&gt;
+&lt;p&gt;While pelican is simple, it still requires a 
+lot of small steps every time you want to
+publish an article. Which is why I use nix
+to automate as much as possible to leave
+as little friction.&lt;/p&gt;
+&lt;p&gt;I will explain how I use Nix flakes to manage
+dependencies, build the website and run it locally.
+I will leave publishing for possible future article.&lt;/p&gt;
+&lt;h1 id="creating-a-development-environment-nix-shell"&gt;Creating a development environment (nix-shell)&lt;a class="headerlink" href="#creating-a-development-environment-nix-shell" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;The purpose of a nix shell is to have a shell 
+environment where all the tooling is installed
+and one can develop various helper scripts (e.g. 
+script to run the website locally).&lt;/p&gt;
+&lt;p&gt;First I create the &lt;code&gt;flake.nix&lt;/code&gt; file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="ss"&gt;description&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Simple blog project&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="ss"&gt;inputs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        nixpkgs&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ss"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;github:NixOS/nixpkgs/nixos-24.11&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="ss"&gt;outputs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; self&lt;span class="p"&gt;,&lt;/span&gt; nixpkgs &lt;span class="p"&gt;}:&lt;/span&gt; &lt;span class="k"&gt;let&lt;/span&gt;
+        &lt;span class="ss"&gt;system&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;x86_64-linux&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="ss"&gt;pkgs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;import&lt;/span&gt; nixpkgs &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="k"&gt;inherit&lt;/span&gt; system&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="ss"&gt;deps&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; pkgs&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+            &lt;span class="p"&gt;(&lt;/span&gt;python3&lt;span class="o"&gt;.&lt;/span&gt;withPackages &lt;span class="p"&gt;(&lt;/span&gt;ps&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; ps&lt;span class="o"&gt;.&lt;/span&gt;pelican ps&lt;span class="o"&gt;.&lt;/span&gt;markdown &lt;span class="p"&gt;]))&lt;/span&gt;
+        &lt;span class="p"&gt;];&lt;/span&gt;
+    &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        devShells&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;system&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; pkgs&lt;span class="o"&gt;.&lt;/span&gt;mkShell &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="ss"&gt;buildInputs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; deps&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="p"&gt;};&lt;/span&gt;
+    &lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Basically this tells how to make a shell environment
+with pelican installed and markdown support. It can
+be invoked like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;nix&lt;span class="w"&gt; &lt;/span&gt;develop
+pelican&lt;span class="w"&gt; &lt;/span&gt;-r&lt;span class="w"&gt; &lt;/span&gt;./content&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;./dev-output&lt;span class="w"&gt; &lt;/span&gt;-s&lt;span class="w"&gt; &lt;/span&gt;pelicanconf.py
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;However, this may not work for everyone
+because I use an external theme.&lt;/p&gt;
+&lt;p&gt;When it is not a flake project (i.e the project root does not
+have a &lt;code&gt;flake.nix&lt;/code&gt;) we turn the external dependency into a
+derivation &lt;em&gt;from scratch&lt;/em&gt;. This can be done
+using &lt;code&gt;fetchFromGitHub&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="ss"&gt;description&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Simple blog project&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="ss"&gt;inputs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        nixpkgs&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ss"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;github:NixOS/nixpkgs/nixos-24.11&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="ss"&gt;outputs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; self&lt;span class="p"&gt;,&lt;/span&gt; nixpkgs &lt;span class="p"&gt;}:&lt;/span&gt; &lt;span class="k"&gt;let&lt;/span&gt;
+        &lt;span class="ss"&gt;system&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;x86_64-linux&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="ss"&gt;pkgs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;import&lt;/span&gt; nixpkgs &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="k"&gt;inherit&lt;/span&gt; system&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="ss"&gt;pelican-flex-theme&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; pkgs&lt;span class="o"&gt;.&lt;/span&gt;fetchFromGitHub &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="ss"&gt;owner&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;alexandrevicenzi&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;repo&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Flex&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;rev&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;master&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;sha256&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;sha256-I/WEqFMZbnJvX4NMeqB+o9LzD4im1BwOwgaqqDqbL2s=&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="p"&gt;};&lt;/span&gt;
+        &lt;span class="ss"&gt;deps&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; pkgs&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+            pelican-flex-theme
+            &lt;span class="p"&gt;(&lt;/span&gt;python3&lt;span class="o"&gt;.&lt;/span&gt;withPackages &lt;span class="p"&gt;(&lt;/span&gt;ps&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; ps&lt;span class="o"&gt;.&lt;/span&gt;pelican ps&lt;span class="o"&gt;.&lt;/span&gt;markdown &lt;span class="p"&gt;]))&lt;/span&gt;
+        &lt;span class="p"&gt;];&lt;/span&gt;
+    &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        devShells&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;system&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; pkgs&lt;span class="o"&gt;.&lt;/span&gt;mkShell &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="ss"&gt;buildInputs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; deps&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;shellHook&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s s-Multiline"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;              export PELICAN_THEME=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;pelican-flex-theme&lt;span class="si"&gt;}&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;            &amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="p"&gt;};&lt;/span&gt;
+    &lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now after running &lt;code&gt;nix develop&lt;/code&gt; I can access the 
+path to the theme via the environment
+variable &lt;strong&gt;PELICAN_THEME&lt;/strong&gt; (which happens to be
+what I use in &lt;code&gt;pelicanconf.py&lt;/code&gt;).&lt;/p&gt;
+&lt;h1 id="building-the-website"&gt;Building the website&lt;a class="headerlink" href="#building-the-website" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Next step is to implement the build step. This
+is done by specifying the &lt;code&gt;packages.${system}.default&lt;/code&gt;
+output derivation. Now&lt;br /&gt;
+by building the website, I mean generating
+the static files, not running a local instance. 
+Running the website locally will be explained later.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="ss"&gt;description&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Simple blog project&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="ss"&gt;inputs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        nixpkgs&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ss"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;github:NixOS/nixpkgs/nixos-24.11&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="ss"&gt;outputs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; self&lt;span class="p"&gt;,&lt;/span&gt; nixpkgs &lt;span class="p"&gt;}:&lt;/span&gt; &lt;span class="k"&gt;let&lt;/span&gt;
+        &lt;span class="ss"&gt;system&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;x86_64-linux&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="ss"&gt;pkgs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;import&lt;/span&gt; nixpkgs &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="k"&gt;inherit&lt;/span&gt; system&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="ss"&gt;pelican-flex-theme&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; pkgs&lt;span class="o"&gt;.&lt;/span&gt;fetchFromGitHub &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="ss"&gt;owner&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;alexandrevicenzi&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;repo&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Flex&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;rev&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;master&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;sha256&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;sha256-I/WEqFMZbnJvX4NMeqB+o9LzD4im1BwOwgaqqDqbL2s=&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="p"&gt;};&lt;/span&gt;
+        &lt;span class="ss"&gt;deps&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; pkgs&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+            pelican-flex-theme
+            &lt;span class="p"&gt;(&lt;/span&gt;python3&lt;span class="o"&gt;.&lt;/span&gt;withPackages &lt;span class="p"&gt;(&lt;/span&gt;ps&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; ps&lt;span class="o"&gt;.&lt;/span&gt;pelican ps&lt;span class="o"&gt;.&lt;/span&gt;markdown &lt;span class="p"&gt;]))&lt;/span&gt;
+        &lt;span class="p"&gt;];&lt;/span&gt;
+    &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        devShells&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;system&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; pkgs&lt;span class="o"&gt;.&lt;/span&gt;mkShell &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="ss"&gt;buildInputs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; deps&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;shellHook&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s s-Multiline"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;              export PELICAN_THEME=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;pelican-flex-theme&lt;span class="si"&gt;}&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;            &amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="p"&gt;};&lt;/span&gt;
+        packages&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;system&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ss"&gt;default&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; pkgs&lt;span class="o"&gt;.&lt;/span&gt;stdenv&lt;span class="o"&gt;.&lt;/span&gt;mkDerivation &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="ss"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;my-website&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;src&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="l"&gt;./.&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;nativeBuildInputs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; deps&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;buildPhase&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s s-Multiline"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;                export PELICAN_THEME=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;pelican-flex-theme&lt;span class="si"&gt;}&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;                pelican content -o output -s pelicanconf.py&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;            &amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;installPhase&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s s-Multiline"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;                mkdir -p $out&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;                cp -r output/* $out&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;            &amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="p"&gt;};&lt;/span&gt;
+    &lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Just like a Makefile we specify how to &lt;em&gt;build&lt;/em&gt; 
+the project using the &lt;code&gt;buildPhase&lt;/code&gt; and
+how to install using the &lt;code&gt;installPhase&lt;/code&gt;; all
+of this within &lt;code&gt;stdenv.mkDerivation&lt;/code&gt;. &lt;/p&gt;
+&lt;p&gt;There is however one problem with this derivation.
+It fetches all the files instead of only the 
+files it needs. To fix this I use
+&lt;a href="https://github.com/hercules-ci/gitignore.nix"&gt;gitignore.nix&lt;/a&gt;
+which filters the source folder using the .gitignore file.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="ss"&gt;description&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Simple blog project&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="ss"&gt;inputs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        nixpkgs&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ss"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;github:NixOS/nixpkgs/nixos-24.11&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="ss"&gt;gitignore&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="ss"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;github:hercules-ci/gitignore.nix&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            inputs&lt;span class="o"&gt;.&lt;/span&gt;nixpkgs&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ss"&gt;follows&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;nixpkgs&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="p"&gt;};&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="ss"&gt;outputs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; self&lt;span class="p"&gt;,&lt;/span&gt; nixpkgs&lt;span class="p"&gt;,&lt;/span&gt; gitignore &lt;span class="p"&gt;}:&lt;/span&gt; &lt;span class="k"&gt;let&lt;/span&gt;
+        &lt;span class="c1"&gt;# ... previous code omitted ...&lt;/span&gt;
+        &lt;span class="ss"&gt;deps&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; pkgs&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+            pelican-flex-theme
+            &lt;span class="p"&gt;(&lt;/span&gt;python3&lt;span class="o"&gt;.&lt;/span&gt;withPackages &lt;span class="p"&gt;(&lt;/span&gt;ps&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; ps&lt;span class="o"&gt;.&lt;/span&gt;pelican ps&lt;span class="o"&gt;.&lt;/span&gt;markdown &lt;span class="p"&gt;]))&lt;/span&gt;
+        &lt;span class="p"&gt;];&lt;/span&gt;
+        &lt;span class="k"&gt;inherit&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;gitignore&lt;span class="o"&gt;.&lt;/span&gt;lib&lt;span class="p"&gt;)&lt;/span&gt; gitignoreSource&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="c1"&gt;# ... previous code omitted ...&lt;/span&gt;
+        packages&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;system&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ss"&gt;default&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; pkgs&lt;span class="o"&gt;.&lt;/span&gt;stdenv&lt;span class="o"&gt;.&lt;/span&gt;mkDerivation &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="ss"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;my-website&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;src&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; gitignoreSource &lt;span class="l"&gt;./.&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;nativeBuildInputs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; deps&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;buildPhase&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s s-Multiline"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;                export PELICAN_THEME=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;pelican-flex-theme&lt;span class="si"&gt;}&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;                pelican content -o output -s pelicanconf.py&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;            &amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;installPhase&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s s-Multiline"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;                mkdir -p $out&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;                cp -r output/* $out&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;            &amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="p"&gt;};&lt;/span&gt;
+    &lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now you can build the website by running the command&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;nix&lt;span class="w"&gt; &lt;/span&gt;build
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;You can access the website in the &lt;code&gt;result&lt;/code&gt; folder (which
+is a link to the created derivation in the nix store).&lt;/p&gt;
+&lt;h1 id="launching-the-website-locally"&gt;Launching the website locally&lt;a class="headerlink" href="#launching-the-website-locally" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;To run the locally we define an application in 
+the Nix flake file. To run the website locally will be done in three
+steps :
+1. Create a shell script to run the website (using
+nix of course)
+2. Define an application in &lt;code&gt;flake.nix&lt;/code&gt;
+3. Make the shell script and the package a
+dependency of the application&lt;/p&gt;
+&lt;p&gt;Here is how it is done:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;# ... inputs ...&lt;/span&gt;
+    &lt;span class="ss"&gt;outputs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; self&lt;span class="p"&gt;,&lt;/span&gt; nixpkgs&lt;span class="p"&gt;,&lt;/span&gt; gitignore &lt;span class="p"&gt;}:&lt;/span&gt; &lt;span class="k"&gt;let&lt;/span&gt;
+        &lt;span class="c1"&gt;# ... previous code omitted ...&lt;/span&gt;
+        &lt;span class="ss"&gt;deps&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; pkgs&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+            pelican-flex-theme
+            &lt;span class="p"&gt;(&lt;/span&gt;python3&lt;span class="o"&gt;.&lt;/span&gt;withPackages &lt;span class="p"&gt;(&lt;/span&gt;ps&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; ps&lt;span class="o"&gt;.&lt;/span&gt;pelican ps&lt;span class="o"&gt;.&lt;/span&gt;markdown &lt;span class="p"&gt;]))&lt;/span&gt;
+        &lt;span class="p"&gt;];&lt;/span&gt;
+        &lt;span class="k"&gt;inherit&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;gitignore&lt;span class="o"&gt;.&lt;/span&gt;lib&lt;span class="p"&gt;)&lt;/span&gt; gitignoreSource&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="ss"&gt;static-website&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; pkgs&lt;span class="o"&gt;.&lt;/span&gt;stdenv&lt;span class="o"&gt;.&lt;/span&gt;mkDerivation &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="ss"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;my-website&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;src&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; gitignoreSource &lt;span class="l"&gt;./.&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;nativeBuildInputs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; deps&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;buildPhase&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s s-Multiline"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;                export PELICAN_THEME=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;pelican-flex-theme&lt;span class="si"&gt;}&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;                pelican content -o output -s pelicanconf.py&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;            &amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;installPhase&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s s-Multiline"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;                mkdir -p $out&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;                cp -r output/* $out&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;            &amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="p"&gt;};&lt;/span&gt;
+    &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="c1"&gt;# ... previous code omitted ...&lt;/span&gt;
+        packages&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;system&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ss"&gt;default&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; static-website&lt;span class="p"&gt;;&lt;/span&gt;
+        apps&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;system&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ss"&gt;default&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;let&lt;/span&gt;
+            &lt;span class="ss"&gt;serv&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; pkgs&lt;span class="o"&gt;.&lt;/span&gt;writeShellApplication &lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="ss"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;serve&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+                &lt;span class="ss"&gt;runtimeInputs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; static-website &lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;++&lt;/span&gt; deps&lt;span class="p"&gt;;&lt;/span&gt;
+                &lt;span class="ss"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s s-Multiline"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;                    pelican --relative-urls -p 8080 -l &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;static-website&lt;span class="si"&gt;}&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;                &amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="p"&gt;};&lt;/span&gt;
+        &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="ss"&gt;type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;app&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="ss"&gt;program&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot; &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;serv&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/bin/serve&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In the above code we refactor the code by moving the package
+definition into the &lt;code&gt;static-website&lt;/code&gt; variable in the 
+&lt;code&gt;let ... in ...&lt;/code&gt; clause. We also create a subcomponent as
+a shell application derivation called &lt;code&gt;serv&lt;/code&gt; which 
+simply run the pelican local server.&lt;/p&gt;
+&lt;p&gt;To run the website locally simply do&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;nix&lt;span class="w"&gt; &lt;/span&gt;run
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img alt="resulting_image" src="images/pelican-flake-static-website.png" /&gt;&lt;/p&gt;
+&lt;h2 id="updating-the-website"&gt;Updating the website&lt;a class="headerlink" href="#updating-the-website" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Now if you make changes to your website (e.g. add a new
+article markdown file) you may not see the changes
+after running &lt;code&gt;nix run&lt;/code&gt; or &lt;code&gt;nix build&lt;/code&gt;, the most
+likely reason for this is that flakes track the
+latest state of the git repository; meaning
+you may need to &lt;code&gt;git add&lt;/code&gt; files for changes to 
+be reflected.&lt;/p&gt;
+&lt;h1 id="summary"&gt;Summary&lt;a class="headerlink" href="#summary" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;In this article I show how to use Nix flakes
+to manage the development life-cycle of a 
+statically generated website using pelican.&lt;/p&gt;
+&lt;p&gt;Nix flakes are used to manage the development 
+environment (like virtual environments in Python),
+build the website (like in &lt;code&gt;make build&lt;/code&gt;) and run the
+website locally (like a &lt;code&gt;docker run&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;For more articles about Nix and NixOS the following 
+RSS feed is available over &lt;a href="/feeds/nix.rss.xml"&gt;here&lt;/a&gt;.&lt;/p&gt;</content><category term="nix"></category><category term="pelican"></category><category term="nix"></category></entry><entry><title>Managing secrets in Nix using Agenix</title><link href="https://michal.parusinski.me/managin-secrets-in-nix-using-agenix.html" rel="alternate"></link><published>2024-10-25T21:26:00+02:00</published><updated>2024-10-25T21:26:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2024-10-25:/managin-secrets-in-nix-using-agenix.html</id><summary type="html">&lt;p&gt;How to manage secrets in Nix using Agenix&lt;/p&gt;</summary><content type="html">&lt;p&gt;If tomorrow my laptop were to go in flames, I would lose two things.
+First I would lose my data, and this is what backups are for. The
+second thing I would lose is my configuration (software installed,
+network setup, &amp;hellip;). Nix offers a way to perserve this (assuming 
+the configuration is replicated externally like GitHub).&lt;/p&gt;
+&lt;p&gt;But storing one&amp;rsquo;s configuration is Nix comes with challenges. One of those 
+challenges is how to handle secrets. Some parts of the configuration
+is tied to secrets : passwords, keys, API tokens, &amp;hellip; . The question
+is how to manage this. Usually it requires some form of cryptography.&lt;/p&gt;
+&lt;h1 id="how-i-store-my-nix-configuration"&gt;How I store my nix configuration&lt;a class="headerlink" href="#how-i-store-my-nix-configuration" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Before I explain Agenix, I think it is worth to explain how I manage
+my Nix configuration on the various machines I have installed Nix.
+This is because Agenix integrates to my nix configuration, and
+Agenix makes more sense in context.&lt;/p&gt;
+&lt;p&gt;There is the file layout of my Nix configuration over at (GitHub)[https://github.com/mparusinski/nix-config/]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;.
+├──&lt;span class="w"&gt; &lt;/span&gt;build.sh
+├──&lt;span class="w"&gt; &lt;/span&gt;flake.lock
+├──&lt;span class="w"&gt; &lt;/span&gt;flake.nix
+├──&lt;span class="w"&gt; &lt;/span&gt;modules
+│&lt;span class="w"&gt;   &lt;/span&gt;├──&lt;span class="w"&gt; &lt;/span&gt;nixos
+│&lt;span class="w"&gt;   &lt;/span&gt;│&lt;span class="w"&gt;   &lt;/span&gt;├──&lt;span class="w"&gt; &lt;/span&gt;users.nix&lt;span class="w"&gt; &lt;/span&gt;
+│&lt;span class="w"&gt;   &lt;/span&gt;│&lt;span class="w"&gt;   &lt;/span&gt;├──&lt;span class="w"&gt; &lt;/span&gt;...
+│&lt;span class="w"&gt;   &lt;/span&gt;│&lt;span class="w"&gt;   &lt;/span&gt;└──&lt;span class="w"&gt; &lt;/span&gt;gc.nix
+│&lt;span class="w"&gt;   &lt;/span&gt;└──&lt;span class="w"&gt; &lt;/span&gt;home-manager
+│&lt;span class="w"&gt;       &lt;/span&gt;├──&lt;span class="w"&gt; &lt;/span&gt;git.nix
+│&lt;span class="w"&gt;       &lt;/span&gt;├──&lt;span class="w"&gt; &lt;/span&gt;...
+│&lt;span class="w"&gt;       &lt;/span&gt;└──&lt;span class="w"&gt; &lt;/span&gt;zsh.nix
+└──&lt;span class="w"&gt; &lt;/span&gt;hosts
+&lt;span class="w"&gt;    &lt;/span&gt;├──&lt;span class="w"&gt; &lt;/span&gt;dell-precision-7530
+&lt;span class="w"&gt;    &lt;/span&gt;│&lt;span class="w"&gt;   &lt;/span&gt;├──&lt;span class="w"&gt; &lt;/span&gt;configuration.nix
+&lt;span class="w"&gt;    &lt;/span&gt;│&lt;span class="w"&gt;   &lt;/span&gt;├──&lt;span class="w"&gt; &lt;/span&gt;hardware-configuration.nix
+&lt;span class="w"&gt;    &lt;/span&gt;│&lt;span class="w"&gt;   &lt;/span&gt;└──&lt;span class="w"&gt; &lt;/span&gt;home.nix
+&lt;span class="w"&gt;    &lt;/span&gt;└──&lt;span class="w"&gt; &lt;/span&gt;wsl1
+&lt;span class="w"&gt;        &lt;/span&gt;├──&lt;span class="w"&gt; &lt;/span&gt;configuration.nix
+&lt;span class="w"&gt;        &lt;/span&gt;└──&lt;span class="w"&gt; &lt;/span&gt;home.nix
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;(The layout is inspired from &amp;hellip;) TODO: Find source&lt;/p&gt;
+&lt;p&gt;There are two parts each divided into two subparts :
+* The build system build on top of Nix and Flakes
+    * &lt;code&gt;flake.nix&lt;/code&gt; and &lt;code&gt;flake.lock&lt;/code&gt; describe how to build a nix configuration on a given system.
+    * &lt;code&gt;build.sh&lt;/code&gt; which launches the appropriate Nix build command for the underlying system.
+* Nix modules which defines the system configuration
+    * &lt;code&gt;modules&lt;/code&gt; defines reusable configuration code across various systems
+    * &lt;code&gt;hosts&lt;/code&gt; defines configuration for given systems.&lt;/p&gt;
+&lt;p&gt;Naively secrets (passwords, keys, API tokens, &amp;hellip;) would be stored in plain text somewhere
+in the files mentionned here.&lt;/p&gt;
+&lt;h1 id="agenix-explained"&gt;Agenix explained&lt;a class="headerlink" href="#agenix-explained" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;To include secrets safely in a Git repository storing configuration there are multiple options.
+A common choice to externalize secrets. Essentially storing them not in Git. That could be 
+simple files one has to place manually, key vaults, etc. But in that case you can&amp;rsquo;t simply 
+replicate configuration unless you maintain those secrets. Another choice is to encrypt the
+secrets before hand, and, it has to be said, making sure the encryption key does not end up in Git.&lt;/p&gt;
+&lt;p&gt;Agenix offers a way to include those secrets encrypted in Git. Furthermore Agenix is aware
+of actors involved. By actors I mean the repository maintainer, i.e. you, the systems that
+will have to decrypt the secrets, &amp;hellip;&lt;/p&gt;
+&lt;p&gt;Agenix is build on top of &lt;a href="https://github.com/FiloSottile/age"&gt;age&lt;/a&gt; which is an encryption tool.
+Its particularity is Age encrypted secrets can have multiple recipients and can use SSH
+asymetric encryption (a key for encryption, a key for decryption). Agenix uses &lt;code&gt;age&lt;/code&gt; to make
+the secret decryptable by authorized actors : you and the systems (which have their own 
+SSH keys) that need to access the secrets and no one else.&lt;/p&gt;
+&lt;p&gt;To be used Agenix needs to be installed to encrypt secrets but you also need to 
+specify the nix configuration to setup agenix (so it can manage secrets) which
+amount of having it installed, the secrets specified and when to use them.&lt;/p&gt;
+&lt;h1 id="managing-secrets"&gt;Managing secrets&lt;a class="headerlink" href="#managing-secrets" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;The first step is to install Nix. In my case I am using flakes so I followed
+the steps from &lt;a href="https://github.com/ryantm/agenix?tab=readme-ov-file#install-module-via-flakes"&gt;install guide for flakes&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;So more details about using flakes for your NixOS configuration see this &lt;a href="https://nixos-and-flakes.thiscute.world/nixos-with-flakes/nixos-with-flakes-enabled"&gt;link&lt;/a&gt;
+If you want to pass agenix to your configuration module file (usually named &lt;code&gt;configuration.nix&lt;/code&gt;) 
+you need to specify the &lt;code&gt;specialArgs = { inherit inputs; }&lt;/code&gt; option when calling 
+&lt;code&gt;nixpkgs.lib.nixosSystem&lt;/code&gt;. To check if agenix is correctly installed run &lt;code&gt;agenix -h&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Now that agenix is installed the next step is to setup secrets. Inside your
+nix configuration folder do the following&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkdir&lt;span class="w"&gt; &lt;/span&gt;secrets
+&lt;span class="nb"&gt;cd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;secrets
+touch&lt;span class="w"&gt; &lt;/span&gt;secrets.nix
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This means that the &lt;code&gt;secrets.nix&lt;/code&gt; file will be version controlled. And start 
+editing the &lt;code&gt;secrets.nix&lt;/code&gt; file.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;let&lt;/span&gt;
+  &lt;span class="c1"&gt;# SSH public keys of the users who will be adding secrets through agenix&lt;/span&gt;
+  &lt;span class="ss"&gt;john&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJCizmOo5KevfHd6pqwxVjgvVYWv4Az5TbAclvuhF2AC&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="ss"&gt;users&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; john &lt;span class="p"&gt;];&lt;/span&gt;
+
+  &lt;span class="c1"&gt;# SSH public keys of the systems who will need to access the secrets&lt;/span&gt;
+  &lt;span class="ss"&gt;webserver&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDA1+TbC/tXsVAKUjSzipoC0ibOgSWuNvzVdb8Xxwi0T&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="ss"&gt;systems&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; webserver &lt;span class="p"&gt;];&lt;/span&gt;
+&lt;span class="k"&gt;in&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;# Specify for each secret who has access to it&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;apikey.age&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ss"&gt;publicKeys&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; users &lt;span class="o"&gt;++&lt;/span&gt; systems&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Once this is done you can create the secret files. In the above example that would 
+&lt;code&gt;agenix -e apikey.age&lt;/code&gt;. This file contains the encrypted secret to be used.&lt;/p&gt;
+&lt;p&gt;Once you have done you will need to specify the secrets twice in the configuration nix
+files: once to declare the secret with the location of the age encrypted file, the
+second time to link the secret to some configuration item.&lt;/p&gt;
+&lt;p&gt;```nix
+{   # configuration.nix
+    &amp;hellip;
+    age.secrets.apikey.file = relativepathto/secrets/apikey.age; 
+    &amp;hellip;
+    # some service requiring the above secret
+    services.special.config.adminFile = config.age.secrets.apikey.path;
+}&lt;/p&gt;
+&lt;h1 id="limitations"&gt;Limitations&lt;a class="headerlink" href="#limitations" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;From my experience sometimes Agenix does not always work smoothly with
+Nix. For instance in one case the nix build system would invalidate
+a prometheus configuration because the Agenix path would not exist &lt;strong&gt;yet&lt;/strong&gt;.
+This had to with the prometheus Nix module validating the generate configuration
+yaml (see &lt;a href="https://mynixos.com/nixpkgs/option/services.prometheus.checkConfig"&gt;here&lt;/a&gt;).&lt;/p&gt;</content><category term="nix"></category><category term="linux"></category><category term="nix"></category><category term="security"></category></entry><entry><title>Converting Archlinux with BTRFS into NixOS</title><link href="https://michal.parusinski.me/arch-btrfs-into-nixos.html" rel="alternate"></link><published>2024-08-24T11:39:00+02:00</published><updated>2024-08-24T11:39:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2024-08-24:/arch-btrfs-into-nixos.html</id><summary type="html">&lt;p&gt;How I converted my Archlinux install with BTRFS into NixOS&lt;/p&gt;</summary><content type="html">&lt;p&gt;Recently I have converted my laptop from Archlinux into NixOS without
+reformatting or plugging a USB live distro and kept my home partition as is.
+This was done from the existing Archlinux install.&lt;/p&gt;
+&lt;p&gt;The former system was installed on top a BTRFS root subvolume. I use that to my 
+advantage. These steps are for NixOS specifically but in principle could be
+done with other distributions.&lt;/p&gt;
+&lt;h2 id="former-setup"&gt;Former setup&lt;a class="headerlink" href="#former-setup" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The former setup is Arch installed on top of BTRFS with full disk encryption
+with systemd-boot (on EFI). Two subvolumes were used : &lt;code&gt;root&lt;/code&gt; and &lt;code&gt;home&lt;/code&gt; used
+respectively for &lt;code&gt;/&lt;/code&gt; and &lt;code&gt;/home/&lt;/code&gt;. The layout can be summarized by&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;lsblk
+NAME&lt;span class="w"&gt;         &lt;/span&gt;MAJ:MIN&lt;span class="w"&gt; &lt;/span&gt;RM&lt;span class="w"&gt;   &lt;/span&gt;SIZE&lt;span class="w"&gt; &lt;/span&gt;RO&lt;span class="w"&gt; &lt;/span&gt;TYPE&lt;span class="w"&gt;  &lt;/span&gt;MOUNTPOINTS
+zram0&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="m"&gt;253&lt;/span&gt;:0&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt;     &lt;/span&gt;8G&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;disk&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;SWAP&lt;span class="o"&gt;]&lt;/span&gt;
+nvme0n1&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="m"&gt;259&lt;/span&gt;:0&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;476&lt;/span&gt;,9G&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;disk&lt;span class="w"&gt;  &lt;/span&gt;
+├─nvme0n1p1&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="m"&gt;259&lt;/span&gt;:1&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt;   &lt;/span&gt;512M&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;part&lt;span class="w"&gt;  &lt;/span&gt;/boot
+└─nvme0n1p2&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="m"&gt;259&lt;/span&gt;:2&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;476&lt;/span&gt;,4G&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;part&lt;span class="w"&gt;  &lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;└─cryptdev&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;254&lt;/span&gt;:0&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;476&lt;/span&gt;,4G&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;crypt&lt;span class="w"&gt; &lt;/span&gt;/home
+&lt;span class="w"&gt;                                        &lt;/span&gt;/
+$&lt;span class="w"&gt; &lt;/span&gt;btrfs&lt;span class="w"&gt; &lt;/span&gt;subvolume&lt;span class="w"&gt; &lt;/span&gt;list&lt;span class="w"&gt; &lt;/span&gt;/
+ID&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;256&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;gen&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2394&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;top&lt;span class="w"&gt; &lt;/span&gt;level&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;path&lt;span class="w"&gt; &lt;/span&gt;root
+ID&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;257&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;gen&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2394&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;top&lt;span class="w"&gt; &lt;/span&gt;level&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;path&lt;span class="w"&gt; &lt;/span&gt;home
+&lt;span class="o"&gt;(&lt;/span&gt;...&lt;span class="w"&gt; &lt;/span&gt;some&lt;span class="w"&gt; &lt;/span&gt;lines&lt;span class="w"&gt; &lt;/span&gt;are&lt;span class="w"&gt; &lt;/span&gt;omitted&lt;span class="w"&gt; &lt;/span&gt;here&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The goal will be to create a new &lt;code&gt;root&lt;/code&gt; subvolume for NixOS called &lt;code&gt;nixos_root&lt;/code&gt;&lt;/p&gt;
+&lt;h2 id="installing-nixos-tools"&gt;Installing NixOS tools&lt;a class="headerlink" href="#installing-nixos-tools" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;First we need to get nix tools, this is done by installing nix the normal way.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;sh&lt;span class="w"&gt; &lt;/span&gt;&amp;lt;&lt;span class="o"&gt;(&lt;/span&gt;curl&lt;span class="w"&gt; &lt;/span&gt;-L&lt;span class="w"&gt; &lt;/span&gt;https://nixos.org/nix/install&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;--daemon
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Reopen the shell and install NixOS installation tools.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;nix-channel&lt;span class="w"&gt; &lt;/span&gt;--add&lt;span class="w"&gt; &lt;/span&gt;https://nixos.org/channels/nixos-24.05&lt;span class="w"&gt; &lt;/span&gt;nixpkgs
+$&lt;span class="w"&gt; &lt;/span&gt;nix-env&lt;span class="w"&gt; &lt;/span&gt;-f&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;lt;nixpkgs&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-iA&lt;span class="w"&gt; &lt;/span&gt;nixos-install-tools
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id="prepare-environment"&gt;Prepare environment&lt;a class="headerlink" href="#prepare-environment" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Just like a regular CLI install we are going to prepare &lt;code&gt;/mnt/&lt;/code&gt; to host 
+the future system (which happens to be on the same disk as the current
+system). Please adapt the following steps to your disk layout :&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;mount&lt;span class="w"&gt; &lt;/span&gt;/dev/mapper/cryptdev&lt;span class="w"&gt; &lt;/span&gt;/btr_pool&lt;span class="w"&gt; &lt;/span&gt;
+$&lt;span class="w"&gt; &lt;/span&gt;btrfs&lt;span class="w"&gt; &lt;/span&gt;subvolume&lt;span class="w"&gt; &lt;/span&gt;create&lt;span class="w"&gt; &lt;/span&gt;/btr_pool/nixos_root
+$&lt;span class="w"&gt; &lt;/span&gt;mount&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;subvol&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;nixos_root,compress&lt;span class="o"&gt;=&lt;/span&gt;zstd,ssd,space_cache&lt;span class="o"&gt;=&lt;/span&gt;v2,noatime&lt;span class="w"&gt; &lt;/span&gt;/dev/mapper/cryptdev&lt;span class="w"&gt; &lt;/span&gt;/mnt
+$&lt;span class="w"&gt; &lt;/span&gt;mkdir&lt;span class="w"&gt; &lt;/span&gt;/mnt/home&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;mount&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;subvol&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;home,compress&lt;span class="o"&gt;=&lt;/span&gt;zstd,ssd,space_cache&lt;span class="o"&gt;=&lt;/span&gt;v2,noatime&lt;span class="w"&gt; &lt;/span&gt;/dev/mapper/cryptdev&lt;span class="w"&gt; &lt;/span&gt;/mnt/home
+$&lt;span class="w"&gt; &lt;/span&gt;mkdir&lt;span class="w"&gt; &lt;/span&gt;/mnt/boot&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;mount&lt;span class="w"&gt; &lt;/span&gt;/dev/nvme0n1p1&lt;span class="w"&gt; &lt;/span&gt;/mnt/boot
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id="install-nixos"&gt;Install NixOS&lt;a class="headerlink" href="#install-nixos" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;First prepare the NixOS configuration files:
+* &lt;code&gt;/mnt/etc/nixos/hardware-configuration.nix&lt;/code&gt;
+* &lt;code&gt;/mnt/etc/nixos/configuration.nix&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;This is almost identical to a regular install of NixOS from an live NixOS 
+environment. It just requires some path modification.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;PATH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$PATH&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;NIX_PATH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$NIX_PATH&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;which&lt;span class="w"&gt; &lt;/span&gt;nixos-install&lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;--root&lt;span class="w"&gt; &lt;/span&gt;/mnt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;You can now reboot to the new system. I had to run from the NixOS a command to make nix commands work. Basically
+update the channel files:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$nix&lt;/span&gt;-channel&lt;span class="w"&gt; &lt;/span&gt;--update
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In principle at boot time you should
+be able to choose between the old system (Archlinux) and the new system (NixOS).
+If you do keep both systems keep in mind NixOS might modify the location of 
+files like &lt;code&gt;~/.bashrc&lt;/code&gt;.&lt;/p&gt;</content><category term="nix"></category><category term="linux"></category><category term="nix"></category><category term="btrfs"></category></entry></feed>
