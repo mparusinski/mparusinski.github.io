@@ -1,5 +1,260 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Michal Parusinski - Personal Site - nix</title><link href="https://michal.parusinski.me/" rel="alternate"></link><link href="https://michal.parusinski.me/feeds/nix.atom.xml" rel="self"></link><id>https://michal.parusinski.me/</id><updated>2025-01-19T12:00:00+01:00</updated><entry><title>Publishing a pelican website using nix</title><link href="https://michal.parusinski.me/publish-website-using-nix.html" rel="alternate"></link><published>2025-01-19T12:00:00+01:00</published><updated>2025-01-19T12:00:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2025-01-19:/publish-website-using-nix.html</id><summary type="html">&lt;p&gt;How to publish a static website using Nix flakes&lt;/p&gt;</summary><content type="html">&lt;p&gt;This website is statically generated using &lt;a href="https://getpelican.com/"&gt;pelican&lt;/a&gt; and development on the 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Michal Parusinski - Personal Site - nix</title><link href="https://michal.parusinski.me/" rel="alternate"></link><link href="https://michal.parusinski.me/feeds/nix.atom.xml" rel="self"></link><id>https://michal.parusinski.me/</id><updated>2025-02-11T12:00:00+01:00</updated><entry><title>Managing databases users using nix</title><link href="https://michal.parusinski.me/manage-db-users-with-nix.html" rel="alternate"></link><published>2025-02-11T12:00:00+01:00</published><updated>2025-02-11T12:00:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2025-02-11:/manage-db-users-with-nix.html</id><summary type="html">&lt;p&gt;How to manage users declaratively using nix&lt;/p&gt;</summary><content type="html">&lt;p&gt;Recently I had the following challenge: manage database
+(robotic) users using nix. More specifically I wanted
+to declare a list of mariadb/mysql users, alongside
+passwords, and permissions using nix. And while 
+nix has some options for this (e.g. &lt;code&gt;services.mysql.ensureUsers.*.name&lt;/code&gt;).
+Some aspects can&amp;rsquo;t be declared with nix options
+like the credentials or its permissions for given databases.&lt;/p&gt;
+&lt;p&gt;There is a way to solve this using nix using three steps:
+  1. Declaring the user configuration in an object
+  2. Creating nix packaged scripts that will apply a configuration to the database
+  3. Creating a systemd unit that runs the previous scripts when appropriate&lt;/p&gt;
+&lt;p&gt;In this article I will go into details on how this is done.
+Note: although I focus on MySQL/MariaDB, the underlying principles
+can be applied for PostgreSQL, Redis, &amp;hellip;&lt;/p&gt;
+&lt;h1 id="declaring-the-user-configuration"&gt;Declaring the user configuration&lt;a class="headerlink" href="#declaring-the-user-configuration" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;The first step is to encapsulate the information required
+for configuring a user in a nix object (key-value dictionary).
+In my case it looks like this&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ss"&gt;dbUsecaseConfig&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="ss"&gt;database&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;usecase_db&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="ss"&gt;passwordFile&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; config&lt;span class="o"&gt;.&lt;/span&gt;age&lt;span class="o"&gt;.&lt;/span&gt;secrets&lt;span class="o"&gt;.&lt;/span&gt;usecasePass&lt;span class="o"&gt;.&lt;/span&gt;path&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="ss"&gt;username&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;usecase_username&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="ss"&gt;hostname&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;usecase_hostname&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Should be self explanatory. Note &lt;code&gt;passwordFile&lt;/code&gt; is a path to 
+a file, here I use &lt;code&gt;agenix&lt;/code&gt; to manage secrets, which decrypts the 
+password file with adequate permissions to prevent leaks
+(see article about &lt;a href="https://michal.parusinski.me/managin-secrets-in-nix-using-agenix.html"&gt;agenix&lt;/a&gt;).&lt;/p&gt;
+&lt;h1 id="set-up-script-to-apply-configuration"&gt;Set up script to apply configuration&lt;a class="headerlink" href="#set-up-script-to-apply-configuration" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;The second step is to create a script that applies the 
+configuration. This is done using &lt;code&gt;pkgs.writeShellScript&lt;/code&gt;
+which generates a shell script and stores it as nix 
+component (under &lt;code&gt;/nix/store/&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;The syntax of the function&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;writeShellScript &lt;span class="s2"&gt;&amp;quot;file-name&amp;quot;&lt;/span&gt;
+  &lt;span class="s s-Multiline"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;  Content of the file&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;  &amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The file name here is not very important. The content of the script, however, is.
+To make this modular, I use a function that takes a configuration as input
+and produces a corresponding shell script:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ss"&gt;applyMySQLConf&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    database&lt;span class="p"&gt;,&lt;/span&gt;
+    passwordFile&lt;span class="p"&gt;,&lt;/span&gt;
+    username&lt;span class="p"&gt;,&lt;/span&gt;
+    hostname
+  &lt;span class="p"&gt;}:&lt;/span&gt;
+  pkgs&lt;span class="o"&gt;.&lt;/span&gt;writeShellScript &lt;span class="s2"&gt;&amp;quot;applyMySQLConf&amp;quot;&lt;/span&gt;
+    &lt;span class="s s-Multiline"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;      PASSWORD=$(cat &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;passwordFile&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s s-Multiline"&gt;)&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;      &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;pkgs&lt;span class="o"&gt;.&lt;/span&gt;mariadb&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s s-Multiline"&gt;/bin/mysql -u root -e &amp;quot;GRANT ALL PRIVILEGES ON &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;database&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s s-Multiline"&gt;.* TO &amp;#39;${username}&amp;#39;@&amp;#39;${hostname}&amp;#39; IDENTIFIED BY &amp;#39;$PASSWORD&amp;#39;;&amp;quot;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;    &amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The details will depends on the use case. For instance for a PostgreSQL database
+the actual commands used in the script will change.&lt;/p&gt;
+&lt;p&gt;To generate a script for a given configuration will look this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ss"&gt;dbUsecaseConfig&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="ss"&gt;database&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;usecase_db&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="ss"&gt;passwordFile&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; config&lt;span class="o"&gt;.&lt;/span&gt;age&lt;span class="o"&gt;.&lt;/span&gt;secrets&lt;span class="o"&gt;.&lt;/span&gt;usecasePass&lt;span class="o"&gt;.&lt;/span&gt;path&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="ss"&gt;username&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;usecase_username&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="ss"&gt;hostname&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;usecase_hostname&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="ss"&gt;usecaseConfScript&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; applyMySQLConf dbUsecaseConfig&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h1 id="automatically-apply-the-configuration-using-systemd"&gt;Automatically apply the configuration using systemd&lt;a class="headerlink" href="#automatically-apply-the-configuration-using-systemd" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Now, we have a script which applies a configuration, but
+nothing actually runs the script. This is 
+solved by using systemd services :&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;systemd&lt;span class="o"&gt;.&lt;/span&gt;services&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ss"&gt;apply-mysql-conf&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="ss"&gt;description&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Apply MySQL configurations&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="ss"&gt;wants&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;mysql.service&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;];&lt;/span&gt;
+  &lt;span class="ss"&gt;wantedBy&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;multi-user.target&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;];&lt;/span&gt;
+  &lt;span class="ss"&gt;serviceConfig&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="ss"&gt;PremissionsStartOnly&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="ss"&gt;RemainAfterExit&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="ss"&gt;ExecStart&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s s-Multiline"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;      &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;usecaseConfScript&lt;span class="si"&gt;}&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;      ...&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;    &amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;I personally use one systemd service to apply all configurations
+for the database. You may prefer using multiple systemd unit files.&lt;/p&gt;
+&lt;h1 id="creating-a-nix-module"&gt;Creating a Nix module&lt;a class="headerlink" href="#creating-a-nix-module" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;It is good practice to create NixOS modules as it allows
+the code to be reusable and better organised.&lt;/p&gt;
+&lt;p&gt;A NixOS module is created by adding &lt;code&gt;path/to/module.nix&lt;/code&gt; file.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+  lib&lt;span class="p"&gt;,&lt;/span&gt;
+  config&lt;span class="p"&gt;,&lt;/span&gt;
+  pkgs&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="p"&gt;}:&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;# Content of the module&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;More specifically the module will define a NixOS option called
+&lt;code&gt;mysqlInitialConfiguration&lt;/code&gt;
+so it can be used in the &lt;code&gt;configuration.nix&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+  lib&lt;span class="p"&gt;,&lt;/span&gt;
+  config&lt;span class="p"&gt;,&lt;/span&gt;
+  pkgs&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="p"&gt;}:&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  options&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ss"&gt;mysqlInitialConfiguration&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="ss"&gt;enable&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; lib&lt;span class="o"&gt;.&lt;/span&gt;mkEnableOption &lt;span class="s2"&gt;&amp;quot;Activate initial MySQL configuration&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="ss"&gt;configurations&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; lib&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ss"&gt;mkOption&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="ss"&gt;default&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="p"&gt;];&lt;/span&gt;
+      &lt;span class="ss"&gt;description&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s s-Multiline"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;        List of initial MySQL configurations&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;        For instance :&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;        [&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;          {&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;            database = &amp;quot;usecase_db&amp;quot;;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;            passwordFile = config.age.secrets.usecasePass.path;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;            username = &amp;quot;usecase_username&amp;quot;;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;            hostname = &amp;quot;usecase_hostname&amp;quot;;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;          }&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;        ]&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;      &amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;};&lt;/span&gt;
+  &lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now this defines the NixOS option but not what happens
+when it is enabled and configured. To do so we need to
+add the &lt;code&gt;config&lt;/code&gt; part of the &lt;code&gt;option&lt;/code&gt; which applies a
+configuration based on &lt;code&gt;option&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+  lib&lt;span class="p"&gt;,&lt;/span&gt;
+  config&lt;span class="p"&gt;,&lt;/span&gt;
+  pkgs&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="p"&gt;}:&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  options&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ss"&gt;mysqlInitialConfiguration&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="ss"&gt;enable&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; lib&lt;span class="o"&gt;.&lt;/span&gt;mkEnableOption &lt;span class="s2"&gt;&amp;quot;Activate initial MySQL configuration&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="ss"&gt;configurations&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; lib&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ss"&gt;mkOption&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="ss"&gt;default&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="p"&gt;];&lt;/span&gt;
+      &lt;span class="ss"&gt;description&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s s-Multiline"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;        List of initial MySQL configurations&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;        For instance :&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;        [&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;          {&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;            database = &amp;quot;usecase_db&amp;quot;;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;            passwordFile = config.age.secrets.usecasePass.path;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;            username = &amp;quot;usecase_username&amp;quot;;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;            hostname = &amp;quot;usecase_hostname&amp;quot;;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;          }&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;        ]&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;      &amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;};&lt;/span&gt;
+  &lt;span class="p"&gt;};&lt;/span&gt;
+
+  &lt;span class="ss"&gt;config&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; lib&lt;span class="o"&gt;.&lt;/span&gt;mkIf config&lt;span class="o"&gt;.&lt;/span&gt;mysqlInitialConfiguration &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;# Actual configuration&lt;/span&gt;
+  &lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now we add the actual configuration (systemd files, scripts, &amp;hellip;)
+and for practical reasons use the &lt;code&gt;let ... in ...&lt;/code&gt; nix clause.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+  lib&lt;span class="p"&gt;,&lt;/span&gt;
+  config&lt;span class="p"&gt;,&lt;/span&gt;
+  pkgs&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="p"&gt;}:&lt;/span&gt;
+&lt;span class="k"&gt;let&lt;/span&gt;
+  &lt;span class="ss"&gt;applyMySQLConf&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;
+      database&lt;span class="p"&gt;,&lt;/span&gt;
+      passwordFile&lt;span class="p"&gt;,&lt;/span&gt;
+      username&lt;span class="p"&gt;,&lt;/span&gt;
+      hostname&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="p"&gt;}:&lt;/span&gt;
+    pkgs&lt;span class="o"&gt;.&lt;/span&gt;writeShellScript &lt;span class="s2"&gt;&amp;quot;applyMySQLConf&amp;quot;&lt;/span&gt; &lt;span class="s s-Multiline"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;      PASSWORD=$(cat &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;passwordFile&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s s-Multiline"&gt;)&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;      &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;pkgs&lt;span class="o"&gt;.&lt;/span&gt;mariadb&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s s-Multiline"&gt;/bin/mysql -u root -e &amp;quot;GRANT ALL PRIVILEGES ON &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;database&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s s-Multiline"&gt;.* TO &amp;#39;${username}&amp;#39;@&amp;#39;${hostname}&amp;#39; IDENTIFIED BY &amp;#39;$PASSWORD&amp;#39;;&amp;quot;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;    &amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;# Function taking a list as input and returns a string&lt;/span&gt;
+  &lt;span class="ss"&gt;genSystemdScript&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; list&lt;span class="p"&gt;:&lt;/span&gt; lib&lt;span class="o"&gt;.&lt;/span&gt;strings&lt;span class="o"&gt;.&lt;/span&gt;concatStrings &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;map&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;conf&lt;span class="p"&gt;:&lt;/span&gt; applyMySQLConf conf &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; list&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="ss"&gt;systemdScript&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; pkgs&lt;span class="o"&gt;.&lt;/span&gt;writeShellScript &lt;span class="s2"&gt;&amp;quot;mysqlInitialConfiguration&amp;quot;&lt;/span&gt; &lt;span class="s s-Multiline"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;    &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;genSystemdScript cfg&lt;span class="o"&gt;.&lt;/span&gt;configurations&lt;span class="si"&gt;}&lt;/span&gt;
+&lt;span class="s s-Multiline"&gt;  &amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="ss"&gt;cfg&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; config&lt;span class="o"&gt;.&lt;/span&gt;mysqlInitialConfiguration&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;in&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  options&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ss"&gt;mysqlInitialConfiguration&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;# ...&lt;/span&gt;
+  &lt;span class="p"&gt;};&lt;/span&gt;
+
+  &lt;span class="ss"&gt;config&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; lib&lt;span class="o"&gt;.&lt;/span&gt;mkIf config&lt;span class="o"&gt;.&lt;/span&gt;mysqlInitialConfiguration &lt;span class="p"&gt;{&lt;/span&gt;
+    systemd&lt;span class="o"&gt;.&lt;/span&gt;services&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ss"&gt;mysqlInitialConfiguration&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="ss"&gt;description&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Initial MySQL configuration&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="ss"&gt;wants&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;mysql.service&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;];&lt;/span&gt;
+      &lt;span class="ss"&gt;wantedBy&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;multi-user.target&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;];&lt;/span&gt;
+      &lt;span class="ss"&gt;serviceConfig&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="ss"&gt;PermissionsStartOnly&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="ss"&gt;RemainAfterExit&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="ss"&gt;ExecStart&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;systemdScript&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;};&lt;/span&gt;
+    &lt;span class="p"&gt;};&lt;/span&gt;
+  &lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Note that &lt;code&gt;config.mysqlInitialConfiguration&lt;/code&gt; is replaced with
+&lt;code&gt;cfg&lt;/code&gt; in the &lt;code&gt;config&lt;/code&gt; part.&lt;/p&gt;
+&lt;p&gt;Now the new option can be used in the &lt;code&gt;configuration.nix&lt;/code&gt; file
+as so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;# ...&lt;/span&gt;
+&lt;span class="p"&gt;}:&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;# ...&lt;/span&gt;
+  &lt;span class="ss"&gt;imports&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+    &lt;span class="c1"&gt;# ...&lt;/span&gt;
+    &lt;span class="l"&gt;./path/to/mysql/module.nix&lt;/span&gt;
+    &lt;span class="c1"&gt;# ...&lt;/span&gt;
+  &lt;span class="p"&gt;];&lt;/span&gt;
+  &lt;span class="c1"&gt;# ...&lt;/span&gt;
+  mysqlInitialConfiguration&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ss"&gt;enable&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  mysqlInitialConfiguration&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ss"&gt;configurations&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="ss"&gt;database&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;usecase_db&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="ss"&gt;passwordFile&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; config&lt;span class="o"&gt;.&lt;/span&gt;age&lt;span class="o"&gt;.&lt;/span&gt;secrets&lt;span class="o"&gt;.&lt;/span&gt;usecasePass&lt;span class="o"&gt;.&lt;/span&gt;path&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="ss"&gt;username&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;usecase_username&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="ss"&gt;hostname&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;usecase_hostname&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;];&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h1 id="summary"&gt;Summary&lt;a class="headerlink" href="#summary" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;In this article I show to apply
+MySQL user configuration automatically using Nix and 
+put all of this in a module.&lt;/p&gt;
+&lt;p&gt;For more articles about Nix and NixOS the following 
+RSS feed is available over &lt;a href="/feeds/nix.rss.xml"&gt;here&lt;/a&gt;.&lt;/p&gt;</content><category term="nix"></category><category term="pelican"></category><category term="nix"></category></entry><entry><title>Publishing a pelican website using nix</title><link href="https://michal.parusinski.me/publish-website-using-nix.html" rel="alternate"></link><published>2025-01-19T12:00:00+01:00</published><updated>2025-01-19T12:00:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2025-01-19:/publish-website-using-nix.html</id><summary type="html">&lt;p&gt;How to publish a static website using Nix flakes&lt;/p&gt;</summary><content type="html">&lt;p&gt;This website is statically generated using &lt;a href="https://getpelican.com/"&gt;pelican&lt;/a&gt; and development on the 
 website is done via &lt;a href="https://nixos.wiki/wiki/Flakes"&gt;nix flakes&lt;/a&gt;. 
 Here is how :&lt;/p&gt;
 &lt;h1 id="overview"&gt;Overview&lt;a class="headerlink" href="#overview" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;

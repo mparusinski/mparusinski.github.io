@@ -1,0 +1,438 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://michal.parusinski.me/theme/pygments/github.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/font-awesome/css/solid.css">
+
+
+
+
+  <link href="https://michal.parusinski.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Michal Parusinski - Personal Site Atom">
+
+  <link href="https://michal.parusinski.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Michal Parusinski - Personal Site RSS">
+
+
+
+
+
+
+
+ 
+
+<meta name="author" content="Michal Parusinski" />
+<meta name="description" content="How to manage users declaratively using nix" />
+<meta name="keywords" content="pelican, nix">
+
+
+  <meta property="og:site_name" content="Michal Parusinski - Personal Site"/>
+  <meta property="og:title" content="Managing databases users using nix"/>
+  <meta property="og:description" content="How to manage users declaratively using nix"/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://michal.parusinski.me/manage-db-users-with-nix.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2025-02-11 12:00:00+01:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="https://michal.parusinski.me/author/michal-parusinski.html">
+  <meta property="article:section" content="nix"/>
+  <meta property="article:tag" content="pelican"/>
+  <meta property="article:tag" content="nix"/>
+  <meta property="og:image" content="/images/profile.jpg">
+
+  <title>Michal Parusinski - Personal Site &ndash; Managing databases users using nix</title>
+
+
+</head>
+<body class="light-theme">
+
+<aside>
+  <div>
+    <a href="https://michal.parusinski.me/">
+      <img src="/images/profile.jpg" alt="" title="">
+    </a>
+
+    <h1>
+      <a href="https://michal.parusinski.me/"></a>
+    </h1>
+
+
+
+    <nav>
+      <ul class="list">
+
+
+            <li>
+              <a target="_self"
+                 href="https://michal.parusinski.me/pages/a-propos-de-moi.html#a-propos-de-moi">
+                A propos de moi
+              </a>
+            </li>
+            <li>
+              <a target="_self"
+                 href="https://michal.parusinski.me/pages/about-me.html#about-me">
+                About Me
+              </a>
+            </li>
+            <li>
+              <a target="_self"
+                 href="https://michal.parusinski.me/pages/publications.html#publications">
+                Publications
+              </a>
+            </li>
+
+      </ul>
+    </nav>
+
+    <ul class="social">
+      <li>
+        <a class="sc-linkedin"
+           href="https://www.linkedin.com/in/michal-parusinski-b7b18458/"
+           target="_blank">
+          <i class="fa-brands fa-linkedin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/mparusinski"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+
+<article class="single">
+  <header>
+      
+    <h1 id="manage-db-users-with-nix">Managing databases users using nix</h1>
+    <p>
+      Posted on Tue 11 February 2025 in <a href="https://michal.parusinski.me/category/nix.html">nix</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <p>Recently I had the following challenge: manage database
+(robotic) users using nix. More specifically I wanted
+to declare a list of mariadb/mysql users, alongside
+passwords, and permissions using nix. And while 
+nix has some options for this (e.g. <code>services.mysql.ensureUsers.*.name</code>).
+Some aspects can&rsquo;t be declared with nix options
+like the credentials or its permissions for given databases.</p>
+<p>There is a way to solve this using nix using three steps:
+  1. Declaring the user configuration in an object
+  2. Creating nix packaged scripts that will apply a configuration to the database
+  3. Creating a systemd unit that runs the previous scripts when appropriate</p>
+<p>In this article I will go into details on how this is done.
+Note: although I focus on MySQL/MariaDB, the underlying principles
+can be applied for PostgreSQL, Redis, &hellip;</p>
+<h1 id="declaring-the-user-configuration">Declaring the user configuration<a class="headerlink" href="#declaring-the-user-configuration" title="Permanent link">&para;</a></h1>
+<p>The first step is to encapsulate the information required
+for configuring a user in a nix object (key-value dictionary).
+In my case it looks like this</p>
+<div class="highlight"><pre><span></span><code><span class="ss">dbUsecaseConfig</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="ss">database</span> <span class="o">=</span> <span class="s2">&quot;usecase_db&quot;</span><span class="p">;</span>
+  <span class="ss">passwordFile</span> <span class="o">=</span> config<span class="o">.</span>age<span class="o">.</span>secrets<span class="o">.</span>usecasePass<span class="o">.</span>path<span class="p">;</span>
+  <span class="ss">username</span> <span class="o">=</span> <span class="s2">&quot;usecase_username&quot;</span><span class="p">;</span>
+  <span class="ss">hostname</span> <span class="o">=</span> <span class="s2">&quot;usecase_hostname&quot;</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+
+<p>Should be self explanatory. Note <code>passwordFile</code> is a path to 
+a file, here I use <code>agenix</code> to manage secrets, which decrypts the 
+password file with adequate permissions to prevent leaks
+(see article about <a href="https://michal.parusinski.me/managin-secrets-in-nix-using-agenix.html">agenix</a>).</p>
+<h1 id="set-up-script-to-apply-configuration">Set up script to apply configuration<a class="headerlink" href="#set-up-script-to-apply-configuration" title="Permanent link">&para;</a></h1>
+<p>The second step is to create a script that applies the 
+configuration. This is done using <code>pkgs.writeShellScript</code>
+which generates a shell script and stores it as nix 
+component (under <code>/nix/store/</code>).</p>
+<p>The syntax of the function</p>
+<div class="highlight"><pre><span></span><code>writeShellScript <span class="s2">&quot;file-name&quot;</span>
+  <span class="s s-Multiline">&#39;&#39;</span>
+<span class="s s-Multiline">  Content of the file</span>
+<span class="s s-Multiline">  &#39;&#39;</span><span class="p">;</span>
+</code></pre></div>
+
+<p>The file name here is not very important. The content of the script, however, is.
+To make this modular, I use a function that takes a configuration as input
+and produces a corresponding shell script:</p>
+<div class="highlight"><pre><span></span><code><span class="ss">applyMySQLConf</span> <span class="o">=</span> 
+  <span class="p">{</span>
+    database<span class="p">,</span>
+    passwordFile<span class="p">,</span>
+    username<span class="p">,</span>
+    hostname
+  <span class="p">}:</span>
+  pkgs<span class="o">.</span>writeShellScript <span class="s2">&quot;applyMySQLConf&quot;</span>
+    <span class="s s-Multiline">&#39;&#39;</span>
+<span class="s s-Multiline">      PASSWORD=$(cat </span><span class="si">${</span>passwordFile<span class="si">}</span><span class="s s-Multiline">)</span>
+<span class="s s-Multiline">      </span><span class="si">${</span>pkgs<span class="o">.</span>mariadb<span class="si">}</span><span class="s s-Multiline">/bin/mysql -u root -e &quot;GRANT ALL PRIVILEGES ON </span><span class="si">${</span>database<span class="si">}</span><span class="s s-Multiline">.* TO &#39;${username}&#39;@&#39;${hostname}&#39; IDENTIFIED BY &#39;$PASSWORD&#39;;&quot;</span>
+<span class="s s-Multiline">    &#39;&#39;</span><span class="p">;</span>
+</code></pre></div>
+
+<p>The details will depends on the use case. For instance for a PostgreSQL database
+the actual commands used in the script will change.</p>
+<p>To generate a script for a given configuration will look this:</p>
+<div class="highlight"><pre><span></span><code><span class="ss">dbUsecaseConfig</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="ss">database</span> <span class="o">=</span> <span class="s2">&quot;usecase_db&quot;</span><span class="p">;</span>
+  <span class="ss">passwordFile</span> <span class="o">=</span> config<span class="o">.</span>age<span class="o">.</span>secrets<span class="o">.</span>usecasePass<span class="o">.</span>path<span class="p">;</span>
+  <span class="ss">username</span> <span class="o">=</span> <span class="s2">&quot;usecase_username&quot;</span><span class="p">;</span>
+  <span class="ss">hostname</span> <span class="o">=</span> <span class="s2">&quot;usecase_hostname&quot;</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="ss">usecaseConfScript</span> <span class="o">=</span> applyMySQLConf dbUsecaseConfig<span class="p">;</span>
+</code></pre></div>
+
+<h1 id="automatically-apply-the-configuration-using-systemd">Automatically apply the configuration using systemd<a class="headerlink" href="#automatically-apply-the-configuration-using-systemd" title="Permanent link">&para;</a></h1>
+<p>Now, we have a script which applies a configuration, but
+nothing actually runs the script. This is 
+solved by using systemd services :</p>
+<div class="highlight"><pre><span></span><code>systemd<span class="o">.</span>services<span class="o">.</span><span class="ss">apply-mysql-conf</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="ss">description</span> <span class="o">=</span> <span class="s2">&quot;Apply MySQL configurations&quot;</span><span class="p">;</span>
+  <span class="ss">wants</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;mysql.service&quot;</span> <span class="p">];</span>
+  <span class="ss">wantedBy</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;multi-user.target&quot;</span> <span class="p">];</span>
+  <span class="ss">serviceConfig</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">PremissionsStartOnly</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+    <span class="ss">RemainAfterExit</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+    <span class="ss">ExecStart</span> <span class="o">=</span> <span class="s s-Multiline">&#39;&#39;</span>
+<span class="s s-Multiline">      </span><span class="si">${</span>usecaseConfScript<span class="si">}</span>
+<span class="s s-Multiline">      ...</span>
+<span class="s s-Multiline">    &#39;&#39;</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+</code></pre></div>
+
+<p>I personally use one systemd service to apply all configurations
+for the database. You may prefer using multiple systemd unit files.</p>
+<h1 id="creating-a-nix-module">Creating a Nix module<a class="headerlink" href="#creating-a-nix-module" title="Permanent link">&para;</a></h1>
+<p>It is good practice to create NixOS modules as it allows
+the code to be reusable and better organised.</p>
+<p>A NixOS module is created by adding <code>path/to/module.nix</code> file.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  lib<span class="p">,</span>
+  config<span class="p">,</span>
+  pkgs<span class="p">,</span>
+  <span class="o">...</span>
+<span class="p">}:</span>
+<span class="p">{</span>
+  <span class="c1"># Content of the module</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>More specifically the module will define a NixOS option called
+<code>mysqlInitialConfiguration</code>
+so it can be used in the <code>configuration.nix</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  lib<span class="p">,</span>
+  config<span class="p">,</span>
+  pkgs<span class="p">,</span>
+  <span class="o">...</span>
+<span class="p">}:</span>
+<span class="p">{</span>
+  options<span class="o">.</span><span class="ss">mysqlInitialConfiguration</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">enable</span> <span class="o">=</span> lib<span class="o">.</span>mkEnableOption <span class="s2">&quot;Activate initial MySQL configuration&quot;</span><span class="p">;</span>
+    <span class="ss">configurations</span> <span class="o">=</span> lib<span class="o">.</span><span class="ss">mkOption</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">default</span> <span class="o">=</span> <span class="p">[</span> <span class="p">];</span>
+      <span class="ss">description</span> <span class="o">=</span> <span class="s s-Multiline">&#39;&#39;</span>
+<span class="s s-Multiline">        List of initial MySQL configurations</span>
+<span class="s s-Multiline">        For instance :</span>
+<span class="s s-Multiline">        [</span>
+<span class="s s-Multiline">          {</span>
+<span class="s s-Multiline">            database = &quot;usecase_db&quot;;</span>
+<span class="s s-Multiline">            passwordFile = config.age.secrets.usecasePass.path;</span>
+<span class="s s-Multiline">            username = &quot;usecase_username&quot;;</span>
+<span class="s s-Multiline">            hostname = &quot;usecase_hostname&quot;;</span>
+<span class="s s-Multiline">          }</span>
+<span class="s s-Multiline">        ]</span>
+<span class="s s-Multiline">      &#39;&#39;</span><span class="p">;</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Now this defines the NixOS option but not what happens
+when it is enabled and configured. To do so we need to
+add the <code>config</code> part of the <code>option</code> which applies a
+configuration based on <code>option</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  lib<span class="p">,</span>
+  config<span class="p">,</span>
+  pkgs<span class="p">,</span>
+  <span class="o">...</span>
+<span class="p">}:</span>
+<span class="p">{</span>
+  options<span class="o">.</span><span class="ss">mysqlInitialConfiguration</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">enable</span> <span class="o">=</span> lib<span class="o">.</span>mkEnableOption <span class="s2">&quot;Activate initial MySQL configuration&quot;</span><span class="p">;</span>
+    <span class="ss">configurations</span> <span class="o">=</span> lib<span class="o">.</span><span class="ss">mkOption</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">default</span> <span class="o">=</span> <span class="p">[</span> <span class="p">];</span>
+      <span class="ss">description</span> <span class="o">=</span> <span class="s s-Multiline">&#39;&#39;</span>
+<span class="s s-Multiline">        List of initial MySQL configurations</span>
+<span class="s s-Multiline">        For instance :</span>
+<span class="s s-Multiline">        [</span>
+<span class="s s-Multiline">          {</span>
+<span class="s s-Multiline">            database = &quot;usecase_db&quot;;</span>
+<span class="s s-Multiline">            passwordFile = config.age.secrets.usecasePass.path;</span>
+<span class="s s-Multiline">            username = &quot;usecase_username&quot;;</span>
+<span class="s s-Multiline">            hostname = &quot;usecase_hostname&quot;;</span>
+<span class="s s-Multiline">          }</span>
+<span class="s s-Multiline">        ]</span>
+<span class="s s-Multiline">      &#39;&#39;</span><span class="p">;</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+
+  <span class="ss">config</span> <span class="o">=</span> lib<span class="o">.</span>mkIf config<span class="o">.</span>mysqlInitialConfiguration <span class="p">{</span>
+    <span class="c1"># Actual configuration</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Now we add the actual configuration (systemd files, scripts, &hellip;)
+and for practical reasons use the <code>let ... in ...</code> nix clause.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  lib<span class="p">,</span>
+  config<span class="p">,</span>
+  pkgs<span class="p">,</span>
+  <span class="o">...</span>
+<span class="p">}:</span>
+<span class="k">let</span>
+  <span class="ss">applyMySQLConf</span> <span class="o">=</span>
+    <span class="p">{</span>
+      database<span class="p">,</span>
+      passwordFile<span class="p">,</span>
+      username<span class="p">,</span>
+      hostname<span class="p">,</span>
+    <span class="p">}:</span>
+    pkgs<span class="o">.</span>writeShellScript <span class="s2">&quot;applyMySQLConf&quot;</span> <span class="s s-Multiline">&#39;&#39;</span>
+<span class="s s-Multiline">      PASSWORD=$(cat </span><span class="si">${</span>passwordFile<span class="si">}</span><span class="s s-Multiline">)</span>
+<span class="s s-Multiline">      </span><span class="si">${</span>pkgs<span class="o">.</span>mariadb<span class="si">}</span><span class="s s-Multiline">/bin/mysql -u root -e &quot;GRANT ALL PRIVILEGES ON </span><span class="si">${</span>database<span class="si">}</span><span class="s s-Multiline">.* TO &#39;${username}&#39;@&#39;${hostname}&#39; IDENTIFIED BY &#39;$PASSWORD&#39;;&quot;</span>
+<span class="s s-Multiline">    &#39;&#39;</span><span class="p">;</span>
+
+  <span class="c1"># Function taking a list as input and returns a string</span>
+  <span class="ss">genSystemdScript</span> <span class="o">=</span> list<span class="p">:</span> lib<span class="o">.</span>strings<span class="o">.</span>concatStrings <span class="p">(</span><span class="nb">map</span> <span class="p">(</span>conf<span class="p">:</span> applyMySQLConf conf <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span> list<span class="p">);</span>
+  <span class="ss">systemdScript</span> <span class="o">=</span> pkgs<span class="o">.</span>writeShellScript <span class="s2">&quot;mysqlInitialConfiguration&quot;</span> <span class="s s-Multiline">&#39;&#39;</span>
+<span class="s s-Multiline">    </span><span class="si">${</span>genSystemdScript cfg<span class="o">.</span>configurations<span class="si">}</span>
+<span class="s s-Multiline">  &#39;&#39;</span><span class="p">;</span>
+
+  <span class="ss">cfg</span> <span class="o">=</span> config<span class="o">.</span>mysqlInitialConfiguration<span class="p">;</span>
+<span class="k">in</span>
+<span class="p">{</span>
+  options<span class="o">.</span><span class="ss">mysqlInitialConfiguration</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># ...</span>
+  <span class="p">};</span>
+
+  <span class="ss">config</span> <span class="o">=</span> lib<span class="o">.</span>mkIf config<span class="o">.</span>mysqlInitialConfiguration <span class="p">{</span>
+    systemd<span class="o">.</span>services<span class="o">.</span><span class="ss">mysqlInitialConfiguration</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">description</span> <span class="o">=</span> <span class="s2">&quot;Initial MySQL configuration&quot;</span><span class="p">;</span>
+      <span class="ss">wants</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;mysql.service&quot;</span> <span class="p">];</span>
+      <span class="ss">wantedBy</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;multi-user.target&quot;</span> <span class="p">];</span>
+      <span class="ss">serviceConfig</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">PermissionsStartOnly</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+        <span class="ss">RemainAfterExit</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+        <span class="ss">ExecStart</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">${</span>systemdScript<span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Note that <code>config.mysqlInitialConfiguration</code> is replaced with
+<code>cfg</code> in the <code>config</code> part.</p>
+<p>Now the new option can be used in the <code>configuration.nix</code> file
+as so:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="c1"># ...</span>
+<span class="p">}:</span>
+<span class="p">{</span>
+  <span class="c1"># ...</span>
+  <span class="ss">imports</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># ...</span>
+    <span class="l">./path/to/mysql/module.nix</span>
+    <span class="c1"># ...</span>
+  <span class="p">];</span>
+  <span class="c1"># ...</span>
+  mysqlInitialConfiguration<span class="o">.</span><span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+  mysqlInitialConfiguration<span class="o">.</span><span class="ss">configurations</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="ss">database</span> <span class="o">=</span> <span class="s2">&quot;usecase_db&quot;</span><span class="p">;</span>
+      <span class="ss">passwordFile</span> <span class="o">=</span> config<span class="o">.</span>age<span class="o">.</span>secrets<span class="o">.</span>usecasePass<span class="o">.</span>path<span class="p">;</span>
+      <span class="ss">username</span> <span class="o">=</span> <span class="s2">&quot;usecase_username&quot;</span><span class="p">;</span>
+      <span class="ss">hostname</span> <span class="o">=</span> <span class="s2">&quot;usecase_hostname&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h1 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h1>
+<p>In this article I show to apply
+MySQL user configuration automatically using Nix and 
+put all of this in a module.</p>
+<p>For more articles about Nix and NixOS the following 
+RSS feed is available over <a href="/feeds/nix.rss.xml">here</a>.</p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://michal.parusinski.me/tag/pelican.html">pelican</a>
+      <a href="https://michal.parusinski.me/tag/nix.html">nix</a>
+    </p>
+  </div>
+
+
+
+
+
+
+</article>
+
+<footer>
+<p>&copy;  </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Michal Parusinski - Personal Site ",
+  "url" : "https://michal.parusinski.me",
+  "image": "/images/profile.jpg",
+  "description": ""
+}
+</script><script type="text/javascript">
+  var _paq = window._paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://stats.parusinski.me/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', 1]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="https://stats.parusinski.me/matomo.php?idsite=1&rec=1" style="border:0" alt="" /></p></noscript>
+
+</body>
+</html>
