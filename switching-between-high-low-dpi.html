@@ -1,0 +1,438 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://michal.parusinski.me/theme/pygments/github.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/font-awesome/css/solid.css">
+
+
+
+
+  <link href="https://michal.parusinski.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Michal Parusinski - Personal Site Atom">
+
+  <link href="https://michal.parusinski.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Michal Parusinski - Personal Site RSS">
+
+
+ 
+
+<meta name="author" content="Michal Parusinski" />
+<meta name="description" content="I have created scripts to help automatically switch between low DPI and high DPI settings in XMonad which comes in handy on a high DPI laptop that may be connected to low DPI monitors" />
+<meta name="keywords" content="xmonad, highdpi, lowdpi">
+
+
+  <meta property="og:site_name" content="Michal Parusinski - Personal Site"/>
+  <meta property="og:title" content="Switching between High DPI and Low DPI in XMonad"/>
+  <meta property="og:description" content="I have created scripts to help automatically switch between low DPI and high DPI settings in XMonad which comes in handy on a high DPI laptop that may be connected to low DPI monitors"/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://michal.parusinski.me/switching-between-high-low-dpi.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2025-03-05 12:00:00+01:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="https://michal.parusinski.me/author/michal-parusinski.html">
+  <meta property="article:section" content="xmonad"/>
+  <meta property="article:tag" content="xmonad"/>
+  <meta property="article:tag" content="highdpi"/>
+  <meta property="article:tag" content="lowdpi"/>
+  <meta property="og:image" content="/images/profile.jpg">
+
+  <title>Michal Parusinski - Personal Site &ndash; Switching between High DPI and Low DPI in XMonad</title>
+
+
+</head>
+<body class="light-theme">
+
+<aside>
+  <div>
+    <a href="https://michal.parusinski.me/">
+      <img src="/images/profile.jpg" alt="" title="">
+    </a>
+
+    <h1>
+      <a href="https://michal.parusinski.me/"></a>
+    </h1>
+
+
+
+    <nav>
+      <ul class="list">
+
+
+            <li>
+              <a target="_self"
+                 href="https://michal.parusinski.me/pages/a-propos-de-moi.html#a-propos-de-moi">
+                A propos de moi
+              </a>
+            </li>
+            <li>
+              <a target="_self"
+                 href="https://michal.parusinski.me/pages/about-me.html#about-me">
+                About Me
+              </a>
+            </li>
+            <li>
+              <a target="_self"
+                 href="https://michal.parusinski.me/pages/publications.html#publications">
+                Publications
+              </a>
+            </li>
+
+      </ul>
+    </nav>
+
+    <ul class="social">
+      <li>
+        <a class="sc-linkedin"
+           href="https://www.linkedin.com/in/michal-parusinski-b7b18458/"
+           target="_blank">
+          <i class="fa-brands fa-linkedin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/mparusinski"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+
+<article class="single">
+  <header>
+      
+    <h1 id="switching-between-high-low-dpi">Switching between High DPI and Low DPI in XMonad</h1>
+    <p>
+      Posted on Wed 05 March 2025 in <a href="https://michal.parusinski.me/category/xmonad.html">xmonad</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <h1 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h1>
+<p>I enjoying using a tiling window manager on Linux. 
+However it is hard to get 
+them to work with my multiple monitor requirements.</p>
+<p>My situation can be described as follows:
+1. I have multiple monitors, not all of them have the same DPI.
+2. Not all of them are connected at the same time as I use a laptop.
+   Sometimes I no monitors, sometimes three. And I like to plug them
+   while the session is open.
+3. Whenever possible I would like to have the highest DPI setting possible.</p>
+<p>DPI means dots per inch and loosely speaking refers to resolution.
+High DPI monitors have such a high resolution they require bigger fonts
+and upscaling.</p>
+<p>In general on Linux, Wayland based window managers and desktop 
+environmenti, like Gnome or Hyprland handle the best high DPI settings. 
+They support fractional scaling (for when monitors are 
+halfway between low and high DPI). They work nicely with 
+mixed setups like described above.</p>
+<p>However I am not yet satisfied with either Gnome (which
+isn&rsquo;t a dynamic tiling window manager), or Hyprland
+(which seems to have a static approach to multiple monitors).
+And I haven&rsquo;t tried Sway yet. In the future I planned to revisit
+Sway and Hyprland but in the meantime I wanted to get
+XMonad to work well because I like how XMonad handle 
+multiple monitors.</p>
+<h1 id="finding-out-current-dpi">Finding out current DPI<a class="headerlink" href="#finding-out-current-dpi" title="Permanent link">&para;</a></h1>
+<p>I wrote a simple script using <code>xdpyinfo</code> to fetch information
+about the current DPI:</p>
+<p>TODO: This script is broken (fix this)</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env bash</span>
+xdpyinfo<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>dots<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-s<span class="w"> </span><span class="s1">&#39; &#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39; &#39;</span><span class="w"> </span>-f<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;x&#39;</span><span class="w"> </span>-f<span class="w"> </span><span class="m">1</span>
+</code></pre></div>
+
+<p>This will return a number giving the current DPI setting.
+The purpose of this script to allow XMonad to tell the 
+DPI setting and adapt accordingly. In my case I use it 
+to tell which XMobar config to load (either a low DPI
+setting or a high DPI setting).</p>
+<h1 id="creating-configs-for-each-dpi-setting">Creating configs for each DPI setting<a class="headerlink" href="#creating-configs-for-each-dpi-setting" title="Permanent link">&para;</a></h1>
+<p>The main trick I use for multiple DPI setting is having multiple
+config files for each DPI config. The files I differentiate are:
+* <code>.xsession</code> files for loading Xft settings
+* <code>xmobarrc</code> files for the XMobar status bar (with different dpi settings)</p>
+<p>So for instance here is the two x session files</p>
+<table>
+  <tr>
+    <th>File</th>
+    <th>Low DPI</th>
+    <th>High DPI</th>
+  </tr>
+  <tr>
+    <td>X Session file</td>
+    <td>
+<pre>
+<code>
+Xft.dpi: 96
+Xft.autohint: 0
+Xft.lcdfilter: lcddefault
+Xft.hintstyle: hintfull
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.rgba: rgb
+</code>
+</pre>
+    </td>
+    <td>
+<pre>
+<code>
+Xft.dpi: 192
+Xft.autohint: 0
+Xft.lcdfilter: lcddefault
+Xft.hintstyle: hintfull
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.rgba: rgb
+</code>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td>XMobar config</td>
+    <td>
+<pre>
+<code>
+Config { overrideRedirect = False
+       , font      = "Fira Code 12"
+       , additionalFonts = [ "Font Awesome 6 Free Solid 12"
+                           , "Font Awesome 6 Brands 12"
+                           ]
+       , bgColor   = "#2E383C"
+       , fgColor   = "#D3C6AA"
+       , dpi       = 96
+       , position  = TopH 30
+       , commands  = [ Run Cpu
+                        [ "-L", "5"
+                        , "-H", "50"
+                        , "--high", "red"
+                        , "--low", "green"
+                        ] 10
+                    , Run Battery
+                        [ "--template", "<acstatus>: <left>% - <timeleft>"
+                        , "--"
+                        , "-O", "AC"
+                        , "-o", "Bat"
+                        , "--high", "green"
+                        , "--low", "red"
+                        ] 10
+                    , Run Memory ["--template", "Mem: <usedratio>%"] 10
+                    , Run Date "%a %Y-%m-%d %H:%M" "date" 10
+                    , Run XMonadLog
+                    ]
+        , sepChar  = "%"
+        , alignSep = "}{"
+        , template = "%XMonadLog% }{ %battery% | %cpu% | %memory% | %date% "
+        }
+</code>
+</pre>
+    </td>
+    <td>
+<pre>
+<code>
+Config { overrideRedirect = False
+       , font      = "Fira Code 12"
+       , additionalFonts = [ "Font Awesome 6 Free Solid 12"
+                           , "Font Awesome 6 Brands 12"
+                           ]
+       , bgColor   = "#2E383C"
+       , fgColor   = "#D3C6AA"
+       , dpi       = 192
+       , position  = TopH 60
+       , commands  = [ Run Cpu
+                        [ "-L", "5"
+                        , "-H", "50"
+                        , "--high", "red"
+                        , "--low", "green"
+                        ] 10
+                    , Run Battery
+                        [ "--template", "<acstatus>: <left>% - <timeleft>"
+                        , "--"
+                        , "-O", "AC"
+                        , "-o", "Bat"
+                        , "--high", "green"
+                        , "--low", "red"
+                        ] 10
+                    , Run Memory ["--template", "Mem: <usedratio>%"] 10
+                    , Run Date "%a %Y-%m-%d %H:%M" "date" 10
+                    , Run XMonadLog
+                    ]
+        , sepChar  = "%"
+        , alignSep = "}{"
+        , template = "%XMonadLog% }{ %battery% | %cpu% | %memory% | %date% "
+        }
+</code>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<p>The main notable thing is that the font dpi changes in both case. The
+rest is not important in this context.</p>
+<h1 id="toggling-between-dpi-settings">Toggling between DPI settings<a class="headerlink" href="#toggling-between-dpi-settings" title="Permanent link">&para;</a></h1>
+<p>To switch between the two DPI a second script is created :</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env bash</span>
+
+<span class="nv">DPI</span><span class="o">=</span><span class="k">$(</span>~/.local/bin/what-dpi.sh<span class="k">)</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DPI</span><span class="s2">&quot;</span><span class="w"> </span>-eq<span class="w"> </span><span class="s2">&quot;192&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Switching to low DPI (96)&quot;</span>
+<span class="w">    </span>xrdb<span class="w"> </span>-merge<span class="w"> </span>~/.config/xsession/xsession.lowdpi
+<span class="w">    </span>xrandr<span class="w"> </span>-s<span class="w"> </span>1920x1080
+<span class="k">else</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Switching to high DPI (192)&quot;</span>
+<span class="w">    </span>xrdb<span class="w"> </span>-merge<span class="w"> </span>~/.config/xsession/xsession.hidpi
+<span class="w">    </span>xrandr<span class="w"> </span>-s<span class="w"> </span>3840x2160
+<span class="k">fi</span>
+</code></pre></div>
+
+<p>This script picks up the current DPI setting and applies the new setting
+matching the opposite DPI setting. It does three things :
+1. Change the Xft settings for fonts
+2. Change the screen resolution</p>
+<h1 id="incorporating-in-xmonad">Incorporating in XMonad<a class="headerlink" href="#incorporating-in-xmonad" title="Permanent link">&para;</a></h1>
+<p>Now we incorporate the logic in XMonad. First I define a data type
+(to follow good programming practices)</p>
+<div class="highlight"><pre><span></span><code><span class="kr">data</span><span class="w"> </span><span class="kt">DPI</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">HiDPI</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">LowDPI</span>
+</code></pre></div>
+
+<p>I create a status bar hook that takes a DPI as an input (and monitor number) and creates the 
+appropriate instances of xmobar:</p>
+<div class="highlight"><pre><span></span><code><span class="kr">import</span><span class="w"> </span><span class="nn">XMonad.Hooks.StatusBar</span>
+<span class="kr">import</span><span class="w"> </span><span class="nn">XMonad.Hooks.StatusBar.PP</span>
+
+<span class="nf">mySB</span><span class="w"> </span><span class="n">num</span><span class="w"> </span><span class="n">dpi</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">statusBarProp</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="s">&quot;xmobar -x &quot;</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="n">show</span><span class="w"> </span><span class="n">num</span><span class="w"> </span><span class="o">++</span><span class="w"> </span><span class="n">dpiConf</span><span class="w"> </span><span class="n">dpi</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">pure</span><span class="w"> </span><span class="n">myXmobarPP</span><span class="p">)</span>
+<span class="w">  </span><span class="kr">where</span><span class="w"> </span><span class="n">dpiConf</span><span class="w"> </span><span class="kt">LowDPI</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot; ~/.config/xmobar/xmobarrc.lowdpi&quot;</span>
+<span class="w">        </span><span class="n">dpiConf</span><span class="w"> </span><span class="kt">HiDPI</span><span class="w">  </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot; ~/.config/xmobar/xmobarrc.hidpi&quot;</span>
+
+<span class="nf">myXmobarPP</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">PP</span>
+<span class="nf">myXmobarPP</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">def</span><span class="w"> </span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="n">ppSep</span><span class="w">             </span><span class="ow">=</span><span class="w"> </span><span class="s">&quot; | &quot;</span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="n">ppCurrent</span><span class="w">         </span><span class="ow">=</span><span class="w"> </span><span class="n">xmobarColor</span><span class="w"> </span><span class="s">&quot;#7FBBB3&quot;</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">wrap</span><span class="w"> </span><span class="s">&quot;[&quot;</span><span class="w"> </span><span class="s">&quot;]&quot;</span><span class="w"> </span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="n">ppVisible</span><span class="w">         </span><span class="ow">=</span><span class="w"> </span><span class="n">xmobarColor</span><span class="w"> </span><span class="s">&quot;#A7C080&quot;</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">wrap</span><span class="w"> </span><span class="s">&quot;[&quot;</span><span class="w"> </span><span class="s">&quot;]&quot;</span><span class="w"> </span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="n">ppHidden</span><span class="w">          </span><span class="ow">=</span><span class="w"> </span><span class="n">xmobarColor</span><span class="w"> </span><span class="s">&quot;#E67E80&quot;</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">wrap</span><span class="w"> </span><span class="s">&quot;(&quot;</span><span class="w"> </span><span class="s">&quot;)&quot;</span><span class="w"> </span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="n">ppHiddenNoWindows</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">xmobarColor</span><span class="w"> </span><span class="s">&quot;#D3C6AA&quot;</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">wrap</span><span class="w"> </span><span class="s">&quot; &quot;</span><span class="w"> </span><span class="s">&quot; &quot;</span><span class="w"> </span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="n">ppTitle</span><span class="w">           </span><span class="ow">=</span><span class="w"> </span><span class="n">xmobarColor</span><span class="w"> </span><span class="s">&quot;#D3C6AA&quot;</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="n">shorten</span><span class="w"> </span><span class="mi">60</span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="n">ppTitleSanitize</span><span class="w">   </span><span class="ow">=</span><span class="w"> </span><span class="n">xmobarStrip</span>
+<span class="w">  </span><span class="p">}</span>
+</code></pre></div>
+
+<p>I then hook this into the main script</p>
+<div class="highlight"><pre><span></span><code><span class="nf">fetchDPI</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="kt">DPI</span><span class="w"> </span>
+<span class="nf">fetchDPI</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">do</span>
+<span class="w">  </span><span class="p">(</span><span class="kr">_</span><span class="p">,</span><span class="w"> </span><span class="n">maybeOutH</span><span class="p">,</span><span class="w"> </span><span class="kr">_</span><span class="p">,</span><span class="w"> </span><span class="kr">_</span><span class="p">)</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">createProcess</span><span class="w"> </span><span class="n">shellCmd</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std_out</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kt">CreatePipe</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="n">maybe</span><span class="w"> </span><span class="p">(</span><span class="n">return</span><span class="w"> </span><span class="kt">LowDPI</span><span class="p">)</span><span class="w"> </span><span class="n">processOut</span><span class="w"> </span><span class="n">maybeOutH</span>
+<span class="w">  </span><span class="kr">where</span><span class="w"> </span><span class="n">shellCmd</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">shell</span><span class="w"> </span><span class="s">&quot;~/.local/bin/what-dpi.sh&quot;</span>
+<span class="w">        </span><span class="n">processOut</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Handle</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="kt">DPI</span><span class="w"> </span>
+<span class="w">        </span><span class="n">processOut</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">do</span>
+<span class="w">          </span><span class="n">output</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">hGetLine</span><span class="w"> </span><span class="n">h</span>
+<span class="w">          </span><span class="kr">let</span><span class="w"> </span><span class="n">currDpi</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">readMaybe</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">Maybe</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span>
+<span class="w">          </span><span class="n">return</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="n">maybe</span><span class="w"> </span><span class="kt">HiDPI</span><span class="w"> </span><span class="n">intToDPIEnum</span><span class="w"> </span><span class="n">currDpi</span>
+<span class="w">          </span><span class="kr">where</span><span class="w"> </span><span class="n">intToDPIEnum</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">192</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="kt">HiDPI</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="kt">LowDPI</span>
+
+<span class="nf">main</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">IO</span><span class="w"> </span><span class="nb">()</span>
+<span class="nf">main</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="kr">do</span>
+<span class="w">  </span><span class="n">dpi</span><span class="w"> </span><span class="ow">&lt;-</span><span class="w"> </span><span class="n">fetchDPI</span>
+<span class="w">  </span><span class="n">xmonadMain</span><span class="w"> </span><span class="n">dpi</span><span class="w"> </span>
+<span class="w">  </span><span class="kr">where</span><span class="w"> </span><span class="n">xmonadMain</span><span class="w"> </span><span class="n">dpi</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">xmonad</span>
+<span class="w">                       </span><span class="o">.</span><span class="w"> </span><span class="n">ewmhFullscreen</span>
+<span class="w">                       </span><span class="o">.</span><span class="w"> </span><span class="n">ewmh</span>
+<span class="w">                       </span><span class="o">.</span><span class="w"> </span><span class="n">withEasySB</span><span class="w"> </span><span class="p">(</span><span class="n">mySB</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="n">dpi</span><span class="p">)</span><span class="w"> </span><span class="n">toggleStrutsKey</span>
+<span class="w">                       </span><span class="o">.</span><span class="w"> </span><span class="n">withEasySB</span><span class="w"> </span><span class="p">(</span><span class="n">mySB</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">dpi</span><span class="p">)</span><span class="w"> </span><span class="n">toggleStrutsKey</span>
+<span class="w">                       </span><span class="o">$</span><span class="w"> </span><span class="n">myConfig</span><span class="w"> </span><span class="n">dpi</span><span class="w"> </span>
+<span class="w">                       </span><span class="kr">where</span><span class="w"> </span><span class="n">toggleStrutsKey</span><span class="w"> </span><span class="ow">::</span><span class="w"> </span><span class="kt">XConfig</span><span class="w"> </span><span class="kt">Layout</span><span class="w"> </span><span class="ow">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="kt">KeyMask</span><span class="p">,</span><span class="w"> </span><span class="kt">KeySym</span><span class="p">)</span>
+<span class="w">                             </span><span class="n">toggleStrutsKey</span><span class="w"> </span><span class="kt">XConfig</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">modMask</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="n">myModMask</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="ow">=</span><span class="w"> </span><span class="p">(</span><span class="n">myModMask</span><span class="p">,</span><span class="w"> </span><span class="n">xK_b</span><span class="p">)</span>
+</code></pre></div>
+
+<p>So let&rsquo;s explain what happens :
+1. When XMonad launches it fetches the current DPI from the <code>what-dpi.sh</code> script. 
+   This part is done in <code>fetchDPI</code> and it is basically a lot of boilerplate code
+   to start a process and return the DPI setting with lots of error off ramps to 
+   default to a low DPI setting (in exotic cases it is safer to assume low DPI)
+2. Launch the status bar using withEasySB multiple times as we may have multiple
+   monitors with the appropriate DPI setting.</p>
+<p>Now this allows XMonad upon start to adapt but not when monitors are plugged in
+or plugged out. For this I create a keyboard shortcut as follows</p>
+<div class="highlight"><pre><span></span><code><span class="nf">myKeys</span><span class="w">     </span><span class="ow">=</span>
+<span class="w">  </span><span class="p">[</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;M-v&quot;</span><span class="p">,</span><span class="w">                     </span><span class="n">toggleSmartSpacing</span><span class="p">)</span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;&lt;XF86MonBrightnessUp&gt;&quot;</span><span class="p">,</span><span class="w">   </span><span class="n">spawn</span><span class="w"> </span><span class="s">&quot;brightnessctl s +10%&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;&lt;XF86MonBrightnessDown&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">spawn</span><span class="w"> </span><span class="s">&quot;brightnessctl s 10-%&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;&lt;XF86AudioRaiseVolume&gt;&quot;</span><span class="p">,</span><span class="w">  </span><span class="n">raiseVolume</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">return</span><span class="w"> </span><span class="nb">()</span><span class="p">)</span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;&lt;XF86AudioLowerVolume&gt;&quot;</span><span class="p">,</span><span class="w">  </span><span class="n">lowerVolume</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">return</span><span class="w"> </span><span class="nb">()</span><span class="p">)</span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;&lt;XF86AudioMute&gt;&quot;</span><span class="p">,</span><span class="w">         </span><span class="n">toggleMute</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">return</span><span class="w"> </span><span class="nb">()</span><span class="p">)</span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;C-&lt;Print&gt;&quot;</span><span class="p">,</span><span class="w">               </span><span class="n">spawn</span><span class="w"> </span><span class="s">&quot;scrot -s&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;C-&#39;&quot;</span><span class="p">,</span><span class="w">                     </span><span class="n">spawn</span><span class="w"> </span><span class="s">&quot;~/.local/bin/switch-dpi.sh; killall xmobar; xmonad --restart&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">]</span>
+</code></pre></div>
+
+<p>Here I add a keyboard shortcut Control-&rsquo; to request a DPI switch, kill xmobar
+and restart xmonad.</p>
+<p>For more articles about Nix and NixOS the following 
+RSS feed is available over <a href="/feeds/nix.rss.xml">here</a>.</p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://michal.parusinski.me/tag/xmonad.html">xmonad</a>
+      <a href="https://michal.parusinski.me/tag/highdpi.html">highdpi</a>
+      <a href="https://michal.parusinski.me/tag/lowdpi.html">lowdpi</a>
+    </p>
+  </div>
+
+
+
+
+
+
+</article>
+
+<footer>
+<p>&copy;  </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Michal Parusinski - Personal Site ",
+  "url" : "https://michal.parusinski.me",
+  "image": "/images/profile.jpg",
+  "description": ""
+}
+</script><script type="text/javascript">
+  var _paq = window._paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://stats.parusinski.me/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', 1]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="https://stats.parusinski.me/matomo.php?idsite=1&rec=1" style="border:0" alt="" /></p></noscript>
+
+</body>
+</html>

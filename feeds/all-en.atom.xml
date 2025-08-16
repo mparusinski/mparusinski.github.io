@@ -1,5 +1,299 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Michal Parusinski - Personal Site</title><link href="https://michal.parusinski.me/" rel="alternate"></link><link href="https://michal.parusinski.me/feeds/all-en.atom.xml" rel="self"></link><id>https://michal.parusinski.me/</id><updated>2025-03-01T14:04:00+01:00</updated><entry><title>Managing databases users using nix</title><link href="https://michal.parusinski.me/manage-db-users-with-nix.html" rel="alternate"></link><published>2025-02-11T12:00:00+01:00</published><updated>2025-02-11T12:00:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2025-02-11:/manage-db-users-with-nix.html</id><summary type="html">&lt;p&gt;How to manage data users, specifically for MySQL/MariaDB
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Michal Parusinski - Personal Site</title><link href="https://michal.parusinski.me/" rel="alternate"/><link href="https://michal.parusinski.me/feeds/all-en.atom.xml" rel="self"/><id>https://michal.parusinski.me/</id><updated>2025-08-14T12:00:00+02:00</updated><entry><title>Switching systemd-boot to GRUB on Archlinux</title><link href="https://michal.parusinski.me/swap-systemd-boot-with-grub.html" rel="alternate"/><published>2025-08-14T12:00:00+02:00</published><updated>2025-08-14T12:00:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2025-08-14:/swap-systemd-boot-with-grub.html</id><summary type="html">&lt;p&gt;Switching systemd-boot to GRUB on Archlinux
+so I can use tools snapper to create snapshots
+before updating archlinux&lt;/p&gt;</summary><content type="html">&lt;p&gt;I intend to use BTRFS snapshots, snapper and pac-snap
+to be able to rollback archlinux if an update goes 
+wrong. However current it uses systemd-boot and the tools
+I intend to use required GRUB.&lt;/p&gt;
+&lt;h1 id="requirements"&gt;Requirements&lt;a class="headerlink" href="#requirements" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;This tutorial is only meant for UEFI systems.
+It requires a EFI partition mounted under &lt;code&gt;/boot&lt;/code&gt;
+with enough disk space (in my case 512 MB should
+be enough).&lt;/p&gt;
+&lt;p&gt;Install &lt;code&gt;efibootmgr&lt;/code&gt; to validate changes&lt;/p&gt;
+&lt;h1 id="swapping-to-grub-with-btrfs-support"&gt;Swapping to GRUB with BTRFS support&lt;a class="headerlink" href="#swapping-to-grub-with-btrfs-support" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Install &lt;code&gt;grub&lt;/code&gt; and run&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;grub-install&lt;span class="w"&gt; &lt;/span&gt;--target&lt;span class="o"&gt;=&lt;/span&gt;x86_64-efi&lt;span class="w"&gt; &lt;/span&gt;--efi-directory&lt;span class="o"&gt;=&lt;/span&gt;/boot&lt;span class="w"&gt; &lt;/span&gt;--bootloader-id&lt;span class="o"&gt;=&lt;/span&gt;GRUB
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Edit the file &lt;code&gt;/etc/default/grub&lt;/code&gt; and copy over the relevant
+fields from the systemd boot loader usually found under 
+&lt;code&gt;/boot/loader/entries/arch.conf&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;For instance if your systemd-boot config looks like this&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;title   Arch Linux
+linux   /vmlinuz-linux
+initrd  /intel-ucode.img
+initrd  /initramfs-linux.img
+options cryptdevice=UUID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:crypt root=/dev/mapper/crypt rootflags=subvol=arch_root splash rw
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;You need to copy &lt;code&gt;options&lt;/code&gt; field to &lt;code&gt;GRUB_CMDLINE_LINUX&lt;/code&gt; but do not copy
+&lt;code&gt;root&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Then generate the GRUB configuration &lt;code&gt;grub-mkconfig -o /boot/grub/grub.cfg&lt;/code&gt;
+and check the content of the file.&lt;/p&gt;
+&lt;p&gt;For more articles about Linux the following 
+RSS feed is available over &lt;a href="/feeds/linux.rss.xml"&gt;here&lt;/a&gt;.&lt;/p&gt;</content><category term="linux"/><category term="archlinux"/><category term="linux"/></entry><entry><title>Switching between High DPI and Low DPI in XMonad</title><link href="https://michal.parusinski.me/switching-between-high-low-dpi.html" rel="alternate"/><published>2025-03-05T12:00:00+01:00</published><updated>2025-03-05T12:00:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2025-03-05:/switching-between-high-low-dpi.html</id><summary type="html">&lt;p&gt;I have created scripts to help automatically switch
+between low DPI and high DPI settings in XMonad which
+comes in handy on a high DPI laptop that may be connected
+to low DPI monitors&lt;/p&gt;</summary><content type="html">&lt;h1 id="context"&gt;Context&lt;a class="headerlink" href="#context" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;I enjoying using a tiling window manager on Linux. 
+However it is hard to get 
+them to work with my multiple monitor requirements.&lt;/p&gt;
+&lt;p&gt;My situation can be described as follows:
+1. I have multiple monitors, not all of them have the same DPI.
+2. Not all of them are connected at the same time as I use a laptop.
+   Sometimes I no monitors, sometimes three. And I like to plug them
+   while the session is open.
+3. Whenever possible I would like to have the highest DPI setting possible.&lt;/p&gt;
+&lt;p&gt;DPI means dots per inch and loosely speaking refers to resolution.
+High DPI monitors have such a high resolution they require bigger fonts
+and upscaling.&lt;/p&gt;
+&lt;p&gt;In general on Linux, Wayland based window managers and desktop 
+environmenti, like Gnome or Hyprland handle the best high DPI settings. 
+They support fractional scaling (for when monitors are 
+halfway between low and high DPI). They work nicely with 
+mixed setups like described above.&lt;/p&gt;
+&lt;p&gt;However I am not yet satisfied with either Gnome (which
+isn&amp;rsquo;t a dynamic tiling window manager), or Hyprland
+(which seems to have a static approach to multiple monitors).
+And I haven&amp;rsquo;t tried Sway yet. In the future I planned to revisit
+Sway and Hyprland but in the meantime I wanted to get
+XMonad to work well because I like how XMonad handle 
+multiple monitors.&lt;/p&gt;
+&lt;h1 id="finding-out-current-dpi"&gt;Finding out current DPI&lt;a class="headerlink" href="#finding-out-current-dpi" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;I wrote a simple script using &lt;code&gt;xdpyinfo&lt;/code&gt; to fetch information
+about the current DPI:&lt;/p&gt;
+&lt;p&gt;TODO: This script is broken (fix this)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/usr/bin/env bash&lt;/span&gt;
+xdpyinfo&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;grep&lt;span class="w"&gt; &lt;/span&gt;dots&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;tr&lt;span class="w"&gt; &lt;/span&gt;-s&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39; &amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;cut&lt;span class="w"&gt; &lt;/span&gt;-d&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39; &amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-f&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;cut&lt;span class="w"&gt; &lt;/span&gt;-d&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;x&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-f&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This will return a number giving the current DPI setting.
+The purpose of this script to allow XMonad to tell the 
+DPI setting and adapt accordingly. In my case I use it 
+to tell which XMobar config to load (either a low DPI
+setting or a high DPI setting).&lt;/p&gt;
+&lt;h1 id="creating-configs-for-each-dpi-setting"&gt;Creating configs for each DPI setting&lt;a class="headerlink" href="#creating-configs-for-each-dpi-setting" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;The main trick I use for multiple DPI setting is having multiple
+config files for each DPI config. The files I differentiate are:
+* &lt;code&gt;.xsession&lt;/code&gt; files for loading Xft settings
+* &lt;code&gt;xmobarrc&lt;/code&gt; files for the XMobar status bar (with different dpi settings)&lt;/p&gt;
+&lt;p&gt;So for instance here is the two x session files&lt;/p&gt;
+&lt;table&gt;
+  &lt;tr&gt;
+    &lt;th&gt;File&lt;/th&gt;
+    &lt;th&gt;Low DPI&lt;/th&gt;
+    &lt;th&gt;High DPI&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;X Session file&lt;/td&gt;
+    &lt;td&gt;
+&lt;pre&gt;
+&lt;code&gt;
+Xft.dpi: 96
+Xft.autohint: 0
+Xft.lcdfilter: lcddefault
+Xft.hintstyle: hintfull
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.rgba: rgb
+&lt;/code&gt;
+&lt;/pre&gt;
+    &lt;/td&gt;
+    &lt;td&gt;
+&lt;pre&gt;
+&lt;code&gt;
+Xft.dpi: 192
+Xft.autohint: 0
+Xft.lcdfilter: lcddefault
+Xft.hintstyle: hintfull
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.rgba: rgb
+&lt;/code&gt;
+&lt;/pre&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;XMobar config&lt;/td&gt;
+    &lt;td&gt;
+&lt;pre&gt;
+&lt;code&gt;
+Config { overrideRedirect = False
+       , font      = "Fira Code 12"
+       , additionalFonts = [ "Font Awesome 6 Free Solid 12"
+                           , "Font Awesome 6 Brands 12"
+                           ]
+       , bgColor   = "#2E383C"
+       , fgColor   = "#D3C6AA"
+       , dpi       = 96
+       , position  = TopH 30
+       , commands  = [ Run Cpu
+                        [ "-L", "5"
+                        , "-H", "50"
+                        , "--high", "red"
+                        , "--low", "green"
+                        ] 10
+                    , Run Battery
+                        [ "--template", "&lt;acstatus&gt;: &lt;left&gt;% - &lt;timeleft&gt;"
+                        , "--"
+                        , "-O", "AC"
+                        , "-o", "Bat"
+                        , "--high", "green"
+                        , "--low", "red"
+                        ] 10
+                    , Run Memory ["--template", "Mem: &lt;usedratio&gt;%"] 10
+                    , Run Date "%a %Y-%m-%d %H:%M" "date" 10
+                    , Run XMonadLog
+                    ]
+        , sepChar  = "%"
+        , alignSep = "}{"
+        , template = "%XMonadLog% }{ %battery% | %cpu% | %memory% | %date% "
+        }
+&lt;/code&gt;
+&lt;/pre&gt;
+    &lt;/td&gt;
+    &lt;td&gt;
+&lt;pre&gt;
+&lt;code&gt;
+Config { overrideRedirect = False
+       , font      = "Fira Code 12"
+       , additionalFonts = [ "Font Awesome 6 Free Solid 12"
+                           , "Font Awesome 6 Brands 12"
+                           ]
+       , bgColor   = "#2E383C"
+       , fgColor   = "#D3C6AA"
+       , dpi       = 192
+       , position  = TopH 60
+       , commands  = [ Run Cpu
+                        [ "-L", "5"
+                        , "-H", "50"
+                        , "--high", "red"
+                        , "--low", "green"
+                        ] 10
+                    , Run Battery
+                        [ "--template", "&lt;acstatus&gt;: &lt;left&gt;% - &lt;timeleft&gt;"
+                        , "--"
+                        , "-O", "AC"
+                        , "-o", "Bat"
+                        , "--high", "green"
+                        , "--low", "red"
+                        ] 10
+                    , Run Memory ["--template", "Mem: &lt;usedratio&gt;%"] 10
+                    , Run Date "%a %Y-%m-%d %H:%M" "date" 10
+                    , Run XMonadLog
+                    ]
+        , sepChar  = "%"
+        , alignSep = "}{"
+        , template = "%XMonadLog% }{ %battery% | %cpu% | %memory% | %date% "
+        }
+&lt;/code&gt;
+&lt;/pre&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;The main notable thing is that the font dpi changes in both case. The
+rest is not important in this context.&lt;/p&gt;
+&lt;h1 id="toggling-between-dpi-settings"&gt;Toggling between DPI settings&lt;a class="headerlink" href="#toggling-between-dpi-settings" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;To switch between the two DPI a second script is created :&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/usr/bin/env bash&lt;/span&gt;
+
+&lt;span class="nv"&gt;DPI&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;~/.local/bin/what-dpi.sh&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$DPI&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-eq&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;192&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Switching to low DPI (96)&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;xrdb&lt;span class="w"&gt; &lt;/span&gt;-merge&lt;span class="w"&gt; &lt;/span&gt;~/.config/xsession/xsession.lowdpi
+&lt;span class="w"&gt;    &lt;/span&gt;xrandr&lt;span class="w"&gt; &lt;/span&gt;-s&lt;span class="w"&gt; &lt;/span&gt;1920x1080
+&lt;span class="k"&gt;else&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Switching to high DPI (192)&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;xrdb&lt;span class="w"&gt; &lt;/span&gt;-merge&lt;span class="w"&gt; &lt;/span&gt;~/.config/xsession/xsession.hidpi
+&lt;span class="w"&gt;    &lt;/span&gt;xrandr&lt;span class="w"&gt; &lt;/span&gt;-s&lt;span class="w"&gt; &lt;/span&gt;3840x2160
+&lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This script picks up the current DPI setting and applies the new setting
+matching the opposite DPI setting. It does three things :
+1. Change the Xft settings for fonts
+2. Change the screen resolution&lt;/p&gt;
+&lt;h1 id="incorporating-in-xmonad"&gt;Incorporating in XMonad&lt;a class="headerlink" href="#incorporating-in-xmonad" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Now we incorporate the logic in XMonad. First I define a data type
+(to follow good programming practices)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kr"&gt;data&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;DPI&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;HiDPI&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;LowDPI&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;I create a status bar hook that takes a DPI as an input (and monitor number) and creates the 
+appropriate instances of xmobar:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kr"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;XMonad.Hooks.StatusBar&lt;/span&gt;
+&lt;span class="kr"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;XMonad.Hooks.StatusBar.PP&lt;/span&gt;
+
+&lt;span class="nf"&gt;mySB&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;num&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dpi&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;statusBarProp&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;xmobar -x &amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;num&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dpiConf&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dpi&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pure&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;myXmobarPP&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="kr"&gt;where&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dpiConf&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;LowDPI&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot; ~/.config/xmobar/xmobarrc.lowdpi&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;dpiConf&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;HiDPI&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot; ~/.config/xmobar/xmobarrc.hidpi&amp;quot;&lt;/span&gt;
+
+&lt;span class="nf"&gt;myXmobarPP&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;::&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;PP&lt;/span&gt;
+&lt;span class="nf"&gt;myXmobarPP&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;def&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ppSep&lt;/span&gt;&lt;span class="w"&gt;             &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot; | &amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ppCurrent&lt;/span&gt;&lt;span class="w"&gt;         &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;xmobarColor&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;#7FBBB3&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;wrap&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;[&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;]&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ppVisible&lt;/span&gt;&lt;span class="w"&gt;         &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;xmobarColor&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;#A7C080&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;wrap&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;[&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;]&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ppHidden&lt;/span&gt;&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;xmobarColor&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;#E67E80&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;wrap&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;(&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;)&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ppHiddenNoWindows&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;xmobarColor&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;#D3C6AA&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;wrap&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot; &amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot; &amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ppTitle&lt;/span&gt;&lt;span class="w"&gt;           &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;xmobarColor&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;#D3C6AA&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;shorten&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;60&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ppTitleSanitize&lt;/span&gt;&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;xmobarStrip&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;I then hook this into the main script&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nf"&gt;fetchDPI&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;::&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;IO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;DPI&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="nf"&gt;fetchDPI&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kr"&gt;do&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kr"&gt;_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;maybeOutH&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kr"&gt;_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kr"&gt;_&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;&amp;lt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;createProcess&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;shellCmd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;std_out&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;CreatePipe&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="n"&gt;maybe&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;LowDPI&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;processOut&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;maybeOutH&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="kr"&gt;where&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;shellCmd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;shell&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;~/.local/bin/what-dpi.sh&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;processOut&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;::&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;Handle&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;IO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;DPI&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="n"&gt;processOut&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;h&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kr"&gt;do&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="n"&gt;output&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;&amp;lt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;hGetLine&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;h&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="kr"&gt;let&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;currDpi&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;readMaybe&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;output&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;::&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;Maybe&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;Int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="n"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;$&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;maybe&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;HiDPI&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;intToDPIEnum&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;currDpi&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="kr"&gt;where&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;intToDPIEnum&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kr"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;192&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kr"&gt;then&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;HiDPI&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kr"&gt;else&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;LowDPI&lt;/span&gt;
+
+&lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;::&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;IO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;()&lt;/span&gt;
+&lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kr"&gt;do&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="n"&gt;dpi&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;&amp;lt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;fetchDPI&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="n"&gt;xmonadMain&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dpi&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="kr"&gt;where&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;xmonadMain&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dpi&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;xmonad&lt;/span&gt;
+&lt;span class="w"&gt;                       &lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ewmhFullscreen&lt;/span&gt;
+&lt;span class="w"&gt;                       &lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ewmh&lt;/span&gt;
+&lt;span class="w"&gt;                       &lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;withEasySB&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mySB&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dpi&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;toggleStrutsKey&lt;/span&gt;
+&lt;span class="w"&gt;                       &lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;withEasySB&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mySB&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dpi&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;toggleStrutsKey&lt;/span&gt;
+&lt;span class="w"&gt;                       &lt;/span&gt;&lt;span class="o"&gt;$&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;myConfig&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dpi&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="w"&gt;                       &lt;/span&gt;&lt;span class="kr"&gt;where&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;toggleStrutsKey&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;::&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;XConfig&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;Layout&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;KeyMask&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;KeySym&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;                             &lt;/span&gt;&lt;span class="n"&gt;toggleStrutsKey&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;XConfig&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;modMask&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;myModMask&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;myModMask&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;xK_b&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;So let&amp;rsquo;s explain what happens :
+1. When XMonad launches it fetches the current DPI from the &lt;code&gt;what-dpi.sh&lt;/code&gt; script. 
+   This part is done in &lt;code&gt;fetchDPI&lt;/code&gt; and it is basically a lot of boilerplate code
+   to start a process and return the DPI setting with lots of error off ramps to 
+   default to a low DPI setting (in exotic cases it is safer to assume low DPI)
+2. Launch the status bar using withEasySB multiple times as we may have multiple
+   monitors with the appropriate DPI setting.&lt;/p&gt;
+&lt;p&gt;Now this allows XMonad upon start to adapt but not when monitors are plugged in
+or plugged out. For this I create a keyboard shortcut as follows&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nf"&gt;myKeys&lt;/span&gt;&lt;span class="w"&gt;     &lt;/span&gt;&lt;span class="ow"&gt;=&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;M-v&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;                     &lt;/span&gt;&lt;span class="n"&gt;toggleSmartSpacing&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;lt;XF86MonBrightnessUp&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="n"&gt;spawn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;brightnessctl s +10%&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;lt;XF86MonBrightnessDown&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;spawn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;brightnessctl s 10-%&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;lt;XF86AudioRaiseVolume&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="n"&gt;raiseVolume&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;()&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;lt;XF86AudioLowerVolume&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="n"&gt;lowerVolume&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;()&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;lt;XF86AudioMute&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;         &lt;/span&gt;&lt;span class="n"&gt;toggleMute&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;()&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;C-&amp;lt;Print&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;               &lt;/span&gt;&lt;span class="n"&gt;spawn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;scrot -s&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;C-&amp;#39;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;                     &lt;/span&gt;&lt;span class="n"&gt;spawn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;~/.local/bin/switch-dpi.sh; killall xmobar; xmonad --restart&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Here I add a keyboard shortcut Control-&amp;rsquo; to request a DPI switch, kill xmobar
+and restart xmonad.&lt;/p&gt;
+&lt;p&gt;For more articles about Nix and NixOS the following 
+RSS feed is available over &lt;a href="/feeds/nix.rss.xml"&gt;here&lt;/a&gt;.&lt;/p&gt;</content><category term="xmonad"/><category term="xmonad"/><category term="highdpi"/><category term="lowdpi"/></entry><entry><title>Managing databases users using nix</title><link href="https://michal.parusinski.me/manage-db-users-with-nix.html" rel="alternate"/><published>2025-02-11T12:00:00+01:00</published><updated>2025-02-11T12:00:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2025-02-11:/manage-db-users-with-nix.html</id><summary type="html">&lt;p&gt;How to manage data users, specifically for MySQL/MariaDB
 using Nix. The process involved declaring user configurations,
 creating scripts to apply configurations and automating the
 process with systemd.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Recently I had the following challenge: manage database
@@ -257,7 +551,7 @@ as so:&lt;/p&gt;
 MySQL user configuration automatically using Nix and 
 put all of this in a module.&lt;/p&gt;
 &lt;p&gt;For more articles about Nix and NixOS the following 
-RSS feed is available over &lt;a href="/feeds/nix.rss.xml"&gt;here&lt;/a&gt;.&lt;/p&gt;</content><category term="nix"></category><category term="pelican"></category><category term="nix"></category></entry><entry><title>Publishing a pelican website using nix</title><link href="https://michal.parusinski.me/publish-website-using-nix.html" rel="alternate"></link><published>2025-01-19T12:00:00+01:00</published><updated>2025-01-19T12:00:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2025-01-19:/publish-website-using-nix.html</id><summary type="html">&lt;p&gt;How to publish a static website using Nix,
+RSS feed is available over &lt;a href="/feeds/nix.rss.xml"&gt;here&lt;/a&gt;.&lt;/p&gt;</content><category term="nix"/><category term="pelican"/><category term="nix"/></entry><entry><title>Publishing a pelican website using nix</title><link href="https://michal.parusinski.me/publish-website-using-nix.html" rel="alternate"/><published>2025-01-19T12:00:00+01:00</published><updated>2025-01-19T12:00:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2025-01-19:/publish-website-using-nix.html</id><summary type="html">&lt;p&gt;How to publish a static website using Nix,
 specifically a website genrated with Pelican
 and managed with Nix Flakes.&lt;/p&gt;</summary><content type="html">&lt;p&gt;This website is statically generated using &lt;a href="https://getpelican.com/"&gt;pelican&lt;/a&gt; and development on the 
 website is done via &lt;a href="https://nixos.wiki/wiki/Flakes"&gt;nix flakes&lt;/a&gt;. 
@@ -534,7 +828,7 @@ environment (like virtual environments in Python),
 build the website (like in &lt;code&gt;make build&lt;/code&gt;) and run the
 website locally (like a &lt;code&gt;docker run&lt;/code&gt;).&lt;/p&gt;
 &lt;p&gt;For more articles about Nix and NixOS the following 
-RSS feed is available over &lt;a href="/feeds/nix.rss.xml"&gt;here&lt;/a&gt;.&lt;/p&gt;</content><category term="nix"></category><category term="pelican"></category><category term="nix"></category></entry><entry><title>Managing secrets in Nix using Agenix</title><link href="https://michal.parusinski.me/managin-secrets-in-nix-using-agenix.html" rel="alternate"></link><published>2024-10-25T21:26:00+02:00</published><updated>2024-10-25T21:26:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2024-10-25:/managin-secrets-in-nix-using-agenix.html</id><summary type="html">&lt;p&gt;How to manage secrets in a Nix configuration
+RSS feed is available over &lt;a href="/feeds/nix.rss.xml"&gt;here&lt;/a&gt;.&lt;/p&gt;</content><category term="nix"/><category term="pelican"/><category term="nix"/></entry><entry><title>Managing secrets in Nix using Agenix</title><link href="https://michal.parusinski.me/managin-secrets-in-nix-using-agenix.html" rel="alternate"/><published>2024-10-25T21:26:00+02:00</published><updated>2024-10-25T21:26:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2024-10-25:/managin-secrets-in-nix-using-agenix.html</id><summary type="html">&lt;p&gt;How to manage secrets in a Nix configuration
 using Agenix, a tool built on top of the
 &lt;code&gt;age&lt;/code&gt; encryption tool.&lt;/p&gt;</summary><content type="html">&lt;p&gt;If tomorrow my laptop were to go in flames, I would lose two things.
 First I would lose my data, and this is what backups are for. The
@@ -650,7 +944,7 @@ second time to link the secret to some configuration item.&lt;/p&gt;
 Nix. For instance in one case the nix build system would invalidate
 a prometheus configuration because the Agenix path would not exist &lt;strong&gt;yet&lt;/strong&gt;.
 This had to with the prometheus Nix module validating the generate configuration
-yaml (see &lt;a href="https://mynixos.com/nixpkgs/option/services.prometheus.checkConfig"&gt;here&lt;/a&gt;).&lt;/p&gt;</content><category term="nix"></category><category term="linux"></category><category term="nix"></category><category term="security"></category></entry><entry><title>Converting Archlinux with BTRFS into NixOS</title><link href="https://michal.parusinski.me/arch-btrfs-into-nixos.html" rel="alternate"></link><published>2024-08-24T11:39:00+02:00</published><updated>2025-03-01T14:04:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2024-08-24:/arch-btrfs-into-nixos.html</id><summary type="html">&lt;p&gt;How to convert an Arch Linux system using a Btrfs filesystem into a NixOS
+yaml (see &lt;a href="https://mynixos.com/nixpkgs/option/services.prometheus.checkConfig"&gt;here&lt;/a&gt;).&lt;/p&gt;</content><category term="nix"/><category term="linux"/><category term="nix"/><category term="security"/></entry><entry><title>Converting Archlinux with BTRFS into NixOS</title><link href="https://michal.parusinski.me/arch-btrfs-into-nixos.html" rel="alternate"/><published>2024-08-24T11:39:00+02:00</published><updated>2025-03-01T14:04:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2024-08-24:/arch-btrfs-into-nixos.html</id><summary type="html">&lt;p&gt;How to convert an Arch Linux system using a Btrfs filesystem into a NixOS
 system without reformatting or using a USB live distro.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Recently I have converted my laptop from Archlinux into NixOS without
 reformatting or plugging a USB live distro and kept my home partition as is.
 This was done from the existing Archlinux install.&lt;/p&gt;
@@ -714,7 +1008,7 @@ update the channel files:&lt;/p&gt;
 &lt;p&gt;In principle at boot time you should
 be able to choose between the old system (Archlinux) and the new system (NixOS).
 If you do keep both systems keep in mind NixOS might modify the location of 
-files like &lt;code&gt;~/.bashrc&lt;/code&gt;.&lt;/p&gt;</content><category term="nix"></category><category term="linux"></category><category term="nix"></category><category term="btrfs"></category></entry><entry><title>Converting docker containers into AppImages</title><link href="https://michal.parusinski.me/converting-docker-containers-into-appimages.html" rel="alternate"></link><published>2022-09-03T16:00:00+02:00</published><updated>2022-09-03T16:00:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2022-09-03:/converting-docker-containers-into-appimages.html</id><summary type="html">&lt;p&gt;In Linux, software is conventionally distributed through packages, usually compressed folders including
+files like &lt;code&gt;~/.bashrc&lt;/code&gt;.&lt;/p&gt;</content><category term="nix"/><category term="linux"/><category term="nix"/><category term="btrfs"/></entry><entry><title>Converting docker containers into AppImages</title><link href="https://michal.parusinski.me/converting-docker-containers-into-appimages.html" rel="alternate"/><published>2022-09-03T16:00:00+02:00</published><updated>2022-09-03T16:00:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2022-09-03:/converting-docker-containers-into-appimages.html</id><summary type="html">&lt;p&gt;In Linux, software is conventionally distributed through packages, usually compressed folders including
 executables, installations scripts and various configuration files. These packaging formats come in various
 flavors like deb packages, RPMs, and many others. While very useful, these packaging formats have a downside:
 they are distribution specific. Even if two distributions …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In Linux, software is conventionally distributed through packages, usually compressed folders including
@@ -775,7 +1069,7 @@ This makes handling shell commands trickier, so it is not supported, instead it 
 the &lt;cite&gt;-x&lt;/cite&gt; flag that allows the user to specify the command to launch.&lt;/p&gt;
 &lt;p&gt;The project is still ongoing development to support many applications and Linux distributions.
 If you have some time and are curious do not hesitate to test the tool and report any bugs you see.&lt;/p&gt;
-</content><category term="Linux, packaging, AppImage, Docker"></category></entry><entry><title>Pixel Pal (PART 6) : Early progress reports</title><link href="https://michal.parusinski.me/pixel-pal-progress.html" rel="alternate"></link><published>2021-05-07T23:59:00+02:00</published><updated>2021-05-07T23:59:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2021-05-07:/pixel-pal-progress.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+</content><category term="Linux, packaging, AppImage, Docker"/></entry><entry><title>Pixel Pal (PART 6) : Early progress reports</title><link href="https://michal.parusinski.me/pixel-pal-progress.html" rel="alternate"/><published>2021-05-07T23:59:00+02:00</published><updated>2021-05-07T23:59:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2021-05-07:/pixel-pal-progress.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
 old icon themes. Many old icon themes are in raster format and are not
 available for HiDPI screens (their resolution are too small). Currently the
 only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
@@ -813,7 +1107,7 @@ The PDF showcases various models performing data augmentation. The results are s
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 5) : Data augmentation</title><link href="https://michal.parusinski.me/pixel-pal-data-augmentation.html" rel="alternate"></link><published>2020-04-25T14:18:00+02:00</published><updated>2020-04-25T14:18:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-04-25:/pixel-pal-data-augmentation.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+</content><category term="Linux, HiDPI, PixelPal"/></entry><entry><title>Pixel Pal (PART 5) : Data augmentation</title><link href="https://michal.parusinski.me/pixel-pal-data-augmentation.html" rel="alternate"/><published>2020-04-25T14:18:00+02:00</published><updated>2020-04-25T14:18:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-04-25:/pixel-pal-data-augmentation.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
 old icon themes. Many old icon themes are in raster format and are not
 available for HiDPI screens (their resolution are too small). Currently the
 only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
@@ -878,7 +1172,7 @@ me to investigate deeper neural networks.&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 4) : Training a model</title><link href="https://michal.parusinski.me/pixel-pal-training.html" rel="alternate"></link><published>2020-04-19T14:41:00+02:00</published><updated>2020-04-19T14:41:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-04-19:/pixel-pal-training.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+</content><category term="Linux, HiDPI, PixelPal"/></entry><entry><title>Pixel Pal (PART 4) : Training a model</title><link href="https://michal.parusinski.me/pixel-pal-training.html" rel="alternate"/><published>2020-04-19T14:41:00+02:00</published><updated>2020-04-19T14:41:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-04-19:/pixel-pal-training.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
 old icon themes. Many old icon themes are in raster format and are not
 available for HiDPI screens (their resolution are too small). Currently the
 only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
@@ -904,7 +1198,7 @@ do when training to avoid wasting time (training well is time consuming):&lt;/p&
 &lt;li&gt;Use checkpoints : This will save the model regularly and if your training crashes you can restart from where you left.&lt;/li&gt;
 &lt;li&gt;Regularly save the output (as an image) of the neural network on fixed image inputs. This helps you visualise the progress of the learning.&lt;/li&gt;
 &lt;/ol&gt;
-</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 3) : Measuring model quality</title><link href="https://michal.parusinski.me/pixel-pal-metrics.html" rel="alternate"></link><published>2020-04-11T15:29:00+02:00</published><updated>2020-04-11T15:29:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-04-11:/pixel-pal-metrics.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+</content><category term="Linux, HiDPI, PixelPal"/></entry><entry><title>Pixel Pal (PART 3) : Measuring model quality</title><link href="https://michal.parusinski.me/pixel-pal-metrics.html" rel="alternate"/><published>2020-04-11T15:29:00+02:00</published><updated>2020-04-11T15:29:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-04-11:/pixel-pal-metrics.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
 old icon themes. Many old icon themes are in raster format and are not
 available for HiDPI screens (their resolution are too small). Currently the
 only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
@@ -978,7 +1272,7 @@ it is simple and fits our purpose. In general always make sure you are using an 
 loss function.&lt;/p&gt;
 &lt;p&gt;In terms of baselines my objectif will be to perform better thant straight upsampling via
 nearest and bilinear interpolation.&lt;/p&gt;
-</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 2) : Gathering data for Pixel Pal</title><link href="https://michal.parusinski.me/pixel-pal-gathering-data.html" rel="alternate"></link><published>2020-02-15T10:24:00+01:00</published><updated>2020-02-15T10:24:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-02-15:/pixel-pal-gathering-data.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+</content><category term="Linux, HiDPI, PixelPal"/></entry><entry><title>Pixel Pal (PART 2) : Gathering data for Pixel Pal</title><link href="https://michal.parusinski.me/pixel-pal-gathering-data.html" rel="alternate"/><published>2020-02-15T10:24:00+01:00</published><updated>2020-02-15T10:24:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-02-15:/pixel-pal-gathering-data.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
 old icon themes. Many old icon themes are in raster format and are not
 available for HiDPI screens (their resolution are too small). Currently the
 only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
@@ -1035,7 +1329,7 @@ whether using deep learning is actually useful for reviving
 old icon sets. The old icon themes are the official
 &lt;a class="reference external" href="https://en.wikipedia.org/wiki/Common_Desktop_Environment"&gt;CDE&lt;/a&gt;
 icon theme and the icon theme from &lt;a class="reference external" href="https://en.wikipedia.org/wiki/OS/2"&gt;OS/2&lt;/a&gt;.&lt;/p&gt;
-</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 1) : Adapting old icon themes for HiDPI screens</title><link href="https://michal.parusinski.me/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html" rel="alternate"></link><published>2020-01-27T18:46:00+01:00</published><updated>2020-01-27T18:46:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-01-27:/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html</id><summary type="html">&lt;p&gt;I am starting a new open source project. The goal of this project
+</content><category term="Linux, HiDPI, PixelPal"/></entry><entry><title>Pixel Pal (PART 1) : Adapting old icon themes for HiDPI screens</title><link href="https://michal.parusinski.me/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html" rel="alternate"/><published>2020-01-27T18:46:00+01:00</published><updated>2020-01-27T18:46:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-01-27:/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html</id><summary type="html">&lt;p&gt;I am starting a new open source project. The goal of this project
 is to solve a recurring issue with HiDPI support. The issues is that
 many old software rely on icon themes in raster format which are not suitable for HiDPI
 screens. To be more specific various software projects …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I am starting a new open source project. The goal of this project
@@ -1056,7 +1350,7 @@ between the pixels of an image in practice. A simple example of how pixels
 can be related to one another is that often there are lines and curves in
 images.&lt;/p&gt;
 &lt;p&gt;A series of blog posts will detail the progress of the project.&lt;/p&gt;
-</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Snaps, Flatpaks, AppImage which one is ahead?</title><link href="https://michal.parusinski.me/snaps-flatpaks-appimages-which-one-is-ahead.html" rel="alternate"></link><published>2019-01-13T13:28:00+01:00</published><updated>2019-01-13T13:28:00+01:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2019-01-13:/snaps-flatpaks-appimages-which-one-is-ahead.html</id><summary type="html">&lt;p&gt;On the Linux desktop there is a push for a universal packaging format.
+</content><category term="Linux, HiDPI, PixelPal"/></entry><entry><title>Snaps, Flatpaks, AppImage which one is ahead?</title><link href="https://michal.parusinski.me/snaps-flatpaks-appimages-which-one-is-ahead.html" rel="alternate"/><published>2019-01-13T13:28:00+01:00</published><updated>2019-01-13T13:28:00+01:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2019-01-13:/snaps-flatpaks-appimages-which-one-is-ahead.html</id><summary type="html">&lt;p&gt;On the Linux desktop there is a push for a universal packaging format.
 Currently there are three main contenders: Snaps packages,
 promoted by Canonical and Ubuntu; Flatpak, promoted by the Gnome Foundation although
 not a Gnome project; and AppImage, a community-led project. Even though the three
@@ -1283,11 +1577,11 @@ applications people won't install and it seems to count Snaps for different arch
 separately. A fairer comparison would put all three on par. Overall traditional Linux software appears
 reluctant to adopt Snap/Flatpak/AppImage.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Linux"></category></entry><entry><title>Made it to the front page of EGC 2018</title><link href="https://michal.parusinski.me/made-it-to-the-front-page-of-egc-2018.html" rel="alternate"></link><published>2018-05-19T17:03:00+02:00</published><updated>2018-05-19T17:03:00+02:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2018-05-19:/made-it-to-the-front-page-of-egc-2018.html</id><content type="html">&lt;p&gt;&lt;img alt="image0" src="https://egc2018.it/files/news/images/36335495032-1491322fcf-o.th_870x446.jpg" /&gt;&lt;/p&gt;
+</content><category term="Linux"/></entry><entry><title>Made it to the front page of EGC 2018</title><link href="https://michal.parusinski.me/made-it-to-the-front-page-of-egc-2018.html" rel="alternate"/><published>2018-05-19T17:03:00+02:00</published><updated>2018-05-19T17:03:00+02:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2018-05-19:/made-it-to-the-front-page-of-egc-2018.html</id><content type="html">&lt;p&gt;&lt;img alt="image0" src="https://egc2018.it/files/news/images/36335495032-1491322fcf-o.th_870x446.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;Apparently I made to the front page of the European Go Congree 2018
 (Pisa) web page.&lt;/p&gt;
 &lt;p&gt;&lt;a class="reference external" href="https://egc2018.it/en/news/view/id-32.html"&gt;EGC's article&lt;/a&gt;&lt;/p&gt;
-</content><category term="Non classé"></category></entry><entry><title>What to learn from the Cambridge Analytica story</title><link href="https://michal.parusinski.me/what-to-learn-from-the-cambridge-analytica-story.html" rel="alternate"></link><published>2018-03-30T12:14:00+02:00</published><updated>2018-03-30T12:14:00+02:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2018-03-30:/what-to-learn-from-the-cambridge-analytica-story.html</id><summary type="html">&lt;p&gt;If you are using Facebook and intend to keep using it the Cambridge
+</content><category term="Non classé"/></entry><entry><title>What to learn from the Cambridge Analytica story</title><link href="https://michal.parusinski.me/what-to-learn-from-the-cambridge-analytica-story.html" rel="alternate"/><published>2018-03-30T12:14:00+02:00</published><updated>2018-03-30T12:14:00+02:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2018-03-30:/what-to-learn-from-the-cambridge-analytica-story.html</id><summary type="html">&lt;p&gt;If you are using Facebook and intend to keep using it the Cambridge
 Analytica
 &lt;a class="reference external" href="https://arstechnica.com/tech-policy/2018/03/facebooks-cambridge-analytica-scandal-explained/"&gt;story&lt;/a&gt;
 can teach a few good practices to protect your privacy. Now of course
@@ -1343,7 +1637,7 @@ computer). To summarise it is far harder to restrict access to your
 content on your Facebook than you might think, so it might be wise to
 treat it as public discourse.&lt;/li&gt;
 &lt;/ol&gt;
-</content><category term="Non classé"></category></entry><entry><title>New blog | Nouveau blog</title><link href="https://michal.parusinski.me/bonjour-tout-le-monde.html" rel="alternate"></link><published>2018-01-06T18:37:00+01:00</published><updated>2018-01-06T18:37:00+01:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2018-01-06:/bonjour-tout-le-monde.html</id><summary type="html">&lt;p&gt;Hello, for 2018 I am restarting my blog from scratch. In part because in
+</content><category term="Non classé"/></entry><entry><title>New blog | Nouveau blog</title><link href="https://michal.parusinski.me/bonjour-tout-le-monde.html" rel="alternate"/><published>2018-01-06T18:37:00+01:00</published><updated>2018-01-06T18:37:00+01:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2018-01-06:/bonjour-tout-le-monde.html</id><summary type="html">&lt;p&gt;Hello, for 2018 I am restarting my blog from scratch. In part because in
 the transition from Wordpress to Pelican and because of my own silly
 mistakes I lost a lot of content.&lt;/p&gt;
 &lt;p&gt;Bonjour, pour 2018 je recommence mon blog à partir de zéro. En partie
@@ -1353,4 +1647,4 @@ mistakes I lost a lot of content.&lt;/p&gt;
 &lt;p&gt;Bonjour, pour 2018 je recommence mon blog à partir de zéro. En partie
 parce que durant la transition de Wordpress à Pelican et à cause de mes
 propres stupides erreures j'ai perdu du contenu.&lt;/p&gt;
-</content><category term="Non classé"></category></entry></feed>
+</content><category term="Non classé"/></entry></feed>

@@ -1,5 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Michal Parusinski - Personal Site - Linux</title><link href="https://michal.parusinski.me/" rel="alternate"></link><link href="https://michal.parusinski.me/feeds/linux.atom.xml" rel="self"></link><id>https://michal.parusinski.me/</id><updated>2019-01-13T13:28:00+01:00</updated><entry><title>Snaps, Flatpaks, AppImage which one is ahead?</title><link href="https://michal.parusinski.me/snaps-flatpaks-appimages-which-one-is-ahead.html" rel="alternate"></link><published>2019-01-13T13:28:00+01:00</published><updated>2019-01-13T13:28:00+01:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2019-01-13:/snaps-flatpaks-appimages-which-one-is-ahead.html</id><summary type="html">&lt;p&gt;On the Linux desktop there is a push for a universal packaging format.
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Michal Parusinski - Personal Site - linux</title><link href="https://michal.parusinski.me/" rel="alternate"/><link href="https://michal.parusinski.me/feeds/linux.atom.xml" rel="self"/><id>https://michal.parusinski.me/</id><updated>2025-08-14T12:00:00+02:00</updated><entry><title>Switching systemd-boot to GRUB on Archlinux</title><link href="https://michal.parusinski.me/swap-systemd-boot-with-grub.html" rel="alternate"/><published>2025-08-14T12:00:00+02:00</published><updated>2025-08-14T12:00:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2025-08-14:/swap-systemd-boot-with-grub.html</id><summary type="html">&lt;p&gt;Switching systemd-boot to GRUB on Archlinux
+so I can use tools snapper to create snapshots
+before updating archlinux&lt;/p&gt;</summary><content type="html">&lt;p&gt;I intend to use BTRFS snapshots, snapper and pac-snap
+to be able to rollback archlinux if an update goes 
+wrong. However current it uses systemd-boot and the tools
+I intend to use required GRUB.&lt;/p&gt;
+&lt;h1 id="requirements"&gt;Requirements&lt;a class="headerlink" href="#requirements" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;This tutorial is only meant for UEFI systems.
+It requires a EFI partition mounted under &lt;code&gt;/boot&lt;/code&gt;
+with enough disk space (in my case 512 MB should
+be enough).&lt;/p&gt;
+&lt;p&gt;Install &lt;code&gt;efibootmgr&lt;/code&gt; to validate changes&lt;/p&gt;
+&lt;h1 id="swapping-to-grub-with-btrfs-support"&gt;Swapping to GRUB with BTRFS support&lt;a class="headerlink" href="#swapping-to-grub-with-btrfs-support" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Install &lt;code&gt;grub&lt;/code&gt; and run&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;grub-install&lt;span class="w"&gt; &lt;/span&gt;--target&lt;span class="o"&gt;=&lt;/span&gt;x86_64-efi&lt;span class="w"&gt; &lt;/span&gt;--efi-directory&lt;span class="o"&gt;=&lt;/span&gt;/boot&lt;span class="w"&gt; &lt;/span&gt;--bootloader-id&lt;span class="o"&gt;=&lt;/span&gt;GRUB
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Edit the file &lt;code&gt;/etc/default/grub&lt;/code&gt; and copy over the relevant
+fields from the systemd boot loader usually found under 
+&lt;code&gt;/boot/loader/entries/arch.conf&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;For instance if your systemd-boot config looks like this&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;title   Arch Linux
+linux   /vmlinuz-linux
+initrd  /intel-ucode.img
+initrd  /initramfs-linux.img
+options cryptdevice=UUID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:crypt root=/dev/mapper/crypt rootflags=subvol=arch_root splash rw
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;You need to copy &lt;code&gt;options&lt;/code&gt; field to &lt;code&gt;GRUB_CMDLINE_LINUX&lt;/code&gt; but do not copy
+&lt;code&gt;root&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Then generate the GRUB configuration &lt;code&gt;grub-mkconfig -o /boot/grub/grub.cfg&lt;/code&gt;
+and check the content of the file.&lt;/p&gt;
+&lt;p&gt;For more articles about Linux the following 
+RSS feed is available over &lt;a href="/feeds/linux.rss.xml"&gt;here&lt;/a&gt;.&lt;/p&gt;</content><category term="linux"/><category term="archlinux"/><category term="linux"/></entry><entry><title>Snaps, Flatpaks, AppImage which one is ahead?</title><link href="https://michal.parusinski.me/snaps-flatpaks-appimages-which-one-is-ahead.html" rel="alternate"/><published>2019-01-13T13:28:00+01:00</published><updated>2019-01-13T13:28:00+01:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2019-01-13:/snaps-flatpaks-appimages-which-one-is-ahead.html</id><summary type="html">&lt;p&gt;On the Linux desktop there is a push for a universal packaging format.
 Currently there are three main contenders: Snaps packages,
 promoted by Canonical and Ubuntu; Flatpak, promoted by the Gnome Foundation although
 not a Gnome project; and AppImage, a community-led project. Even though the three
@@ -226,4 +259,4 @@ applications people won't install and it seems to count Snaps for different arch
 separately. A fairer comparison would put all three on par. Overall traditional Linux software appears
 reluctant to adopt Snap/Flatpak/AppImage.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Linux"></category></entry></feed>
+</content><category term="Linux"/></entry></feed>
