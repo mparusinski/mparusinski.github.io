@@ -1,0 +1,258 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://michal.parusinski.me/theme/pygments/github.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://michal.parusinski.me/theme/font-awesome/css/solid.css">
+
+
+
+
+  <link href="https://michal.parusinski.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Michal Parusinski - Personal Site Atom">
+
+  <link href="https://michal.parusinski.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Michal Parusinski - Personal Site RSS">
+
+
+ 
+
+<meta name="author" content="Michal Parusinski" />
+<meta name="description" content="Checking if I have all my Github projects have clones somewhere." />
+<meta name="keywords" content="git, github">
+
+
+  <meta property="og:site_name" content="Michal Parusinski - Personal Site"/>
+  <meta property="og:title" content="How to check all my projects on Github have local clones"/>
+  <meta property="og:description" content="Checking if I have all my Github projects have clones somewhere."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://michal.parusinski.me/drafts/manage-db-users-with-nix.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2025-02-11 12:00:00+01:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="https://michal.parusinski.me/author/michal-parusinski.html">
+  <meta property="article:section" content="git"/>
+  <meta property="article:tag" content="git"/>
+  <meta property="article:tag" content="github"/>
+  <meta property="og:image" content="/images/profile.jpg">
+
+  <title>Michal Parusinski - Personal Site &ndash; How to check all my projects on Github have local clones</title>
+
+
+</head>
+<body class="light-theme">
+
+<aside>
+  <div>
+    <a href="https://michal.parusinski.me/">
+      <img src="/images/profile.jpg" alt="" title="">
+    </a>
+
+    <h1>
+      <a href="https://michal.parusinski.me/"></a>
+    </h1>
+
+
+
+    <nav>
+      <ul class="list">
+
+
+            <li>
+              <a target="_self"
+                 href="https://michal.parusinski.me/pages/a-propos-de-moi.html#a-propos-de-moi">
+                A propos de moi
+              </a>
+            </li>
+            <li>
+              <a target="_self"
+                 href="https://michal.parusinski.me/pages/about-me.html#about-me">
+                About Me
+              </a>
+            </li>
+            <li>
+              <a target="_self"
+                 href="https://michal.parusinski.me/pages/publications.html#publications">
+                Publications
+              </a>
+            </li>
+
+      </ul>
+    </nav>
+
+    <ul class="social">
+      <li>
+        <a class="sc-linkedin"
+           href="https://www.linkedin.com/in/michal-parusinski-b7b18458/"
+           target="_blank">
+          <i class="fa-brands fa-linkedin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/mparusinski"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+
+<article class="single">
+  <header>
+      
+    <h1 id="manage-db-users-with-nix">How to check all my projects on Github have local clones</h1>
+    <p>
+      Posted on Tue 11 February 2025 in <a href="https://michal.parusinski.me/category/git.html">git</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <p>What if Github were to go away tomorrow? Technically
+we won&rsquo;t lose much as git clone contain all the history;
+only Github specific stuff will be lost (issues).
+However it assumes every project you have on Github
+is cloned somewhere. I will explain how to check this
+using <a href="https://github.com/sharkdp/fd">fd</a>
+,<a href="https://github.com/o2sh/onefetch">onefetch</a>,
+<a href="https://jqlang.org/">jq</a> and
+<a href="https://cli.github.com/">Github CLI</a>.</p>
+<h1 id="finding-git-repos-locally">Finding git repos locally<a class="headerlink" href="#finding-git-repos-locally" title="Permanent link">&para;</a></h1>
+<p><code>fd</code> s a program to find entries in your filesystem.
+It is a simple, fast and user-friendly alternative to find.</p>
+<p>All (non bare) git clones have a subdirectory inside them
+called <code>.git</code>. And inside this folder there is a file called
+<code>config</code>.</p>
+<p>So we can simply search all these</p>
+<div class="highlight"><pre><span></span><code>fd<span class="w"> </span>-pgH<span class="w"> </span><span class="s1">&#39;**/.git/config&#39;</span>
+</code></pre></div>
+
+<p>We use the <code>-p</code> flag to match on whole path
+instead of the filename; <code>-g</code> to use glob
+patterns instead of regex; and <code>-H</code> to search
+hidden files and folders because <code>.git</code> is a
+hidden folder.</p>
+<p>This should give us something like this</p>
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+
+<h1 id="using-onefetch-to-inspect-git-repos">Using <code>onefetch</code> to inspect Git repos<a class="headerlink" href="#using-onefetch-to-inspect-git-repos" title="Permanent link">&para;</a></h1>
+<p>Onefetch is a command-line Git information tool
+that displays project information for a local
+Git repository directly to your terminal.
+Normally used to display human friendly output
+it can be instructed to output robot friendly
+output like JSON.</p>
+<p>Instead of this :</p>
+<p>You can get this :</p>
+<p>By issuing the command <code>onefetch --output json</code></p>
+<h1 id="parsing-json-commands">Parsing JSON commands<a class="headerlink" href="#parsing-json-commands" title="Permanent link">&para;</a></h1>
+<p>You can parse JSON in the command line using <code>jq</code>.
+Simply pipe the of any command to it. For instance
+<code>onefetch --output json | jq</code>.</p>
+<p>By default <code>jq</code> will do highlighting but it can be used
+to apply JSON paths to select specific data :</p>
+<div class="highlight"><pre><span></span><code>onefetch<span class="w"> </span>--output<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.infoFields[].UrlInfo.repoUrl | select ( . != null )&#39;</span>
+</code></pre></div>
+
+<p>This gives us the URL of the main remote of a git repository.</p>
+<h1 id="using-github-cli">Using GitHub CLI<a class="headerlink" href="#using-github-cli" title="Permanent link">&para;</a></h1>
+<p>GitHub CLI allows you to fetch information from github. To get the list
+of repositories you own run the command</p>
+<div class="highlight"><pre><span></span><code>gh<span class="w"> </span>repo<span class="w"> </span>list<span class="w"> </span>&lt;username&gt;
+</code></pre></div>
+
+<p>replacing <code>&lt;username&gt;</code> with your GitHub username.</p>
+<p>To provide a machine readble output specify the <code>--json</code>
+option with the fields of interest (here <code>sshUrl</code>).</p>
+<div class="highlight"><pre><span></span><code>gh<span class="w"> </span>repo<span class="w"> </span>list<span class="w"> </span>mparusinski<span class="w"> </span>--json<span class="w"> </span>sshUrl<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.[].sshUrl&#39;</span>
+</code></pre></div>
+
+<h1 id="putting-everything-together">Putting everything together<a class="headerlink" href="#putting-everything-together" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env bash</span>
+
+<span class="nv">GIT_CLONES</span><span class="o">=</span><span class="k">$(for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="sb">`</span>fd<span class="w"> </span>-pgH<span class="w"> </span><span class="s1">&#39;**/.git/config&#39;</span><span class="sb">`</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nv">GIT_HIDDEN</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>dirname<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$i</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nv">GIT_MAIN</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>dirname<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$GIT_HIDDEN</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">pushd</span><span class="w"> </span><span class="nv">$GIT_MAIN</span><span class="w"> </span>&gt;<span class="w"> </span>/dev/null
+<span class="w">    </span>onefetch<span class="w"> </span>--output<span class="w"> </span>json<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.infoFields[].UrlInfo.repoUrl \</span>
+<span class="s1">        | select ( . != null )&#39;</span>
+<span class="w">    </span><span class="nb">popd</span><span class="w"> </span>&gt;<span class="w"> </span>/dev/null
+<span class="k">done)</span>
+
+<span class="nv">GITHUB</span><span class="o">=</span><span class="k">$(</span>gh<span class="w"> </span>repo<span class="w"> </span>list<span class="w"> </span>mparusinski<span class="w"> </span>--json<span class="w"> </span>sshUrl<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.[].sshUrl&#39;</span><span class="k">)</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="nv">$GIT_CLONES</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span><span class="s2">&quot; &quot;</span><span class="w"> </span><span class="s2">&quot;\n&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span>&gt;<span class="w"> </span>.first
+<span class="nb">echo</span><span class="w"> </span><span class="nv">$GITHUB</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span><span class="s2">&quot; &quot;</span><span class="w"> </span><span class="s2">&quot;\n&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span>&gt;<span class="w"> </span>.second
+diff<span class="w"> </span>.first<span class="w"> </span>.second
+
+rm<span class="w"> </span>.first<span class="w"> </span>.second
+</code></pre></div>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://michal.parusinski.me/tag/git.html">git</a>
+      <a href="https://michal.parusinski.me/tag/github.html">github</a>
+    </p>
+  </div>
+
+
+
+
+
+
+</article>
+
+<footer>
+<p>&copy;  </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Michal Parusinski - Personal Site ",
+  "url" : "https://michal.parusinski.me",
+  "image": "/images/profile.jpg",
+  "description": ""
+}
+</script><script type="text/javascript">
+  var _paq = window._paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://stats.parusinski.me/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', 1]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="https://stats.parusinski.me/matomo.php?idsite=1&rec=1" style="border:0" alt="" /></p></noscript>
+
+</body>
+</html>
