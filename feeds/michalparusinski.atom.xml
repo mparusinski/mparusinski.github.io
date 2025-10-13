@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Michal Parusinski - Personal Site - michalparusinski</title><link href="https://michal.parusinski.me/" rel="alternate"/><link href="https://michal.parusinski.me/feeds/michalparusinski.atom.xml" rel="self"/><id>https://michal.parusinski.me/</id><updated>2019-01-13T13:28:00+01:00</updated><entry><title>Snaps, Flatpaks, AppImage which one is ahead?</title><link href="https://michal.parusinski.me/snaps-flatpaks-appimages-which-one-is-ahead.html" rel="alternate"/><published>2019-01-13T13:28:00+01:00</published><updated>2019-01-13T13:28:00+01:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2019-01-13:/snaps-flatpaks-appimages-which-one-is-ahead.html</id><summary type="html">&lt;p&gt;On the Linux desktop there is a push for a universal packaging format.
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Michal Parusinski - Personal Site - michalparusinski</title><link href="https://michal.parusinski.me/" rel="alternate"></link><link href="https://michal.parusinski.me/feeds/michalparusinski.atom.xml" rel="self"></link><id>https://michal.parusinski.me/</id><updated>2019-01-13T13:28:00+01:00</updated><entry><title>Snaps, Flatpaks, AppImage which one is ahead?</title><link href="https://michal.parusinski.me/snaps-flatpaks-appimages-which-one-is-ahead.html" rel="alternate"></link><published>2019-01-13T13:28:00+01:00</published><updated>2019-01-13T13:28:00+01:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2019-01-13:/snaps-flatpaks-appimages-which-one-is-ahead.html</id><summary type="html">&lt;p&gt;On the Linux desktop there is a push for a universal packaging format.
 Currently there are three main contenders: Snaps packages,
 promoted by Canonical and Ubuntu; Flatpak, promoted by the Gnome Foundation although
 not a Gnome project; and AppImage, a community-led project. Even though the three
@@ -226,11 +226,11 @@ applications people won't install and it seems to count Snaps for different arch
 separately. A fairer comparison would put all three on par. Overall traditional Linux software appears
 reluctant to adopt Snap/Flatpak/AppImage.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Linux"/></entry><entry><title>Made it to the front page of EGC 2018</title><link href="https://michal.parusinski.me/made-it-to-the-front-page-of-egc-2018.html" rel="alternate"/><published>2018-05-19T17:03:00+02:00</published><updated>2018-05-19T17:03:00+02:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2018-05-19:/made-it-to-the-front-page-of-egc-2018.html</id><content type="html">&lt;p&gt;&lt;img alt="image0" src="https://egc2018.it/files/news/images/36335495032-1491322fcf-o.th_870x446.jpg" /&gt;&lt;/p&gt;
+</content><category term="Linux"></category></entry><entry><title>Made it to the front page of EGC 2018</title><link href="https://michal.parusinski.me/made-it-to-the-front-page-of-egc-2018.html" rel="alternate"></link><published>2018-05-19T17:03:00+02:00</published><updated>2018-05-19T17:03:00+02:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2018-05-19:/made-it-to-the-front-page-of-egc-2018.html</id><content type="html">&lt;p&gt;&lt;img alt="image0" src="https://egc2018.it/files/news/images/36335495032-1491322fcf-o.th_870x446.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;Apparently I made to the front page of the European Go Congree 2018
 (Pisa) web page.&lt;/p&gt;
 &lt;p&gt;&lt;a class="reference external" href="https://egc2018.it/en/news/view/id-32.html"&gt;EGC's article&lt;/a&gt;&lt;/p&gt;
-</content><category term="Non classé"/></entry><entry><title>What to learn from the Cambridge Analytica story</title><link href="https://michal.parusinski.me/what-to-learn-from-the-cambridge-analytica-story.html" rel="alternate"/><published>2018-03-30T12:14:00+02:00</published><updated>2018-03-30T12:14:00+02:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2018-03-30:/what-to-learn-from-the-cambridge-analytica-story.html</id><summary type="html">&lt;p&gt;If you are using Facebook and intend to keep using it the Cambridge
+</content><category term="Non classé"></category></entry><entry><title>What to learn from the Cambridge Analytica story</title><link href="https://michal.parusinski.me/what-to-learn-from-the-cambridge-analytica-story.html" rel="alternate"></link><published>2018-03-30T12:14:00+02:00</published><updated>2018-03-30T12:14:00+02:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2018-03-30:/what-to-learn-from-the-cambridge-analytica-story.html</id><summary type="html">&lt;p&gt;If you are using Facebook and intend to keep using it the Cambridge
 Analytica
 &lt;a class="reference external" href="https://arstechnica.com/tech-policy/2018/03/facebooks-cambridge-analytica-scandal-explained/"&gt;story&lt;/a&gt;
 can teach a few good practices to protect your privacy. Now of course
@@ -286,7 +286,7 @@ computer). To summarise it is far harder to restrict access to your
 content on your Facebook than you might think, so it might be wise to
 treat it as public discourse.&lt;/li&gt;
 &lt;/ol&gt;
-</content><category term="Non classé"/></entry><entry><title>New blog | Nouveau blog</title><link href="https://michal.parusinski.me/bonjour-tout-le-monde.html" rel="alternate"/><published>2018-01-06T18:37:00+01:00</published><updated>2018-01-06T18:37:00+01:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2018-01-06:/bonjour-tout-le-monde.html</id><summary type="html">&lt;p&gt;Hello, for 2018 I am restarting my blog from scratch. In part because in
+</content><category term="Non classé"></category></entry><entry><title>New blog | Nouveau blog</title><link href="https://michal.parusinski.me/bonjour-tout-le-monde.html" rel="alternate"></link><published>2018-01-06T18:37:00+01:00</published><updated>2018-01-06T18:37:00+01:00</updated><author><name>michalparusinski</name></author><id>tag:michal.parusinski.me,2018-01-06:/bonjour-tout-le-monde.html</id><summary type="html">&lt;p&gt;Hello, for 2018 I am restarting my blog from scratch. In part because in
 the transition from Wordpress to Pelican and because of my own silly
 mistakes I lost a lot of content.&lt;/p&gt;
 &lt;p&gt;Bonjour, pour 2018 je recommence mon blog à partir de zéro. En partie
@@ -296,4 +296,4 @@ mistakes I lost a lot of content.&lt;/p&gt;
 &lt;p&gt;Bonjour, pour 2018 je recommence mon blog à partir de zéro. En partie
 parce que durant la transition de Wordpress à Pelican et à cause de mes
 propres stupides erreures j'ai perdu du contenu.&lt;/p&gt;
-</content><category term="Non classé"/></entry></feed>
+</content><category term="Non classé"></category></entry></feed>

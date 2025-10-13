@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Michal Parusinski - Personal Site - Linux, HiDPI, PixelPal</title><link href="https://michal.parusinski.me/" rel="alternate"/><link href="https://michal.parusinski.me/feeds/linux-hidpi-pixelpal.atom.xml" rel="self"/><id>https://michal.parusinski.me/</id><updated>2021-05-07T23:59:00+02:00</updated><entry><title>Pixel Pal (PART 6) : Early progress reports</title><link href="https://michal.parusinski.me/pixel-pal-progress.html" rel="alternate"/><published>2021-05-07T23:59:00+02:00</published><updated>2021-05-07T23:59:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2021-05-07:/pixel-pal-progress.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Michal Parusinski - Personal Site - Linux, HiDPI, PixelPal</title><link href="https://michal.parusinski.me/" rel="alternate"></link><link href="https://michal.parusinski.me/feeds/linux-hidpi-pixelpal.atom.xml" rel="self"></link><id>https://michal.parusinski.me/</id><updated>2021-05-07T23:59:00+02:00</updated><entry><title>Pixel Pal (PART 6) : Early progress reports</title><link href="https://michal.parusinski.me/pixel-pal-progress.html" rel="alternate"></link><published>2021-05-07T23:59:00+02:00</published><updated>2021-05-07T23:59:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2021-05-07:/pixel-pal-progress.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
 old icon themes. Many old icon themes are in raster format and are not
 available for HiDPI screens (their resolution are too small). Currently the
 only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
@@ -37,7 +37,7 @@ The PDF showcases various models performing data augmentation. The results are s
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-</content><category term="Linux, HiDPI, PixelPal"/></entry><entry><title>Pixel Pal (PART 5) : Data augmentation</title><link href="https://michal.parusinski.me/pixel-pal-data-augmentation.html" rel="alternate"/><published>2020-04-25T14:18:00+02:00</published><updated>2020-04-25T14:18:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-04-25:/pixel-pal-data-augmentation.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 5) : Data augmentation</title><link href="https://michal.parusinski.me/pixel-pal-data-augmentation.html" rel="alternate"></link><published>2020-04-25T14:18:00+02:00</published><updated>2020-04-25T14:18:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-04-25:/pixel-pal-data-augmentation.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
 old icon themes. Many old icon themes are in raster format and are not
 available for HiDPI screens (their resolution are too small). Currently the
 only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
@@ -102,7 +102,7 @@ me to investigate deeper neural networks.&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-</content><category term="Linux, HiDPI, PixelPal"/></entry><entry><title>Pixel Pal (PART 4) : Training a model</title><link href="https://michal.parusinski.me/pixel-pal-training.html" rel="alternate"/><published>2020-04-19T14:41:00+02:00</published><updated>2020-04-19T14:41:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-04-19:/pixel-pal-training.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 4) : Training a model</title><link href="https://michal.parusinski.me/pixel-pal-training.html" rel="alternate"></link><published>2020-04-19T14:41:00+02:00</published><updated>2020-04-19T14:41:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-04-19:/pixel-pal-training.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
 old icon themes. Many old icon themes are in raster format and are not
 available for HiDPI screens (their resolution are too small). Currently the
 only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
@@ -128,7 +128,7 @@ do when training to avoid wasting time (training well is time consuming):&lt;/p&
 &lt;li&gt;Use checkpoints : This will save the model regularly and if your training crashes you can restart from where you left.&lt;/li&gt;
 &lt;li&gt;Regularly save the output (as an image) of the neural network on fixed image inputs. This helps you visualise the progress of the learning.&lt;/li&gt;
 &lt;/ol&gt;
-</content><category term="Linux, HiDPI, PixelPal"/></entry><entry><title>Pixel Pal (PART 3) : Measuring model quality</title><link href="https://michal.parusinski.me/pixel-pal-metrics.html" rel="alternate"/><published>2020-04-11T15:29:00+02:00</published><updated>2020-04-11T15:29:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-04-11:/pixel-pal-metrics.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 3) : Measuring model quality</title><link href="https://michal.parusinski.me/pixel-pal-metrics.html" rel="alternate"></link><published>2020-04-11T15:29:00+02:00</published><updated>2020-04-11T15:29:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-04-11:/pixel-pal-metrics.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
 old icon themes. Many old icon themes are in raster format and are not
 available for HiDPI screens (their resolution are too small). Currently the
 only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
@@ -202,7 +202,7 @@ it is simple and fits our purpose. In general always make sure you are using an 
 loss function.&lt;/p&gt;
 &lt;p&gt;In terms of baselines my objectif will be to perform better thant straight upsampling via
 nearest and bilinear interpolation.&lt;/p&gt;
-</content><category term="Linux, HiDPI, PixelPal"/></entry><entry><title>Pixel Pal (PART 2) : Gathering data for Pixel Pal</title><link href="https://michal.parusinski.me/pixel-pal-gathering-data.html" rel="alternate"/><published>2020-02-15T10:24:00+01:00</published><updated>2020-02-15T10:24:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-02-15:/pixel-pal-gathering-data.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
+</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 2) : Gathering data for Pixel Pal</title><link href="https://michal.parusinski.me/pixel-pal-gathering-data.html" rel="alternate"></link><published>2020-02-15T10:24:00+01:00</published><updated>2020-02-15T10:24:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-02-15:/pixel-pal-gathering-data.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
 old icon themes. Many old icon themes are in raster format and are not
 available for HiDPI screens (their resolution are too small). Currently the
 only way to handle old icon themes is to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
@@ -259,7 +259,7 @@ whether using deep learning is actually useful for reviving
 old icon sets. The old icon themes are the official
 &lt;a class="reference external" href="https://en.wikipedia.org/wiki/Common_Desktop_Environment"&gt;CDE&lt;/a&gt;
 icon theme and the icon theme from &lt;a class="reference external" href="https://en.wikipedia.org/wiki/OS/2"&gt;OS/2&lt;/a&gt;.&lt;/p&gt;
-</content><category term="Linux, HiDPI, PixelPal"/></entry><entry><title>Pixel Pal (PART 1) : Adapting old icon themes for HiDPI screens</title><link href="https://michal.parusinski.me/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html" rel="alternate"/><published>2020-01-27T18:46:00+01:00</published><updated>2020-01-27T18:46:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-01-27:/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html</id><summary type="html">&lt;p&gt;I am starting a new open source project. The goal of this project
+</content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 1) : Adapting old icon themes for HiDPI screens</title><link href="https://michal.parusinski.me/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html" rel="alternate"></link><published>2020-01-27T18:46:00+01:00</published><updated>2020-01-27T18:46:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-01-27:/pixel-pal-adapting-old-icon-themes-for-hidpi-screens.html</id><summary type="html">&lt;p&gt;I am starting a new open source project. The goal of this project
 is to solve a recurring issue with HiDPI support. The issues is that
 many old software rely on icon themes in raster format which are not suitable for HiDPI
 screens. To be more specific various software projects …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I am starting a new open source project. The goal of this project
@@ -280,4 +280,4 @@ between the pixels of an image in practice. A simple example of how pixels
 can be related to one another is that often there are lines and curves in
 images.&lt;/p&gt;
 &lt;p&gt;A series of blog posts will detail the progress of the project.&lt;/p&gt;
-</content><category term="Linux, HiDPI, PixelPal"/></entry></feed>
+</content><category term="Linux, HiDPI, PixelPal"></category></entry></feed>
