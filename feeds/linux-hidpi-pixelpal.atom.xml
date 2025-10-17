@@ -59,8 +59,8 @@ parameters. Getting enough data is a challenge but what makes it worse that data
 is not sufficient, you need labelled data, and if possible quality labelled data.&lt;/p&gt;
 &lt;p&gt;When you don't have enough data you have a problem. There are many ways to tackle this issues:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
-&lt;li&gt;Reducing the number of parameters to learn. One such way is to resuse the weights (parameters) from an already learned task and then only retrain parts of the model. This is a form of transfer learning. For instance VGG-16 is taught to do image classification for general public purpose. You can take this model and only retrain parts of it, assuming the other parts are good enough to generalise to your task.&lt;/li&gt;
-&lt;li&gt;Training parts of the model on the input data alone using autoencoders. This is fairly technical. The idea is that you build a model which compresses the input data and then decompress the data back with no loss of quality. Such a model is easier to train as you usually have lots of input data (but not necessarily output data). Then you use the trained autoencoder and you split in two : the compression network and the decompression network. You can then work with the compressed features coming out of the compression network as a replacement of the original input data. The benefit here is that the compressed features are smaller and as a result the network you need to train mapping the compressed features to the output data is smaller and thus simpler to teach.&lt;/li&gt;
+&lt;li&gt;Reducing the number of parameters to learn. One such way is to reuse the weights (parameters) from an already learned task and then only retrain parts of the model. This is a form of transfer learning. For instance VGG-16 is taught to do image classification for general public purpose. You can take this model and only retrain parts of it, assuming the other parts are good enough to generalise to your task.&lt;/li&gt;
+&lt;li&gt;Training parts of the model on the input data alone using auto-encoders. This is fairly technical. The idea is that you build a model which compresses the input data and then decompress the data back with no loss of quality. Such a model is easier to train as you usually have lots of input data (but not necessarily output data). Then you use the trained auto-encoder and you split in two : the compression network and the decompression network. You can then work with the compressed features coming out of the compression network as a replacement of the original input data. The benefit here is that the compressed features are smaller and as a result the network you need to train mapping the compressed features to the output data is smaller and thus simpler to teach.&lt;/li&gt;
 &lt;li&gt;Use data augmentation. This method consists of building new data from the currently existing one. This method is especially good as a way to produce neural network that generalise well. Through data augmentation you can tell what a neural network should not rely on. For instance one way to augment image data is to flip the image horizontally and vertically, this way you can easily quadruple the amount of data available and tell the network it should be not rely on the image on being a certain way like having shadows at the bottom.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;For the purpose of this project I will rely on data augmentation. My training data set is around 9 000 images, which
@@ -189,7 +189,7 @@ our models are working. However there are some limits to metrics:&lt;/p&gt;
 the distance between the wanted output and the output the network is producing. This is where &lt;em&gt;losses&lt;/em&gt;
 come into play.
 2. You need to have some good baselines. In other words the metric in itself is not useful, you need
-to have an objectif. Something like do better than simple pixel doubling or bicubic interpolation.
+to have an objective. Something like do better than simple pixel doubling or bi-cubic interpolation.
 3. Metrics will be sensitive to the data you use. You may land on images that are easy to upsample
 and the metric may be deceptively good. This is why you should compute the metrics on the entire
 dataset and do some statistics on it.
@@ -200,8 +200,8 @@ neural networks.&lt;/p&gt;
 between the ideal output and the current output. In our case we will use mean squared error as
 it is simple and fits our purpose. In general always make sure you are using an appropriate
 loss function.&lt;/p&gt;
-&lt;p&gt;In terms of baselines my objectif will be to perform better thant straight upsampling via
-nearest and bilinear interpolation.&lt;/p&gt;
+&lt;p&gt;In terms of baselines my objectify will be to perform better than straight upsampling via
+nearest and bi-linear interpolation.&lt;/p&gt;
 </content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 2) : Gathering data for Pixel Pal</title><link href="https://michal.parusinski.me/pixel-pal-gathering-data.html" rel="alternate"></link><published>2020-02-15T10:24:00+01:00</published><updated>2020-02-15T10:24:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-02-15:/pixel-pal-gathering-data.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
 old icon themes. Many old icon themes are in raster format and are not
 available for HiDPI screens (their resolution are too small). Currently the

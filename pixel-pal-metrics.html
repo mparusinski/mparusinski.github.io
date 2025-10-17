@@ -233,7 +233,7 @@ our models are working. However there are some limits to metrics:</p>
 the distance between the wanted output and the output the network is producing. This is where <em>losses</em>
 come into play.
 2. You need to have some good baselines. In other words the metric in itself is not useful, you need
-to have an objectif. Something like do better than simple pixel doubling or bicubic interpolation.
+to have an objective. Something like do better than simple pixel doubling or bi-cubic interpolation.
 3. Metrics will be sensitive to the data you use. You may land on images that are easy to upsample
 and the metric may be deceptively good. This is why you should compute the metrics on the entire
 dataset and do some statistics on it.
@@ -244,8 +244,8 @@ neural networks.</p>
 between the ideal output and the current output. In our case we will use mean squared error as
 it is simple and fits our purpose. In general always make sure you are using an appropriate
 loss function.</p>
-<p>In terms of baselines my objectif will be to perform better thant straight upsampling via
-nearest and bilinear interpolation.</p>
+<p>In terms of baselines my objectify will be to perform better than straight upsampling via
+nearest and bi-linear interpolation.</p>
 
   </div>
   <div class="tag-cloud">

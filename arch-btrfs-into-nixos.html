@@ -49,13 +49,13 @@
  
 
 <meta name="author" content="Michal Parusinski" />
-<meta name="description" content="How to convert an Arch Linux system using a Btrfs filesystem into a NixOS system without reformatting or using a USB live distro." />
-<meta name="keywords" content="linux, nix, btrfs">
+<meta name="description" content="How to convert an Arch Linux system using a BTRFS filesystem into a NixOS system without reformatting or using a USB live distro." />
+<meta name="keywords" content="Linux, nix, BTRFS">
 
 
   <meta property="og:site_name" content="Michal Parusinski"/>
   <meta property="og:title" content="Converting Archlinux with BTRFS into NixOS"/>
-  <meta property="og:description" content="How to convert an Arch Linux system using a Btrfs filesystem into a NixOS system without reformatting or using a USB live distro."/>
+  <meta property="og:description" content="How to convert an Arch Linux system using a BTRFS filesystem into a NixOS system without reformatting or using a USB live distro."/>
   <meta property="og:locale" content="en_IE"/>
   <meta property="og:url" content="https://michal.parusinski.me/arch-btrfs-into-nixos.html"/>
   <meta property="og:type" content="article"/>
@@ -63,9 +63,9 @@
   <meta property="article:modified_time" content="2025-03-01 14:04:00+01:00"/>
   <meta property="article:author" content="https://michal.parusinski.me/author/michal-parusinski.html">
   <meta property="article:section" content="nix"/>
-  <meta property="article:tag" content="linux"/>
+  <meta property="article:tag" content="Linux"/>
   <meta property="article:tag" content="nix"/>
-  <meta property="article:tag" content="btrfs"/>
+  <meta property="article:tag" content="BTRFS"/>
   <meta property="og:image" content="https://michal.parusinski.me/images/profile.jpg">
 
   <title>Michal Parusinski &ndash; Converting Archlinux with BTRFS into NixOS</title>
@@ -181,12 +181,12 @@ rel="me"           href="https://ieji.de/@mparus"
     <p>Recently I have converted my laptop from Archlinux into NixOS without
 reformatting or plugging a USB live distro and kept my home partition as is.
 This was done from the existing Archlinux install.</p>
-<p>The former system was installed on top a BTRFS root subvolume. I use that to my 
+<p>The former system was installed on top a BTRFS root sub-volume. I use that to my 
 advantage. These steps are for NixOS specifically but in principle could be
 done with other distributions.</p>
 <h2 id="former-setup">Former setup<a class="headerlink" href="#former-setup" title="Permanent link">&para;</a></h2>
 <p>The former setup is Arch installed on top of BTRFS with full disk encryption
-with systemd-boot (on EFI). Two subvolumes were used : <code>root</code> and <code>home</code> used
+with systemd-boot (on EFI). Two sub-volumes were used : <code>root</code> and <code>home</code> used
 respectively for <code>/</code> and <code>/home/</code>. The layout can be summarized by</p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>lsblk
 NAME<span class="w">         </span>MAJ:MIN<span class="w"> </span>RM<span class="w">   </span>SIZE<span class="w"> </span>RO<span class="w"> </span>TYPE<span class="w">  </span>MOUNTPOINTS
@@ -202,7 +202,7 @@ ID<span class="w"> </span><span class="m">257</span><span class="w"> </span>gen<
 <span class="o">(</span>...<span class="w"> </span>some<span class="w"> </span>lines<span class="w"> </span>are<span class="w"> </span>omitted<span class="w"> </span>here<span class="o">)</span>
 </code></pre></div>
 
-<p>The goal will be to create a new <code>root</code> subvolume for NixOS called <code>nixos_root</code></p>
+<p>The goal will be to create a new <code>root</code> sub-volume for NixOS called <code>nixos_root</code></p>
 <h2 id="installing-nixos-tools">Installing NixOS tools<a class="headerlink" href="#installing-nixos-tools" title="Permanent link">&para;</a></h2>
 <p>First we need to get nix tools, this is done by installing nix the normal way.</p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>sh<span class="w"> </span>&lt;<span class="o">(</span>curl<span class="w"> </span>-L<span class="w"> </span>https://nixos.org/nix/install<span class="o">)</span><span class="w"> </span>--daemon
@@ -245,9 +245,9 @@ files like <code>~/.bashrc</code>.</p>
   </div>
   <div class="tag-cloud">
     <p>
-      <a href="https://michal.parusinski.me/tag/linux.html">linux</a>
+      <a href="https://michal.parusinski.me/tag/linux.html">Linux</a>
       <a href="https://michal.parusinski.me/tag/nix.html">nix</a>
-      <a href="https://michal.parusinski.me/tag/btrfs.html">btrfs</a>
+      <a href="https://michal.parusinski.me/tag/btrfs.html">BTRFS</a>
     </p>
   </div>
 

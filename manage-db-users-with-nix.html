@@ -179,7 +179,7 @@ rel="me"           href="https://ieji.de/@mparus"
   <div>
     <p>Recently I had the following challenge: manage database
 (robotic) users using nix. More specifically I wanted
-to declare a list of mariadb/mysql users, alongside
+to declare a list of MariaDB/MySQL users, alongside
 passwords, and permissions using nix. And while 
 nix has some options for this (e.g. <code>services.mysql.ensureUsers.*.name</code>).
 Some aspects can&rsquo;t be declared with nix options
@@ -206,7 +206,7 @@ In my case it looks like this</p>
 <p>Should be self explanatory. Note <code>passwordFile</code> is a path to 
 a file, here I use <code>agenix</code> to manage secrets, which decrypts the 
 password file with adequate permissions to prevent leaks
-(see article about <a href="https://michal.parusinski.me/managin-secrets-in-nix-using-agenix.html">agenix</a>).</p>
+(see article about <a href="https://michal.parusinski.me/managing-secrets-in-nix-using-agenix.html">agenix</a>).</p>
 <h1 id="set-up-script-to-apply-configuration">Set up script to apply configuration<a class="headerlink" href="#set-up-script-to-apply-configuration" title="Permanent link">&para;</a></h1>
 <p>The second step is to create a script that applies the 
 configuration. This is done using <code>pkgs.writeShellScript</code>

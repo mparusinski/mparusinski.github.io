@@ -9,7 +9,7 @@ they are distribution specific. Even if two distributions use the same packaging
 and Debian, they are not compatible. Meaning that a deb package built for debian is not expected to work on
 Ubuntu and vice-versa. In goes even further, packages may not be compatible between two different releases
 of the same Linux distribution, for instance Debian stable and Debian unstable. The main consequence
-of this limitation is that software needs to be built for every combintations of Linux distribution / releases
+of this limitation is that software needs to be built for every combinations of Linux distribution / releases
 out there.&lt;/p&gt;
 &lt;p&gt;For simple open source software this isn't usually a big issue, as volunteers can usually take the code
 and release it for the distribution of their choice making small adjustments to the code (at least in
@@ -21,13 +21,13 @@ server-side software) on many Linux distributions (as well as Windows). Steam di
 think about it. And even Nix packages are in some way distribution agnostic as you can install Nix
 on many Linux distributions.&lt;/p&gt;
 &lt;p&gt;I personally think AppImage lacks a little bit of love. It does not offer as many features as Flatpak or Snaps, which
-handle sandboxing, software distribution, and sharing frameworks, but it is very simple and easy to grasp.
+handle sand-boxing, software distribution, and sharing frameworks, but it is very simple and easy to grasp.
 AppImages is already fairly popular amongst QT applications, electron applications, and some games like OpenRA.
 By the way that is no coincidence, among the tools to build appimages, some are specifically tailored
 for QT applications and electron applications. This, in my view, creates a disparity, so I wondered
 if I can make a difference. So I decided to create another tool to create AppImages, but from Docker
 containers, a tool I am familiar with. Furthermore the creation of Docker images and containers is very
-well documented and the collection of publically available Docker images is very large.
+well documented and the collection of publicly available Docker images is very large.
 The tool's name &lt;cite&gt;docker2appimage&lt;/cite&gt; available on Github at &lt;a class="reference external" href="https://github.com/mparusinski/docker2appimage"&gt;https://github.com/mparusinski/docker2appimage&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;If you have a container called &lt;cite&gt;relaxed_beaver&lt;/cite&gt;, to create an AppImage which triggers the container default
 command, you run.&lt;/p&gt;

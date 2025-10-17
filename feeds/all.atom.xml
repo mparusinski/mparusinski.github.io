@@ -32,7 +32,7 @@ options cryptdevice=UUID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:crypt root=/dev/ma
 &lt;p&gt;Then generate the GRUB configuration &lt;code&gt;grub-mkconfig -o /boot/grub/grub.cfg&lt;/code&gt;
 and check the content of the file.&lt;/p&gt;
 &lt;p&gt;For more articles about Linux the following 
-RSS feed is available over &lt;a href="/feeds/linux.rss.xml"&gt;here&lt;/a&gt;.&lt;/p&gt;</content><category term="linux"></category><category term="archlinux"></category><category term="linux"></category></entry><entry><title>Switching between High DPI and Low DPI in XMonad</title><link href="https://michal.parusinski.me/switching-between-high-low-dpi.html" rel="alternate"></link><published>2025-03-05T12:00:00+01:00</published><updated>2025-03-05T12:00:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2025-03-05:/switching-between-high-low-dpi.html</id><summary type="html">&lt;p&gt;I have created scripts to help automatically switch
+RSS feed is available over &lt;a href="/feeds/linux.rss.xml"&gt;here&lt;/a&gt;.&lt;/p&gt;</content><category term="Linux"></category><category term="archlinux"></category><category term="Linux"></category></entry><entry><title>Switching between High DPI and Low DPI in XMonad</title><link href="https://michal.parusinski.me/switching-between-high-low-dpi.html" rel="alternate"></link><published>2025-03-05T12:00:00+01:00</published><updated>2025-03-05T12:00:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2025-03-05:/switching-between-high-low-dpi.html</id><summary type="html">&lt;p&gt;I have created scripts to help automatically switch
 between low DPI and high DPI settings in XMonad which
 comes in handy on a high DPI laptop that may be connected
 to low DPI monitors&lt;/p&gt;</summary><content type="html">&lt;h1 id="context"&gt;Context&lt;a class="headerlink" href="#context" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
@@ -49,7 +49,7 @@ them to work with my multiple monitor requirements.&lt;/p&gt;
 High DPI monitors have such a high resolution they require bigger fonts
 and upscaling.&lt;/p&gt;
 &lt;p&gt;In general on Linux, Wayland based window managers and desktop 
-environmenti, like Gnome or Hyprland handle the best high DPI settings. 
+environments, like Gnome or Hyprland handle the best high DPI settings. 
 They support fractional scaling (for when monitors are 
 halfway between low and high DPI). They work nicely with 
 mixed setups like described above.&lt;/p&gt;
@@ -298,7 +298,7 @@ using Nix. The process involved declaring user configurations,
 creating scripts to apply configurations and automating the
 process with systemd.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Recently I had the following challenge: manage database
 (robotic) users using nix. More specifically I wanted
-to declare a list of mariadb/mysql users, alongside
+to declare a list of MariaDB/MySQL users, alongside
 passwords, and permissions using nix. And while 
 nix has some options for this (e.g. &lt;code&gt;services.mysql.ensureUsers.*.name&lt;/code&gt;).
 Some aspects can&amp;rsquo;t be declared with nix options
@@ -325,7 +325,7 @@ In my case it looks like this&lt;/p&gt;
 &lt;p&gt;Should be self explanatory. Note &lt;code&gt;passwordFile&lt;/code&gt; is a path to 
 a file, here I use &lt;code&gt;agenix&lt;/code&gt; to manage secrets, which decrypts the 
 password file with adequate permissions to prevent leaks
-(see article about &lt;a href="https://michal.parusinski.me/managin-secrets-in-nix-using-agenix.html"&gt;agenix&lt;/a&gt;).&lt;/p&gt;
+(see article about &lt;a href="https://michal.parusinski.me/managing-secrets-in-nix-using-agenix.html"&gt;agenix&lt;/a&gt;).&lt;/p&gt;
 &lt;h1 id="set-up-script-to-apply-configuration"&gt;Set up script to apply configuration&lt;a class="headerlink" href="#set-up-script-to-apply-configuration" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;The second step is to create a script that applies the 
 configuration. This is done using &lt;code&gt;pkgs.writeShellScript&lt;/code&gt;
@@ -552,7 +552,7 @@ MySQL user configuration automatically using Nix and
 put all of this in a module.&lt;/p&gt;
 &lt;p&gt;For more articles about Nix and NixOS the following 
 RSS feed is available over &lt;a href="/feeds/nix.rss.xml"&gt;here&lt;/a&gt;.&lt;/p&gt;</content><category term="nix"></category><category term="pelican"></category><category term="nix"></category></entry><entry><title>Publishing a pelican website using nix</title><link href="https://michal.parusinski.me/publish-website-using-nix.html" rel="alternate"></link><published>2025-01-19T12:00:00+01:00</published><updated>2025-01-19T12:00:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2025-01-19:/publish-website-using-nix.html</id><summary type="html">&lt;p&gt;How to publish a static website using Nix,
-specifically a website genrated with Pelican
+specifically a website generated with Pelican
 and managed with Nix Flakes.&lt;/p&gt;</summary><content type="html">&lt;p&gt;This website is statically generated using &lt;a href="https://getpelican.com/"&gt;pelican&lt;/a&gt; and development on the 
 website is done via &lt;a href="https://nixos.wiki/wiki/Flakes"&gt;nix flakes&lt;/a&gt;. 
 Here is how :&lt;/p&gt;
@@ -803,7 +803,7 @@ dependency of the application&lt;/p&gt;
 
 &lt;p&gt;In the above code we refactor the code by moving the package
 definition into the &lt;code&gt;static-website&lt;/code&gt; variable in the 
-&lt;code&gt;let ... in ...&lt;/code&gt; clause. We also create a subcomponent as
+&lt;code&gt;let ... in ...&lt;/code&gt; clause. We also create a sub-component as
 a shell application derivation called &lt;code&gt;serv&lt;/code&gt; which 
 simply run the pelican local server.&lt;/p&gt;
 &lt;p&gt;To run the website locally simply do&lt;/p&gt;
@@ -828,12 +828,12 @@ environment (like virtual environments in Python),
 build the website (like in &lt;code&gt;make build&lt;/code&gt;) and run the
 website locally (like a &lt;code&gt;docker run&lt;/code&gt;).&lt;/p&gt;
 &lt;p&gt;For more articles about Nix and NixOS the following 
-RSS feed is available over &lt;a href="/feeds/nix.rss.xml"&gt;here&lt;/a&gt;.&lt;/p&gt;</content><category term="nix"></category><category term="pelican"></category><category term="nix"></category></entry><entry><title>Managing secrets in Nix using Agenix</title><link href="https://michal.parusinski.me/managin-secrets-in-nix-using-agenix.html" rel="alternate"></link><published>2024-10-25T21:26:00+02:00</published><updated>2024-10-25T21:26:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2024-10-25:/managin-secrets-in-nix-using-agenix.html</id><summary type="html">&lt;p&gt;How to manage secrets in a Nix configuration
+RSS feed is available over &lt;a href="/feeds/nix.rss.xml"&gt;here&lt;/a&gt;.&lt;/p&gt;</content><category term="nix"></category><category term="pelican"></category><category term="nix"></category></entry><entry><title>Managing secrets in Nix using Agenix</title><link href="https://michal.parusinski.me/managing-secrets-in-nix-using-agenix.html" rel="alternate"></link><published>2024-10-25T21:26:00+02:00</published><updated>2024-10-25T21:26:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2024-10-25:/managing-secrets-in-nix-using-agenix.html</id><summary type="html">&lt;p&gt;How to manage secrets in a Nix configuration
 using Agenix, a tool built on top of the
 &lt;code&gt;age&lt;/code&gt; encryption tool.&lt;/p&gt;</summary><content type="html">&lt;p&gt;If tomorrow my laptop were to go in flames, I would lose two things.
 First I would lose my data, and this is what backups are for. The
 second thing I would lose is my configuration (software installed,
-network setup, &amp;hellip;). Nix offers a way to perserve this (assuming 
+network setup, &amp;hellip;). Nix offers a way to preserve this (assuming 
 the configuration is replicated externally like GitHub).&lt;/p&gt;
 &lt;p&gt;But storing one&amp;rsquo;s configuration is Nix comes with challenges. One of those 
 challenges is how to handle secrets. Some parts of the configuration
@@ -869,7 +869,7 @@ Agenix makes more sense in context.&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;(The layout is inspired from &amp;hellip;) TODO: Find source&lt;/p&gt;
-&lt;p&gt;There are two parts each divided into two subparts :
+&lt;p&gt;There are two parts each divided into two sub-parts :
 * The build system build on top of Nix and Flakes
     * &lt;code&gt;flake.nix&lt;/code&gt; and &lt;code&gt;flake.lock&lt;/code&gt; describe how to build a nix configuration on a given system.
     * &lt;code&gt;build.sh&lt;/code&gt; which launches the appropriate Nix build command for the underlying system.
@@ -877,7 +877,7 @@ Agenix makes more sense in context.&lt;/p&gt;
     * &lt;code&gt;modules&lt;/code&gt; defines reusable configuration code across various systems
     * &lt;code&gt;hosts&lt;/code&gt; defines configuration for given systems.&lt;/p&gt;
 &lt;p&gt;Naively secrets (passwords, keys, API tokens, &amp;hellip;) would be stored in plain text somewhere
-in the files mentionned here.&lt;/p&gt;
+in the files mentioned here.&lt;/p&gt;
 &lt;h1 id="agenix-explained"&gt;Agenix explained&lt;a class="headerlink" href="#agenix-explained" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;To include secrets safely in a Git repository storing configuration there are multiple options.
 A common choice to externalize secrets. Essentially storing them not in Git. That could be 
@@ -889,7 +889,7 @@ of actors involved. By actors I mean the repository maintainer, i.e. you, the sy
 will have to decrypt the secrets, &amp;hellip;&lt;/p&gt;
 &lt;p&gt;Agenix is build on top of &lt;a href="https://github.com/FiloSottile/age"&gt;age&lt;/a&gt; which is an encryption tool.
 Its particularity is Age encrypted secrets can have multiple recipients and can use SSH
-asymetric encryption (a key for encryption, a key for decryption). Agenix uses &lt;code&gt;age&lt;/code&gt; to make
+asymmetric encryption (a key for encryption, a key for decryption). Agenix uses &lt;code&gt;age&lt;/code&gt; to make
 the secret decryptable by authorized actors : you and the systems (which have their own 
 SSH keys) that need to access the secrets and no one else.&lt;/p&gt;
 &lt;p&gt;To be used Agenix needs to be installed to encrypt secrets but you also need to 
@@ -944,16 +944,16 @@ second time to link the secret to some configuration item.&lt;/p&gt;
 Nix. For instance in one case the nix build system would invalidate
 a prometheus configuration because the Agenix path would not exist &lt;strong&gt;yet&lt;/strong&gt;.
 This had to with the prometheus Nix module validating the generate configuration
-yaml (see &lt;a href="https://mynixos.com/nixpkgs/option/services.prometheus.checkConfig"&gt;here&lt;/a&gt;).&lt;/p&gt;</content><category term="nix"></category><category term="linux"></category><category term="nix"></category><category term="security"></category></entry><entry><title>Converting Archlinux with BTRFS into NixOS</title><link href="https://michal.parusinski.me/arch-btrfs-into-nixos.html" rel="alternate"></link><published>2024-08-24T11:39:00+02:00</published><updated>2025-03-01T14:04:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2024-08-24:/arch-btrfs-into-nixos.html</id><summary type="html">&lt;p&gt;How to convert an Arch Linux system using a Btrfs filesystem into a NixOS
+yaml (see &lt;a href="https://mynixos.com/nixpkgs/option/services.prometheus.checkConfig"&gt;here&lt;/a&gt;).&lt;/p&gt;</content><category term="nix"></category><category term="linux"></category><category term="nix"></category><category term="security"></category></entry><entry><title>Converting Archlinux with BTRFS into NixOS</title><link href="https://michal.parusinski.me/arch-btrfs-into-nixos.html" rel="alternate"></link><published>2024-08-24T11:39:00+02:00</published><updated>2025-03-01T14:04:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2024-08-24:/arch-btrfs-into-nixos.html</id><summary type="html">&lt;p&gt;How to convert an Arch Linux system using a BTRFS filesystem into a NixOS
 system without reformatting or using a USB live distro.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Recently I have converted my laptop from Archlinux into NixOS without
 reformatting or plugging a USB live distro and kept my home partition as is.
 This was done from the existing Archlinux install.&lt;/p&gt;
-&lt;p&gt;The former system was installed on top a BTRFS root subvolume. I use that to my 
+&lt;p&gt;The former system was installed on top a BTRFS root sub-volume. I use that to my 
 advantage. These steps are for NixOS specifically but in principle could be
 done with other distributions.&lt;/p&gt;
 &lt;h2 id="former-setup"&gt;Former setup&lt;a class="headerlink" href="#former-setup" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;The former setup is Arch installed on top of BTRFS with full disk encryption
-with systemd-boot (on EFI). Two subvolumes were used : &lt;code&gt;root&lt;/code&gt; and &lt;code&gt;home&lt;/code&gt; used
+with systemd-boot (on EFI). Two sub-volumes were used : &lt;code&gt;root&lt;/code&gt; and &lt;code&gt;home&lt;/code&gt; used
 respectively for &lt;code&gt;/&lt;/code&gt; and &lt;code&gt;/home/&lt;/code&gt;. The layout can be summarized by&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;lsblk
 NAME&lt;span class="w"&gt;         &lt;/span&gt;MAJ:MIN&lt;span class="w"&gt; &lt;/span&gt;RM&lt;span class="w"&gt;   &lt;/span&gt;SIZE&lt;span class="w"&gt; &lt;/span&gt;RO&lt;span class="w"&gt; &lt;/span&gt;TYPE&lt;span class="w"&gt;  &lt;/span&gt;MOUNTPOINTS
@@ -969,7 +969,7 @@ ID&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;257&lt;/span&gt;&lt;
 &lt;span class="o"&gt;(&lt;/span&gt;...&lt;span class="w"&gt; &lt;/span&gt;some&lt;span class="w"&gt; &lt;/span&gt;lines&lt;span class="w"&gt; &lt;/span&gt;are&lt;span class="w"&gt; &lt;/span&gt;omitted&lt;span class="w"&gt; &lt;/span&gt;here&lt;span class="o"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;The goal will be to create a new &lt;code&gt;root&lt;/code&gt; subvolume for NixOS called &lt;code&gt;nixos_root&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;The goal will be to create a new &lt;code&gt;root&lt;/code&gt; sub-volume for NixOS called &lt;code&gt;nixos_root&lt;/code&gt;&lt;/p&gt;
 &lt;h2 id="installing-nixos-tools"&gt;Installing NixOS tools&lt;a class="headerlink" href="#installing-nixos-tools" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;First we need to get nix tools, this is done by installing nix the normal way.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$&lt;span class="w"&gt; &lt;/span&gt;sh&lt;span class="w"&gt; &lt;/span&gt;&amp;lt;&lt;span class="o"&gt;(&lt;/span&gt;curl&lt;span class="w"&gt; &lt;/span&gt;-L&lt;span class="w"&gt; &lt;/span&gt;https://nixos.org/nix/install&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;--daemon
@@ -1008,7 +1008,7 @@ update the channel files:&lt;/p&gt;
 &lt;p&gt;In principle at boot time you should
 be able to choose between the old system (Archlinux) and the new system (NixOS).
 If you do keep both systems keep in mind NixOS might modify the location of 
-files like &lt;code&gt;~/.bashrc&lt;/code&gt;.&lt;/p&gt;</content><category term="nix"></category><category term="linux"></category><category term="nix"></category><category term="btrfs"></category></entry><entry><title>Converting docker containers into AppImages</title><link href="https://michal.parusinski.me/converting-docker-containers-into-appimages.html" rel="alternate"></link><published>2022-09-03T16:00:00+02:00</published><updated>2022-09-03T16:00:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2022-09-03:/converting-docker-containers-into-appimages.html</id><summary type="html">&lt;p&gt;In Linux, software is conventionally distributed through packages, usually compressed folders including
+files like &lt;code&gt;~/.bashrc&lt;/code&gt;.&lt;/p&gt;</content><category term="nix"></category><category term="Linux"></category><category term="nix"></category><category term="BTRFS"></category></entry><entry><title>Converting docker containers into AppImages</title><link href="https://michal.parusinski.me/converting-docker-containers-into-appimages.html" rel="alternate"></link><published>2022-09-03T16:00:00+02:00</published><updated>2022-09-03T16:00:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2022-09-03:/converting-docker-containers-into-appimages.html</id><summary type="html">&lt;p&gt;In Linux, software is conventionally distributed through packages, usually compressed folders including
 executables, installations scripts and various configuration files. These packaging formats come in various
 flavors like deb packages, RPMs, and many others. While very useful, these packaging formats have a downside:
 they are distribution specific. Even if two distributions …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In Linux, software is conventionally distributed through packages, usually compressed folders including
@@ -1018,7 +1018,7 @@ they are distribution specific. Even if two distributions use the same packaging
 and Debian, they are not compatible. Meaning that a deb package built for debian is not expected to work on
 Ubuntu and vice-versa. In goes even further, packages may not be compatible between two different releases
 of the same Linux distribution, for instance Debian stable and Debian unstable. The main consequence
-of this limitation is that software needs to be built for every combintations of Linux distribution / releases
+of this limitation is that software needs to be built for every combinations of Linux distribution / releases
 out there.&lt;/p&gt;
 &lt;p&gt;For simple open source software this isn't usually a big issue, as volunteers can usually take the code
 and release it for the distribution of their choice making small adjustments to the code (at least in
@@ -1030,13 +1030,13 @@ server-side software) on many Linux distributions (as well as Windows). Steam di
 think about it. And even Nix packages are in some way distribution agnostic as you can install Nix
 on many Linux distributions.&lt;/p&gt;
 &lt;p&gt;I personally think AppImage lacks a little bit of love. It does not offer as many features as Flatpak or Snaps, which
-handle sandboxing, software distribution, and sharing frameworks, but it is very simple and easy to grasp.
+handle sand-boxing, software distribution, and sharing frameworks, but it is very simple and easy to grasp.
 AppImages is already fairly popular amongst QT applications, electron applications, and some games like OpenRA.
 By the way that is no coincidence, among the tools to build appimages, some are specifically tailored
 for QT applications and electron applications. This, in my view, creates a disparity, so I wondered
 if I can make a difference. So I decided to create another tool to create AppImages, but from Docker
 containers, a tool I am familiar with. Furthermore the creation of Docker images and containers is very
-well documented and the collection of publically available Docker images is very large.
+well documented and the collection of publicly available Docker images is very large.
 The tool's name &lt;cite&gt;docker2appimage&lt;/cite&gt; available on Github at &lt;a class="reference external" href="https://github.com/mparusinski/docker2appimage"&gt;https://github.com/mparusinski/docker2appimage&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;If you have a container called &lt;cite&gt;relaxed_beaver&lt;/cite&gt;, to create an AppImage which triggers the container default
 command, you run.&lt;/p&gt;
@@ -1129,8 +1129,8 @@ parameters. Getting enough data is a challenge but what makes it worse that data
 is not sufficient, you need labelled data, and if possible quality labelled data.&lt;/p&gt;
 &lt;p&gt;When you don't have enough data you have a problem. There are many ways to tackle this issues:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
-&lt;li&gt;Reducing the number of parameters to learn. One such way is to resuse the weights (parameters) from an already learned task and then only retrain parts of the model. This is a form of transfer learning. For instance VGG-16 is taught to do image classification for general public purpose. You can take this model and only retrain parts of it, assuming the other parts are good enough to generalise to your task.&lt;/li&gt;
-&lt;li&gt;Training parts of the model on the input data alone using autoencoders. This is fairly technical. The idea is that you build a model which compresses the input data and then decompress the data back with no loss of quality. Such a model is easier to train as you usually have lots of input data (but not necessarily output data). Then you use the trained autoencoder and you split in two : the compression network and the decompression network. You can then work with the compressed features coming out of the compression network as a replacement of the original input data. The benefit here is that the compressed features are smaller and as a result the network you need to train mapping the compressed features to the output data is smaller and thus simpler to teach.&lt;/li&gt;
+&lt;li&gt;Reducing the number of parameters to learn. One such way is to reuse the weights (parameters) from an already learned task and then only retrain parts of the model. This is a form of transfer learning. For instance VGG-16 is taught to do image classification for general public purpose. You can take this model and only retrain parts of it, assuming the other parts are good enough to generalise to your task.&lt;/li&gt;
+&lt;li&gt;Training parts of the model on the input data alone using auto-encoders. This is fairly technical. The idea is that you build a model which compresses the input data and then decompress the data back with no loss of quality. Such a model is easier to train as you usually have lots of input data (but not necessarily output data). Then you use the trained auto-encoder and you split in two : the compression network and the decompression network. You can then work with the compressed features coming out of the compression network as a replacement of the original input data. The benefit here is that the compressed features are smaller and as a result the network you need to train mapping the compressed features to the output data is smaller and thus simpler to teach.&lt;/li&gt;
 &lt;li&gt;Use data augmentation. This method consists of building new data from the currently existing one. This method is especially good as a way to produce neural network that generalise well. Through data augmentation you can tell what a neural network should not rely on. For instance one way to augment image data is to flip the image horizontally and vertically, this way you can easily quadruple the amount of data available and tell the network it should be not rely on the image on being a certain way like having shadows at the bottom.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;For the purpose of this project I will rely on data augmentation. My training data set is around 9 000 images, which
@@ -1259,7 +1259,7 @@ our models are working. However there are some limits to metrics:&lt;/p&gt;
 the distance between the wanted output and the output the network is producing. This is where &lt;em&gt;losses&lt;/em&gt;
 come into play.
 2. You need to have some good baselines. In other words the metric in itself is not useful, you need
-to have an objectif. Something like do better than simple pixel doubling or bicubic interpolation.
+to have an objective. Something like do better than simple pixel doubling or bi-cubic interpolation.
 3. Metrics will be sensitive to the data you use. You may land on images that are easy to upsample
 and the metric may be deceptively good. This is why you should compute the metrics on the entire
 dataset and do some statistics on it.
@@ -1270,8 +1270,8 @@ neural networks.&lt;/p&gt;
 between the ideal output and the current output. In our case we will use mean squared error as
 it is simple and fits our purpose. In general always make sure you are using an appropriate
 loss function.&lt;/p&gt;
-&lt;p&gt;In terms of baselines my objectif will be to perform better thant straight upsampling via
-nearest and bilinear interpolation.&lt;/p&gt;
+&lt;p&gt;In terms of baselines my objectify will be to perform better than straight upsampling via
+nearest and bi-linear interpolation.&lt;/p&gt;
 </content><category term="Linux, HiDPI, PixelPal"></category></entry><entry><title>Pixel Pal (PART 2) : Gathering data for Pixel Pal</title><link href="https://michal.parusinski.me/pixel-pal-gathering-data.html" rel="alternate"></link><published>2020-02-15T10:24:00+01:00</published><updated>2020-02-15T10:24:00+01:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2020-02-15:/pixel-pal-gathering-data.html</id><summary type="html">&lt;p&gt;Pixel Pal is a project I have started whose purpose is to bring new life to
 old icon themes. Many old icon themes are in raster format and are not
 available for HiDPI screens (their resolution are too small). Currently the
@@ -1515,7 +1515,7 @@ It should give us an idea of how successful these new packaging formats are with
 I tried being impartial and accurate but you should take everything I state with a grain of salt.
 Try researching on your own.&lt;/p&gt;
 &lt;p&gt;Because counting on my own whether each piece of software on Linux is or not available as a Snaps, as a
-FlatPak or as an AppImage is time consuming, I decided to take a subset of populare Linux applications.
+FlatPak or as an AppImage is time consuming, I decided to take a subset of popular Linux applications.
 To avoid putting personal bias in the list I choose the set of software listed on &lt;a class="reference external" href="https://www.fossmint.com/most-used-linux-applications/"&gt;FossMint&lt;/a&gt;.
 I excluded &lt;em&gt;Google Drive&lt;/em&gt; and &lt;em&gt;Evernote&lt;/em&gt; as they are not official packaged for Linux. This should give
 us a rough idea of the percentage of applications moving to universal packaging.&lt;/p&gt;
@@ -1563,7 +1563,7 @@ Flatpak or AppImage.&lt;/p&gt;
 &lt;p&gt;What stops developers from using Snaps, FlatPaks or AppImages?
 I searched various forums and GitHub for answers. Here are some of the main reasons:&lt;/p&gt;
 &lt;ul class="simple"&gt;
-&lt;li&gt;&lt;strong&gt;Lack of time, resources or motivition:&lt;/strong&gt; This is one of the main reasons for not seeing a package format being adopted. See for instance the following links &lt;a class="reference external" href="https://github.com/albertlauncher/albert/issues/407"&gt;1&lt;/a&gt;, &lt;a class="reference external" href="https://sourceforge.net/p/freecol/improvement-requests/218/"&gt;2&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/freeorion/freeorion/issues/1236"&gt;3&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/f4exb/sdrangel/issues/113"&gt;4&lt;/a&gt;, ... . This should not be surprising because most software is developed by hobbyists and they don't necessarily have the time to learn/build for a new packaging format.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Lack of time, resources or motivation:&lt;/strong&gt; This is one of the main reasons for not seeing a package format being adopted. See for instance the following links &lt;a class="reference external" href="https://github.com/albertlauncher/albert/issues/407"&gt;1&lt;/a&gt;, &lt;a class="reference external" href="https://sourceforge.net/p/freecol/improvement-requests/218/"&gt;2&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/freeorion/freeorion/issues/1236"&gt;3&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/f4exb/sdrangel/issues/113"&gt;4&lt;/a&gt;, ... . This should not be surprising because most software is developed by hobbyists and they don't necessarily have the time to learn/build for a new packaging format.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Not even packaged:&lt;/strong&gt; I was surprised to see lots of software projects not even packaging on Linux to begin with (for instance &lt;em&gt;rsync&lt;/em&gt; and &lt;em&gt;tmux&lt;/em&gt;). These projects just assume &lt;strong&gt;maintainers&lt;/strong&gt; will package&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Software no longer developed&lt;/strong&gt;: Lots of software are no longer being developed. For instance, &lt;em&gt;Frozen Bubble&lt;/em&gt; was last updated in &lt;strong&gt;2010&lt;/strong&gt; whilst &lt;em&gt;Banshee&lt;/em&gt; was last updated in &lt;strong&gt;2014&lt;/strong&gt;. It is hard to expect projects with no developers to magically create a Snaps, FlatPaks or AppImages.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Lack of agreement over which format to use&lt;/strong&gt;: This is not frequent but fairly telling. If Snaps, FlatPak or AppImage are supposed to be the &lt;strong&gt;Universal Package Format&lt;/strong&gt; how come we have &lt;strong&gt;3&lt;/strong&gt; of them. &lt;em&gt;RStudio&lt;/em&gt; &lt;a class="reference external" href="https://github.com/rstudio/rstudio/issues/3079"&gt;could not agree&lt;/a&gt; over which format to use.&lt;/li&gt;
@@ -1578,7 +1578,7 @@ separately. A fairer comparison would put all three on par. Overall traditional 
 reluctant to adopt Snap/Flatpak/AppImage.&lt;/p&gt;
 &lt;/div&gt;
 </content><category term="Linux"></category></entry><entry><title>Made it to the front page of EGC 2018</title><link href="https://michal.parusinski.me/made-it-to-the-front-page-of-egc-2018.html" rel="alternate"></link><published>2018-05-19T17:03:00+02:00</published><updated>2018-05-19T17:03:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2018-05-19:/made-it-to-the-front-page-of-egc-2018.html</id><content type="html">&lt;p&gt;&lt;img alt="image0" src="https://egc2018.it/files/news/images/36335495032-1491322fcf-o.th_870x446.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;Apparently I made to the front page of the European Go Congree 2018
+&lt;p&gt;Apparently I made to the front page of the European Go Congress 2018
 (Pisa) web page.&lt;/p&gt;
 &lt;p&gt;&lt;a class="reference external" href="https://egc2018.it/en/news/view/id-32.html"&gt;EGC's article&lt;/a&gt;&lt;/p&gt;
 </content><category term="Non classé"></category></entry><entry><title>What to learn from the Cambridge Analytica story</title><link href="https://michal.parusinski.me/what-to-learn-from-the-cambridge-analytica-story.html" rel="alternate"></link><published>2018-03-30T12:14:00+02:00</published><updated>2018-03-30T12:14:00+02:00</updated><author><name>Michal Parusinski</name></author><id>tag:michal.parusinski.me,2018-03-30:/what-to-learn-from-the-cambridge-analytica-story.html</id><summary type="html">&lt;p&gt;If you are using Facebook and intend to keep using it the Cambridge
@@ -1632,7 +1632,7 @@ settings but it isn't as simple as it sounds. They're complex and
 have serious limitations in practice (see
 .&lt;a class="reference external" href="https://www.eff.org/deeplinks/2010/04/facebook-timeline"&gt;https://www.eff.org/deeplinks/2010/04/facebook-timeline&lt;/a&gt;). So even
 if Facebook is secure it is hard to guarantee all your Facebook
-friends access Facebook securily (many people have malware on their
+friends access Facebook securely (many people have malware on their
 computer). To summarise it is far harder to restrict access to your
 content on your Facebook than you might think, so it might be wise to
 treat it as public discourse.&lt;/li&gt;
